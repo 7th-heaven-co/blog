@@ -1,0 +1,6 @@
+/* Stock Images*/
+
+Image: https://unsplash.com/photos/galaxy-digital-wallpaper-rCbdp8VCYhQ?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash
+Author: Andy Holmes
+Source: https://unsplash.com/@andyjh07?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash
+License: https://unsplash.com/license
