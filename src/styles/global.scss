@@ -4,6 +4,8 @@
   License MIT: https://github.com/HermanMartinus/bearblog/blob/master/LICENSE.md
  */
 
+@import "blog";
+
 :root {
 	--accent: #d3cbe7;
 	--accent-dark: #293761;
@@ -16,6 +18,8 @@
 		0 2px 6px rgba(var(--gray), 25%), 0 8px 24px rgba(var(--gray), 33%),
 		0 16px 32px rgba(var(--gray), 33%);
 }
+
+/* Font */
 @font-face {
 	font-family: 'SpaceMono';
 	src: url('/fonts/SpaceMono-Regular.ttf') format('truetype');
@@ -44,11 +48,13 @@
 	font-style: italic;
 	font-display: swap;
 }
+
+/* Background */
 body::before {
 	content:"";
 	position:fixed;
 	inset:0;
-	z-index:-1000;
+	z-index: -1000;
 	background-color: black;
 	background-image: url("galaxy.jpg");
 	/* Full height */
@@ -61,7 +67,7 @@ body::before {
 }
 body {
 	font-family: 'SpaceMono', sans-serif;
-	z-index:1;
+	z-index: -100;
 	margin: 0;
 	padding: 0;
 	text-align: left;
@@ -74,25 +80,25 @@ body {
 	font-size: 20px;
 	line-height: 1.7;
 }
-
-.bg-vertical-lines {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: -1;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'%3E%3Crect x='0' y='0' width='2' height='100%' fill='black'/%3E%3C/svg%3E");
-  background-size: 20vw 100vh;
-  background-repeat: repeat;
-}
-
 main {
 	width: 720px;
 	max-width: calc(100% - 2em);
 	margin: auto;
 	padding: 3em 1em;
 }
+.bg-vertical-lines {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -100;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'%3E%3Crect x='0' y='0' width='2' height='100%' fill='black'/%3E%3C/svg%3E");
+  background-size: 20vw 100vh;
+  background-repeat: repeat;
+}
+
+/* Headings*/
 h1,
 h2,
 h3,
@@ -118,26 +124,33 @@ h4 {
 h5 {
 	font-size: 1.25em;
 }
+
+/* Text */
 strong,
 b {
 	font-weight: 700;
 }
+
+/* Text Links*/
 a {
 	color: var(--accent);
 }
 a:hover {
-	color: var(--accent);
+	color: var(--accent-dark);
 }
+
+/* Paragraphs */
 p {
 	margin-bottom: 1em;
 }
-.prose p {
-	margin-bottom: 2em;
-}
+
+/* Divider */
 hr {
 	border: none;
 	border-top: 1px solid rgb(var(--gray-light));
 }
+
+/* Media Query */
 @media (max-width: 720px) {
 	body {
 		font-size: 18px;
