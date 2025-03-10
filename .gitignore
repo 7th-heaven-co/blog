@@ -3,6 +3,9 @@ dist/
 # generated types
 .astro/
 
+# my saved files
+.archive
+
 # dependencies
 node_modules/
 

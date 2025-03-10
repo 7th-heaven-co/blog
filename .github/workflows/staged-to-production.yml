@@ -1,0 +1,95 @@
+name: 🚀 Deploy Staged → Production
+
+on:
+  schedule:
+    - cron: '0 0 * * 4'  # Runs every Thursday at midnight UTC
+  workflow_dispatch:  # Allows manual trigger
+
+jobs:
+  create-pr:
+    name: 📌 Create PR Staged → Production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get Latest Version
+        run: echo "VERSION=$(cat VERSION)" >> $GITHUB_ENV
+
+      - name: Generate Commit List
+        run: |
+          echo "### 📜 Commit History" > commits.md
+          echo "" >> commits.md
+          for commit in $(git log origin/production..HEAD --pretty=format:"%H"); do
+            message=$(git log -1 --pretty=format:"%s" $commit)
+            echo "- [$message](https://github.com/${{ github.repository }}/commit/$commit)" >> commits.md
+          done
+          cat commits.md
+
+      - name: Create PR
+        id: create_pr
+        uses: peter-evans/create-pull-request@v6
+        with:
+          title: "🚀 Deploy v${{ env.VERSION }} from staged → production"
+          body: |
+            This PR deploys version **v${{ env.VERSION }}** from `staged` to `production`.
+
+            $(cat commits.md)
+          base: production
+          branch: auto-deploy/staged-to-production
+          labels: deployment
+
+  auto-approve:
+    name: 🤖 Auto-Approve & Merge
+    runs-on: ubuntu-latest
+    needs: create-pr
+    steps:
+      - name: Auto-Approve PR
+        uses: hmarr/auto-approve-action@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Merge PR
+        uses: pascalgn/automerge-action@v0.15.6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          pull-request-title: "🚀 Deploy v"
+          merge-method: merge
+          minimum-approvals: 1
+
+  commit-to-production:
+    name: 🔄 Commit PR Changes to Production
+    runs-on: ubuntu-latest
+    needs: auto-approve
+    steps:
+      - name: Checkout Production Branch
+        uses: actions/checkout@v4
+        with:
+          ref: production
+          fetch-depth: 0
+
+      - name: Push Merged Changes
+        run: |
+          git pull origin production
+          git push origin production
+
+  tag-production:
+    name: 🏷️ Tag Production Release
+    runs-on: ubuntu-latest
+    needs: commit-to-production
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get Latest Version
+        run: echo "VERSION=$(cat VERSION)" >> $GITHUB_ENV
+
+      - name: Create Git Tag
+        run: |
+          git tag "v${VERSION}"
+          git push origin "v${VERSION}"
