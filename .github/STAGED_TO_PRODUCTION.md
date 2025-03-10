@@ -11,9 +11,4 @@
 4. 🏷️ After merging, creates a Git tag (v1.0.1) for the production release.
 5. 🚀 Deploys to Cloudflare Pages automatically.[^1]
 
-🔥 Why This is the Best Approach:
-
-- ✅ PRs are versioned → Easier tracking in GitHub.
-- ✅ Git Tags are created → Clear release history in the repository.
-
 [^1]: Cloudflare automatically deploys production branch when updated

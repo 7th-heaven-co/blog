@@ -15,7 +15,8 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Get Latest Version
+      - name: Read Latest Version
+        id: version
         run: echo "VERSION=$(cat VERSION)" >> $GITHUB_ENV
 
       - name: Generate Commit List
@@ -32,9 +33,9 @@ jobs:
         id: create_pr
         uses: peter-evans/create-pull-request@v6
         with:
-          title: "🚀 Deploy v${{ env.VERSION }} from staged → production"
+          title: "🚀 Deploy v$(cat VERSION) from staged → production"
           body: |
-            This PR deploys version **v${{ env.VERSION }}** from `staged` to `production`.
+            This PR deploys version **v$(cat VERSION)** from `staged` to `production`.
 
             $(cat commits.md)
           base: production
@@ -86,10 +87,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Get Latest Version
+      - name: Read Latest Version
         run: echo "VERSION=$(cat VERSION)" >> $GITHUB_ENV
 
       - name: Create Git Tag
         run: |
-          git tag "v${VERSION}"
-          git push origin "v${VERSION}"
+          git tag "v$(cat VERSION)"
+          git push origin "v$(cat VERSION)"
