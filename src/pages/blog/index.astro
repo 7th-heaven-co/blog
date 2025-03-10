@@ -16,11 +16,12 @@ const posts = (await getCollection("blog")).sort(
   <head>
     <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
   </head>
-  <body>
-    <div class="bg-vertical-lines"></div>
+  <body class="dir">
+    <div class="bg-gradient-linear-dark"></div>
     <Header />
     <main>
-      <section>
+      <section class="filter"></section>
+      <section class="posts">
         <ul>
           {
             posts.map((post) => (
