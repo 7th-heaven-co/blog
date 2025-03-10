@@ -1,0 +1,14 @@
+header {
+	display: flex;
+	flex: 1 1 auto;
+    flex-direction: column;
+	height: 20%;
+	text-align: left;
+	padding: 10px;
+}
+.internal-links {
+	display: flex;
+	flex: 1 1 auto;
+    flex-direction: row;
+	gap: 20px;
+}
