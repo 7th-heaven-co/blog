@@ -4,11 +4,11 @@
   License MIT: https://github.com/HermanMartinus/bearblog/blob/master/LICENSE.md
  */
 
-@use 'font';
-@use 'header';
-@use 'footer';
-@use 'bg';
-@use 'blog';
+@use './general/font';
+@use './general/header';
+@use './general/footer';
+@use './general/bg';
+@use './blog/blog';
 
 :root {
 	--color-1: #d3cbe7;
@@ -93,8 +93,10 @@ h6 {
 	color: #98a5dc;
 	line-height: 1.2;
 }
+
 h1 {
 	font-size: 3.052em;
+	line-height: 1;
 }
 h2 {
 	font-size: 2.441em;
@@ -132,11 +134,4 @@ ul {
 hr {
 	border: none;
 	border-top: 1px solid rgb(var(--gray-light));
-}
-
-/* Media Query */
-@media (max-width: 720px) {
-	body {
-		font-size: 18px;
-	}
 }

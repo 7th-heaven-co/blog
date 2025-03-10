@@ -7,8 +7,17 @@ header {
 	padding: 10px;
 }
 .internal-links {
+	font-size: 1.125rem;
+	line-height: calc(1.75 / 1.125);
 	display: flex;
 	flex: 1 1 auto;
     flex-direction: row;
 	gap: 20px;
+	
+	/* Mobile View */
+	@media (max-width: 720px) {
+		font-size: 1rem;
+		line-height: calc(1.5 / 1);
+	}
 }
+
