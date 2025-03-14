@@ -28,36 +28,6 @@ const { title, description } = Astro.props;
 />
 <meta name="generator" content={Astro.generator} />
 
-<!-- Font preloads -->
-<link
-  rel="preload"
-  href="/fonts/SpaceMono-Regular.ttf"
-  as="font"
-  type="font/ttf"
-  crossorigin
-/>
-<link
-  rel="preload"
-  href="/fonts/SpaceMono-Italic.ttf"
-  as="font"
-  type="font/ttf"
-  crossorigin
-/>
-<link
-  rel="preload"
-  href="/fonts/SpaceMono-Bold.ttf"
-  as="font"
-  type="font/ttf"
-  crossorigin
-/>
-<link
-  rel="preload"
-  href="/fonts/SpaceMono-BoldItalic.ttf"
-  as="font"
-  type="font/ttf"
-  crossorigin
-/>
-
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
 
@@ -65,3 +35,7 @@ const { title, description } = Astro.props;
 <title>{title}</title>
 <meta name="title" content={title} />
 <meta name="description" content={description} />
+
+<!-- Font Awesome Icons -->
+<script src="https://kit.fontawesome.com/305e3d4178.js" crossorigin="anonymous"
+></script>

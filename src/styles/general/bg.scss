@@ -63,3 +63,31 @@
     /* Optional: Add a blur effect */
     filter: blur(100px);
 }
+.bg-diagonal-stripe-light {
+  background-image: repeating-linear-gradient(
+    135deg, 
+    rgba(211, 203, 231, 0.15) 0px,  /* Semi-transparent line */
+    rgba(211, 203, 231, 0.15) 1px,  /* Line thickness */
+    transparent 1px,
+    transparent 4px  /* Adjust spacing */
+  );
+}
+.bg-frosted-dark {
+  background: rgba(41, 55, 97, 0.1); /* Semi-transparent background */
+  backdrop-filter: blur(10px); /* Blurs the background */
+  -webkit-backdrop-filter: blur(10px); /* Safari support */
+  border-style: dashed;
+  border-width: 1px;
+  border-color: rgba(211, 203, 231, 0.15);
+}
+.bg-frosted-dark-faded {
+  background: rgba(41, 55, 97, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px dashed rgba(211, 203, 231, 0.15);
+
+  /* Radial gradient mask to keep the center visible and fade the edges */
+  mask-image: radial-gradient(circle, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0) 100%);
+  -webkit-mask-image: radial-gradient(circle, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0) 100%);
+
+}

@@ -1,0 +1,23 @@
+#newsletter {
+    display: flex;
+    flex-direction: column;
+
+    p {
+        font-family: 'SpaceMono', sans-serif;
+    }
+
+    main {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        padding-left: 0;
+        padding-right: 0;
+        padding-bottom: 100px;
+
+        h3 {
+            font-family: 'Barlow', sans-serif;
+            color: var(--silver);
+            margin-bottom: 20px;
+        }
+    }
+}

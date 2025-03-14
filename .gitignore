@@ -15,10 +15,12 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-
-# environment variables
+# dotenv environment variable files
 .env
-.env.production
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
 
 # macOS-specific files
 .DS_Store

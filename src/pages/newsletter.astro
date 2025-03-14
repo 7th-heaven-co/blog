@@ -2,6 +2,7 @@
 import BaseHead from "../components/BaseHead.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import SubscribeNewsletter from "../components/SubscribeNewsletter.tsx";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
 ---
 
@@ -10,14 +11,12 @@ import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
   <head>
     <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
   </head>
-  <body id="home">
+  <body id="newsletter">
     <div class="bg-waves"></div>
     <div class="bg-stars"></div>
     <div class="bg-gradient-linear-dark"></div>
     <Header />
-    <main>
-      <h1>Before The <span>Fall</span></h1>
-    </main>
-    <!-- <Footer /> -->
+    <SubscribeNewsletter client:load />
+    <Footer />
   </body>
 </html>
