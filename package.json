@@ -4,6 +4,8 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev --remote",
+    "db": "astro db push --remote",
+    "db:reset": "astro db push --remote --force-reset",
     "build": "astro build --remote",
     "preview": "astro preview",
     "astro": "astro",
