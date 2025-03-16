@@ -1,0 +1,11 @@
+#blogpost article {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+
+  .prose p {
+        margin-bottom: 2em;
+        margin-left: 1em;
+        margin-right: 1em;
+    }
+}
