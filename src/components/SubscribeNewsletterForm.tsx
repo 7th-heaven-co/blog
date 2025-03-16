@@ -8,7 +8,8 @@
  * and provides feedback to the user based on the subscription status.
  */
 
-import { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import { useState, useEffect } from "react";
+import type { ChangeEvent, FormEvent } from "react";
 import DOMPurify from "dompurify";
 import { z } from "zod";
 import { limitInputLength } from "../utils/isValidInput";
@@ -161,13 +162,15 @@ export default function SubscribeNewsletterForm({ status, setStatus }) {
   // Render different UI based on the current subscription status.
   switch (status) {
     case "success":
-      return (
-        <div className="sub-news-form-empty frosted-container bg-frosted-dark-faded">
-          <div className="container">
-            {/* Success content can be placed here (e.g., an SVG or a success message). */}
-          </div>
+    return (
+      <div className="sub-news-form-empty frosted-container bg-frosted-dark-faded">
+        <div className="container">
+          <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M18 6h2v2h-2zm-2 4V8h2v2zm-2 2v-2h2v2zm-2 2h2v-2h-2zm-2 2h2v-2h-2zm-2 0v2h2v-2zm-2-2h2v2H6zm0 0H4v-2h2z" />
+          </svg>
         </div>
-      );
+      </div>
+    );
     case "loading":
       return (
         <div className="sub-news-form-empty frosted-container spinner-container bg-frosted-dark-faded">
