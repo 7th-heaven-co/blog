@@ -11,7 +11,6 @@ import node from '@astrojs/node';
 export default defineConfig({
   site: 'https://7th-heaven.jazicorn.com',
   integrations: [mdx(), sitemap(), db(), react()],
-
   adapter: node({
     mode: 'standalone',
   }),

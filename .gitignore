@@ -16,14 +16,23 @@ yarn-error.log*
 pnpm-debug.log*
 
 # dotenv environment variable files
-.env
+.env*
 .env.development.local
 .env.test.local
 .env.production.local
 .env.local
+.env.development.local
+.env.local.test
 
 # macOS-specific files
 .DS_Store
 
 # jetbrains setting folder
 .idea/
+
+# Playwright
+/test-examples
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

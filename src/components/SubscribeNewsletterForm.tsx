@@ -148,16 +148,17 @@ export default function SubscribeNewsletterForm({ status, setStatus }) {
     );
   default:
     return (
-      <form method="POST" onSubmit={submit} className="bg-frosted-dark">
+      <form role="form" method="POST" onSubmit={submit} className="bg-frosted-dark">
         <section id="userInfo">
           <div id="name">
             {/* First Name Input */}
             <div className="container">
-              <label>
+              <label htmlFor="first-name-input">
                 <span>(Optional)</span>
-                <span>First Name:</span>
+                <span >First Name:</span>
               </label>
               <input
+                id="first-name-input"
                 type="text"
                 name="first_name"
                 onChange={handleInputChange}
@@ -167,11 +168,12 @@ export default function SubscribeNewsletterForm({ status, setStatus }) {
             </div>
             {/* Last Name Input */}
             <div className="container">
-              <label>
+              <label htmlFor="last-name-input">
                 <span>(Optional)</span>
-                <span>Last Name:</span>
+                <span >Last Name:</span>
               </label>
               <input
+                id="last-name-input"
                 type="text"
                 name="last_name"
                 onChange={handleInputChange}
@@ -183,8 +185,9 @@ export default function SubscribeNewsletterForm({ status, setStatus }) {
           {/* Email Input */}
           <div id="email">
             <div className="container">
-              <label>Email:</label>
+              <label htmlFor="email-input">Email:</label>
               <input
+                id="email-input"
                 type="email"
                 name="email"
                 onChange={handleInputChange}

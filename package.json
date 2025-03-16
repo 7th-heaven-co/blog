@@ -6,7 +6,8 @@
     "dev": "astro dev --remote",
     "build": "astro build --remote",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "test": "npx vitest"
   },
   "dependencies": {
     "@astrojs/db": "^0.14.8",
@@ -26,5 +27,13 @@
     "sass": "^1.85.1",
     "uuid": "^11.1.0",
     "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.51.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
+    "@types/node": "^22.13.10",
+    "happy-dom": "^17.4.4",
+    "vitest": "^3.0.8"
   }
 }
