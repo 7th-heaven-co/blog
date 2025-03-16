@@ -1,4 +1,5 @@
 ---
+category: 'blog'
 title: 'Welcome'
 description: 'Lorem ipsum dolor sit amet'
 pubDate: 'Jul 08 2022'
