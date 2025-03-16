@@ -10,7 +10,7 @@ Blog all about [7th Heaven](https://7th-heaven.jazicorn.com/) by [Jazicorn](http
 
 Posts of chapters from any novel
 
-#### *7th Heaven*
+#### *Heaven*
 
 Posts of chapters from the novel 7th Heaven
 
@@ -28,15 +28,17 @@ Post Announcements of new novels and products
 
 #### *Events*
 
-## [Content: Blog](./src/content/blog/)
-
-## [Content: Releases](./src/content/releases)
+## [Content: Heaven](./src/content/heaven)
 
 ## [Content: Announcements](./src/content/announcements)
 
 ## [Content: Community Notes](./src/content/community_notes)
 
+## [Content: Author](./src/content/author)
+
 ## [Content: Events](./src/content/events)
+
+## [Content: Releases](./src/content/releases)
 
 ---
 

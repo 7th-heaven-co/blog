@@ -26,10 +26,12 @@ const userSchema = z.object({
 
 // Define the schema for newsletter preferences with default values
 const newsletterSchema = z.object({
+  heaven: z.boolean().optional().default(false),
   announcements: z.boolean().optional().default(false),
+  community: z.boolean().optional().default(false),
+  author: z.boolean().optional().default(false),
   events: z.boolean().optional().default(false),
-  community_notes: z.boolean().optional().default(false),
-  updates: z.boolean().optional().default(false),
+  releases: z.boolean().optional().default(false),
 });
 
 // Export inferred types if needed elsewhere
@@ -78,10 +80,12 @@ export async function dbNewsletterSubscribe(
       await tx.insert(Newsletter).values({
         user_id: user.id,
         news_email: parsedUser.email,
+        news_heaven: parsedNewsletter.heaven,
         news_announcements: parsedNewsletter.announcements,
+        news_community: parsedNewsletter.community,
         news_events: parsedNewsletter.events,
-        news_community_notes: parsedNewsletter.community_notes,
-        news_updates: parsedNewsletter.updates,
+        news_author: parsedNewsletter.author,
+        news_releases: parsedNewsletter.releases,
         news_active: true,
       });
     });
@@ -89,9 +93,11 @@ export async function dbNewsletterSubscribe(
   } catch (error) {
     if (isDbError(error)) {
       console.error("Database error:", error.message);
+    } else {
+      console.error("Database error:", error);
     }
-    console.error("Database error:", error);
-    throw new Error("Something went wrong. Please try again.");
+
+    throw new Error("DB Error. Please try again.");
   }
 }
 

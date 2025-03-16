@@ -6,9 +6,21 @@ import { SITE_TITLE, SITE_DESCRIPTION } from "../../consts";
 import { getCollection } from "astro:content";
 import FormattedDate from "../../components/FormattedDate.astro";
 
-const posts = (await getCollection("blog")).sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
-);
+const heaven = await getCollection("heaven");
+const announcements = await getCollection("announcements");
+const community = await getCollection("community");
+const author = await getCollection("author");
+const events = await getCollection("events");
+const releases = await getCollection("releases");
+
+const posts = [
+  ...heaven,
+  ...announcements,
+  ...community,
+  ...author,
+  ...events,
+  ...releases,
+].sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
 
 <!doctype html>
@@ -26,7 +38,7 @@ const posts = (await getCollection("blog")).sort(
           {
             posts.map((post) => (
               <li>
-                <a href={`/${post.data.category}/${post.id}/`}>
+                <a href={`blog/${post.data.category}/${post.id}/`}>
                   <h4 class="title">{post.data.title}</h4>
                   <p class="date">
                     <FormattedDate date={post.data.pubDate} />

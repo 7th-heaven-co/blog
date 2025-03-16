@@ -1,9 +1,9 @@
 import { glob } from 'astro/loaders';
 import { defineCollection, z } from 'astro:content';
 
-const blog = defineCollection({
-	// Load Markdown and MDX files in the `src/content/blog/` directory.
-	loader: glob({ base: './src/content/blog', pattern: '**/*.{md,mdx}' }),
+const heaven = defineCollection({
+	// Load Markdown and MDX files in the `src/content/heaven/` directory.
+	loader: glob({ base: './src/content/heaven', pattern: '**/*.{md,mdx}' }),
 	// Type-check frontmatter using a schema
 	schema: z.object({
 		category: z.string(),
@@ -13,7 +13,7 @@ const blog = defineCollection({
 		pubDate: z.coerce.date(),
 		updatedDate: z.coerce.date().optional(),
 		heroImage: z.string().optional(),
-		// ['updates','...','...']
+		// ['heaven','...','...']
 		tags: z.array(z.string()), 
 	}),
 });
@@ -35,9 +35,26 @@ const announcements = defineCollection({
 	}),
 });
 
-const community_notes = defineCollection({
-	// Load Markdown and MDX files in the `src/content/community_notes/` directory.
-	loader: glob({ base: './src/content/community_notes', pattern: '**/*.{md,mdx}' }),
+const community = defineCollection({
+	// Load Markdown and MDX files in the `src/content/community/` directory.
+	loader: glob({ base: './src/content/community', pattern: '**/*.{md,mdx}' }),
+	// Type-check frontmatter using a schema
+	schema: z.object({
+		category: z.string(),
+		title: z.string(),
+		description: z.string(),
+		// Transform string to Date object
+		pubDate: z.coerce.date(),
+		updatedDate: z.coerce.date().optional(),
+		heroImage: z.string().optional(),
+		// ['community_notes','...','...']
+		tags: z.array(z.string()), 
+	}),
+});
+
+const author = defineCollection({
+	// Load Markdown and MDX files in the `src/content/author/` directory.
+	loader: glob({ base: './src/content/author', pattern: '**/*.{md,mdx}' }),
 	// Type-check frontmatter using a schema
 	schema: z.object({
 		category: z.string(),
@@ -88,4 +105,4 @@ const releases = defineCollection({
 	}),
 });
 
-export const collections = { blog, announcements, community_notes, events, releases };
+export const collections = { heaven, announcements, community, author, events, releases };

@@ -17,10 +17,12 @@ const Newsletter = defineTable({
     id: column.number({ primaryKey: true, autoIncrement: true }),
     user_id: column.number({ references: () => Users.columns.id, onDelete: "cascade" }),
     news_email: column.text(),
+    news_heaven: column.boolean({ default: false }),
     news_announcements: column.boolean({ default: false }),
+    news_community: column.boolean({ default: false }),
+    news_author: column.boolean({ default: false }),
     news_events: column.boolean({ default: false }),
-    news_community_notes: column.boolean({ default: false }),
-    news_updates: column.boolean({ default: false }),
+    news_releases: column.boolean({ default: false }),
     news_active: column.boolean({ default: true }),
   }
 });
@@ -28,4 +30,3 @@ const Newsletter = defineTable({
 export default defineDb({
   tables: { Users, Newsletter },
 });
-
