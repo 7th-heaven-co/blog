@@ -6,6 +6,10 @@ on:
     branches:
       - staged
 
+permissions:
+  contents: read
+  pull-requests: write  # 🔧 Added required permissions for PR comments
+
 jobs:
   generate-commit-list:
     name: 📜 Generate Commit List
@@ -31,7 +35,10 @@ jobs:
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: "commit-history"
-          message: "$(cat commits.md)"
+          message: |
+            <<EOF
+            $(cat commits.md)
+            EOF
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

@@ -5,6 +5,10 @@ on:
     - cron: '0 0 * * 4'  # Runs every Thursday at midnight UTC
   workflow_dispatch:  # Allows manual trigger
 
+permissions:
+  contents: read
+  pull-requests: write  # 🔧 Added required permissions for PR creation
+
 jobs:
   create-pr:
     name: 📌 Create PR Staged → Production
@@ -33,9 +37,9 @@ jobs:
         id: create_pr
         uses: peter-evans/create-pull-request@v6
         with:
-          title: "🚀 Deploy v$(cat VERSION) from staged → production"
+          title: "🚀 Deploy v${{ env.VERSION }} from staged → production"
           body: |
-            This PR deploys version **v$(cat VERSION)** from `staged` to `production`.
+            This PR deploys version **v${{ env.VERSION }}** from `staged` to `production`.
 
             $(cat commits.md)
           base: production
@@ -92,5 +96,5 @@ jobs:
 
       - name: Create Git Tag
         run: |
-          git tag "v$(cat VERSION)"
-          git push origin "v$(cat VERSION)"
+          git tag "v${VERSION}"
+          git push origin "v${VERSION}"
