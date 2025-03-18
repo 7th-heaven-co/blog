@@ -1,0 +1,134 @@
+name: 🚀 Deploy Dev → Staged
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - staged
+
+permissions:
+  contents: write
+  pull-requests: write  # 🔧 Added required permissions for PR comments
+
+jobs:
+  generate-commit-list:
+    name: 📜 Generate Commit List
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate Commit List
+        run: |
+          echo "### 📜 Commit History" > commits.md
+          echo "" >> commits.md
+          for commit in $(git log origin/staged..HEAD --pretty=format:"%H"); do
+            message=$(git log -1 --pretty=format:"%s" $commit)
+            echo "- [$message](https://github.com/${{ github.repository }}/commit/$commit)" >> commits.md
+          done
+          cat commits.md
+        shell: bash
+
+      - name: Update PR with Commit History
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: "commit-history"
+          message: |
+            <<EOF
+            $(cat commits.md)
+            EOF
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  versioning:
+    name: 🔢 Auto-Increment Version
+    runs-on: ubuntu-latest
+    needs: generate-commit-list
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Ensure VERSION File Exists
+        run: |
+          if [ ! -f VERSION ]; then
+            echo "VERSION file not found. Creating a default version."
+            echo "0.0.1" > VERSION
+          fi
+
+      - name: Setup Git User
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Auto-Increment Version
+        run: |
+          CURRENT_VERSION=$(cat VERSION)
+          NEW_VERSION=$(npm version patch --no-git-tag-version | tr -d 'v')
+          echo "$NEW_VERSION" > VERSION
+          git add package.json package-lock.json VERSION
+          git commit -m "🔢 Bump version to $NEW_VERSION"
+          git push origin HEAD:${{ github.head_ref }}
+
+  auto-approve:
+    name: 🤖 Auto-Approve & Merge
+    runs-on: ubuntu-latest
+    needs: versioning
+    steps:
+      - name: Auto-Approve PR
+        uses: hmarr/auto-approve-action@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Merge PR
+        uses: pascalgn/automerge-action@v0.15.6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          pull-request-title: "🚀 Deploy v"
+          merge-method: merge
+          minimum-approvals: 1
+
+  commit-to-staged:
+    name: 🔄 Commit PR Changes to Staged
+    runs-on: ubuntu-latest
+    needs: auto-approve
+    steps:
+      - name: Checkout Staged Branch
+        uses: actions/checkout@v4
+        with:
+          ref: staged
+          fetch-depth: 0
+
+      - name: Push Merged Changes
+        run: |
+          git pull origin staged
+          git push origin staged
+
+  tag-staged:
+    name: 🏷️ Tag Staged Release
+    runs-on: ubuntu-latest
+    needs: commit-to-staged
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Ensure VERSION File Exists
+        run: |
+          if [ ! -f VERSION ]; then
+            echo "VERSION file not found. Creating a default version."
+            echo "0.0.1" > VERSION
+          fi
+
+      - name: Read Latest Version
+        run: echo "VERSION=$(cat VERSION)" >> $GITHUB_ENV
+
+      - name: Create Git Tag
+        run: |
+          git tag "v${VERSION}-staged"
+          git push origin "v${VERSION}-staged"

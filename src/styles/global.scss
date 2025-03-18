@@ -1,0 +1,142 @@
+/*
+  The CSS in this style tag is based off of Bear Blog's default CSS.
+  https://github.com/HermanMartinus/bearblog/blob/297026a877bc2ab2b3bdfbd6b9f7961c350917dd/templates/styles/blog/default.css
+  License MIT: https://github.com/HermanMartinus/bearblog/blob/master/LICENSE.md
+ */
+
+@use './general/font';
+@use './general/header';
+@use './general/footer';
+@use './general/bg';
+@use './general/effects';
+@use './blog/blog';
+@use './blog/blog-post';
+@use './newsletter/newsletter';
+@use './newsletter/newsletter-subscribe';
+@use 'home';
+
+:root {
+	// --color-1: #d3cbe7;
+	--color-1: rgba(211, 203, 231, 1);
+	// --color-2: #98a5dc;
+	--color-2: rgba(152, 165, 220, 1);
+	// --color-3: #5d82c0;
+	--color-3: rgba(93, 130, 192, 1);
+	// --color-4: #426694;
+	--color-4: rgba(66, 102, 148, 1);
+	// --color-5: #293761;
+	--color-5: rgba(41, 55, 97, 1);
+	--accent: var(--gray-light);
+	--accent-dark: var(--gray-dark);
+	--silver: rgba(192, 192, 192, 1);
+	--black: rgba(15, 18, 25, 1);
+	--gray: rgba(96, 115, 159, 1);
+	--gray-light: rgba(229, 233, 240, 1);
+	--gray-dark: rgba(34, 41, 57, 1);
+	--gray-gradient: rgba(var(--gray-light), 50%), #fff;
+	--box-shadow:
+		0 2px 6px rgba(var(--gray), 25%), 0 8px 24px rgba(var(--gray), 33%),
+		0 16px 32px rgba(var(--gray), 33%);
+	--border-light: rgba(211, 203, 231, 0.15);
+}
+
+html, body {
+    height: 100%;
+	width: 100%;
+    margin: 0;
+	padding: 0;
+	background-color: var(--gray-dark);
+}
+
+/* Background */
+body::before {
+	content:"";
+	position: fixed;
+	inset:0;
+	z-index: -1000;
+	/* Full height */
+	height: 100%;
+	/* Center and scale the image nicely */
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	opacity:0.2;	
+	background-color: var(--gray-dark);
+	background-image: url("/galaxy.jpg");
+}
+body {
+	z-index: 0;
+	/* font */
+	font-family: 'SpaceMono', sans-serif;
+	color: #f6f4fb;
+	font-size: 20px;
+	line-height: 1.7;
+	/* background */
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	// min-height: 100vh;
+	width: 100%;
+	display: flex;
+    flex-direction: column;
+	justify-content: space-between;
+	gap: 2em;	
+	background-color: rgba(var(--gray-dark));
+	overflow: auto;
+
+
+	main {
+		width: 100%;
+		height: 100%;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: center;
+		text-align: center;
+	}
+}
+
+/* Headings*/
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	margin: 0 0 0.5rem 0;
+	color: var(--color-2);
+	line-height: 1.2;
+	font-family: 'SpaceMono-Bold', sans-serif;
+}
+
+/* Text */
+strong,
+b {
+	font-weight: 700;
+}
+p {
+	font-family: 'Barlow', sans-serif;
+}
+
+/* Text Links*/
+a {
+	color: var(--accent);
+}
+a:hover {
+	color: var(--color-2);
+}
+
+/* List */
+ul {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+
+/* Divider */
+hr {
+	border: none;
+	border-top: 1px solid rgb(var(--gray-light));
+}
