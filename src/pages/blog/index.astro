@@ -28,28 +28,30 @@ const posts = [
   <head>
     <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
   </head>
-  <body class="dir">
+  <body id="dir">
     <div class="bg-gradient-linear-dark"></div>
-    <Header />
-    <main>
-      <section class="filter"></section>
-      <section class="posts">
-        <ul>
-          {
-            posts.map((post) => (
-              <li>
-                <a href={`blog/${post.data.category}/${post.id}/`}>
-                  <h4 class="title">{post.data.title}</h4>
-                  <p class="date">
-                    <FormattedDate date={post.data.pubDate} />
-                  </p>
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </section>
-    </main>
-    <!-- <Footer /> -->
+    <div class="content">
+      <Header />
+      <main>
+        <section class="filter"></section>
+        <section class="posts">
+          <ul>
+            {
+              posts.map((post) => (
+                <li>
+                  <a href={`blog/${post.data.category}/${post.id}/`}>
+                    <h4 class="title">{post.data.title}</h4>
+                    <p class="date">
+                      <FormattedDate date={post.data.pubDate} />
+                    </p>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </section>
+      </main>
+      <Footer />
+    </div>
   </body>
 </html>

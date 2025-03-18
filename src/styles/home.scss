@@ -1,5 +1,10 @@
 #home main {
     justify-content: center;
+    width: 100%;
+    height: fit-content;
+    min-height: 90vh;
+    display: flex;
+    justify-content: center;
 
     p {
         font-family: 'SpaceMono', sans-serif;
@@ -8,6 +13,12 @@
     }
 
     h1 {
+        background-image: url("/the_creation_of_adam.jpg");
+        background-attachment: local;
+        background-position: center;
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
         /* Text */
 	    font-family: sans-serif;
         font-size: 10rem; 
@@ -21,12 +32,17 @@
         padding-bottom: 0em;
         padding-left: .4em;
         padding-right: .4em;
+
+        @media (min-width: 1720px) {
+            font-size: 18rem;
+            padding-left: .2em;
+            padding-right: .2em;
+        }
         
         @media (max-width: 1720px) {
             font-size: 16rem;
             padding-left: .2em;
             padding-right: .2em;
-            line-height: 1.2;
         }
         @media (max-width: 1536px) {
             font-size: 14rem;
@@ -50,9 +66,6 @@
         }
         @media (max-width: 600px) {
             font-size: 6rem;
-        }
-        @media (max-width: 500px) {
-            font-size: 5rem;
         }
 
         span {

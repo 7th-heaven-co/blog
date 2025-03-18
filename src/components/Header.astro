@@ -1,20 +1,21 @@
 ---
 import HeaderLink from "./HeaderLink.astro";
 import { SITE_TITLE } from "../consts";
-import BMCButton from "./BMCButton.astro";
 ---
 
 <header>
   <nav>
-      <h2><a href="/">{SITE_TITLE}</a></h2>
-      <div class="internal-links">
+    <h1 id="logo">
+      <HeaderLink href="/" class="aurora-text-light">{SITE_TITLE}</HeaderLink>
+      <HeaderLink href="/"
+        class="title-transparent-text-with-underline">{SITE_TITLE}</HeaderLink
+      >
+    </h1>
+    <div class="internal-links">
       <HeaderLink href="/">Home</HeaderLink>
       <HeaderLink href="/blog">Blog</HeaderLink>
       <HeaderLink href="/about">About</HeaderLink>
       <HeaderLink href="/newsletter">Newsletter</HeaderLink>
     </div>
   </nav>
-  <div id="donate">
-    <BMCButton />
-  </div>
 </header>

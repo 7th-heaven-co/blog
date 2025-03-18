@@ -76,18 +76,16 @@
   background: rgba(41, 55, 97, 0.1); /* Semi-transparent background */
   backdrop-filter: blur(10px); /* Blurs the background */
   -webkit-backdrop-filter: blur(10px); /* Safari support */
-  border-style: dashed;
-  border-width: 1px;
-  border-color: rgba(211, 203, 231, 0.15);
 }
 .bg-frosted-dark-faded {
   background: rgba(41, 55, 97, 0.1);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px dashed rgba(211, 203, 231, 0.15);
 
   /* Radial gradient mask to keep the center visible and fade the edges */
   mask-image: radial-gradient(circle, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0) 100%);
   -webkit-mask-image: radial-gradient(circle, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0) 100%);
-
+}
+.bg-the-creation-of-adam {
+  background-image: url("/the_creation_of_adam.jpg");
 }

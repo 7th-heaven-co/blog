@@ -2,6 +2,7 @@
 import BaseHead from "../components/BaseHead.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import Landing from "../components/Landing.astro";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
 ---
 
@@ -14,10 +15,10 @@ import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
     <div class="bg-waves"></div>
     <div class="bg-stars"></div>
     <div class="bg-gradient-linear-dark"></div>
-    <Header />
-    <main>
-      <h1>Before The <span>Fall</span></h1>
-    </main>
-    <!-- <Footer /> -->
+    <div class="content">
+      <Header />
+      <Landing />
+      <Footer />
+    </div>
   </body>
 </html>

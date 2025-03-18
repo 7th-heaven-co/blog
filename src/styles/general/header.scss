@@ -1,26 +1,37 @@
 header {
 	display: flex;
     flex-direction: row;
-	height: auto;
+	height: 15vh;
 	width: 100%;
 	text-align: left;
-	padding: 0;
-    margin: 0;
-	
-	h2 {
+	padding: 0px;
+    margin: 0px;
+
+	#logo {
+		position: relative;
 		font-family: 'SpaceMono-Bold', sans-serif;
 		font-style: italic;
 		font-size: 48px;
+
+		.title-transparent-text-with-underline {
+			position: absolute;
+			top: 0;
+			left: 0;
+			z-index: 2;
+			color: transparent;
+			text-underline-offset: 6px;
+		}
 	}
 
-	h2 a {
-		color: white !important;
+	#logo a {
+		color: transparent;
 		text-decoration-style: wavy;
 		text-decoration-color: var(--color-5);		
 		text-decoration-thickness: 2px;
 	}
 	
 	nav {
+		margin: 0;
 		display: flex;
 		flex: 1 1 auto;
 		flex-direction: column;
@@ -40,14 +51,6 @@ header {
 				line-height: calc(1.5 / 1);
 			}
 		}
-	}
-	#donate {
-		display: flex;
-    	flex-direction: column;
-		align-items: center;
-		justify-content:top;
-		padding-top: 20px;
-		padding-right: 20px;
 	}
 }
 

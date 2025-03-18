@@ -14,28 +14,30 @@ const { title, description, pubDate, updatedDate } = Astro.props;
   </head>
   <body id="blogpost">
     <div class="bg-gradient-linear-dark"></div>
-    <Header />
-    <main>
-      <article>
-        <div class="prose">
-          <div class="title">
-            <div class="date">
-              <FormattedDate date={pubDate} />
-              {
-                updatedDate && (
-                  <div class="last-updated-on">
-                    Last updated on <FormattedDate date={updatedDate} />
-                  </div>
-                )
-              }
+    <div class="content">
+      <Header />
+      <main>
+        <article>
+          <div class="prose">
+            <div class="title">
+              <div class="date">
+                <FormattedDate date={pubDate} />
+                {
+                  updatedDate && (
+                    <div class="last-updated-on">
+                      Last updated on <FormattedDate date={updatedDate} />
+                    </div>
+                  )
+                }
+              </div>
+              <h1>{title}</h1>
+              <hr />
             </div>
-            <h1>{title}</h1>
-            <hr />
+            <slot />
           </div>
-          <slot />
-        </div>
-      </article>
-    </main>
-    <!-- <Footer /> -->
+        </article>
+      </main>
+      <Footer />
+    </div>
   </body>
 </html>
