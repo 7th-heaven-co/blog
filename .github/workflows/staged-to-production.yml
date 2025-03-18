@@ -6,7 +6,7 @@ on:
   workflow_dispatch:  # Allows manual trigger
 
 permissions:
-  contents: read
+  contents: write
   pull-requests: write  # 🔧 Added required permissions for PR creation
 
 jobs:

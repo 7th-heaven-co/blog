@@ -7,7 +7,7 @@ on:
       - staged
 
 permissions:
-  contents: read
+  contents: write
   pull-requests: write  # 🔧 Added required permissions for PR comments
 
 jobs:
