@@ -52,6 +52,13 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Ensure VERSION File Exists
+        run: |
+          if [ ! -f VERSION ]; then
+            echo "VERSION file not found. Creating a default version."
+            echo "0.0.1" > VERSION
+          fi
+
       - name: Setup Git User
         run: |
           git config --global user.name "github-actions[bot]"
@@ -111,7 +118,14 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Get Latest Version
+      - name: Ensure VERSION File Exists
+        run: |
+          if [ ! -f VERSION ]; then
+            echo "VERSION file not found. Creating a default version."
+            echo "0.0.1" > VERSION
+          fi
+
+      - name: Read Latest Version
         run: echo "VERSION=$(cat VERSION)" >> $GITHUB_ENV
 
       - name: Create Git Tag
