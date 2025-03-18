@@ -1,7 +1,17 @@
 # build output
 dist/
+
 # generated types
 .astro/
+
+# post-holder files
+/src/content/*/post-holder-1.md
+/src/content/*/post-holder-2.md
+/src/content/*/post-holder-3.md
+/src/content/*/post-holder-4.md
+
+# my saved files
+.archive
 
 # dependencies
 node_modules/
@@ -12,13 +22,24 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-
-# environment variables
-.env
-.env.production
+# dotenv environment variable files
+.env*
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+.env.development.local
+.env.local.test
 
 # macOS-specific files
 .DS_Store
 
 # jetbrains setting folder
 .idea/
+
+# Playwright
+/test-examples
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
