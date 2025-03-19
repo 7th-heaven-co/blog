@@ -67,9 +67,9 @@ export default defineConfig({
       ASTRO_DB_APP_TOKEN: envField.string({ context: "server", access: "secret" }),
       SITE_TITLE: envField.string({ context: "client", access: "public", default: "7th Heaven" }),
       SITE_DESCRIPTION: envField.string({ context: "client", access: "public", default: "Before The Fall" }),
-      SITE_URL: envField.string({ context: "client", access: "public" }),
-      PROFILE: envField.string({ context: "client", access: "public" }),
-      AUTHOR: envField.string({ context: "client", access: "public" }),
+      SITE_URL: envField.string({ context: "client", access: "public", default: 'https://7th-heaven.blog' }),
+      PROFILE: envField.string({ context: "client", access: "public", default: 'https://github.com/jazicorn' }),
+      AUTHOR: envField.string({ context: "client", access: "public", default: 'Jazicorn' }),
       GITHUB: envField.string({ context: "client", access: "public", default: `${SITE_URL}/socials` }),
       DISCORD: envField.string({ context: "client", access: "public", default: `${SITE_URL}/socials` }),
       REDDIT: envField.string({ context: "client", access: "public", default: `${SITE_URL}/socials` }),
@@ -79,8 +79,8 @@ export default defineConfig({
       LINKEDIN: envField.string({ context: "client", access: "public", default: `${SITE_URL}/socials` }),
       YOUTUBE: envField.string({ context: "client", access: "public", default: `${SITE_URL}/socials` }),
       TIKTOK: envField.string({ context: "client", access: "public", default: `${SITE_URL}/socials` }),
-      CONTACT_EMAIL: envField.string({ context: "client", access: "public" }),
-      SUPPORT_EMAIL: envField.string({ context: "client", access: "public" }),
+      CONTACT_EMAIL: envField.string({ context: "client", access: "public", 'john@doe.com' }),
+      SUPPORT_EMAIL: envField.string({ context: "client", access: "public", 'john@doe.com' }),
     }
   }
 });
