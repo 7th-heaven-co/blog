@@ -10,11 +10,9 @@ import { loadEnv } from "vite";
 
 import cloudflare from "@astrojs/cloudflare";
 
-const { SITE_URL } = loadEnv(process.env.NODE_ENV, process.cwd(), "");
-
 // https://astro.build/config
 export default defineConfig({
-  site: SITE_URL,
+  site: 'https://7th-heaven.blog',
   integrations: [    
     sitemap({changefreq: 'weekly',}), 
     mdx(), 
@@ -70,15 +68,15 @@ export default defineConfig({
       SITE_URL: envField.string({ context: "client", access: "public", default: 'https://7th-heaven.blog' }),
       PROFILE: envField.string({ context: "client", access: "public", default: 'https://github.com/jazicorn' }),
       AUTHOR: envField.string({ context: "client", access: "public", default: 'Jazicorn' }),
-      GITHUB: envField.string({ context: "client", access: "public", default: `${SITE_URL}/socials` }),
-      DISCORD: envField.string({ context: "client", access: "public", default: `${SITE_URL}/socials` }),
-      REDDIT: envField.string({ context: "client", access: "public", default: `${SITE_URL}/socials` }),
-      X: envField.string({ context: "client", access: "public", default: `${SITE_URL}/socials` }),
-      FACEBOOK: envField.string({ context: "client", access: "public", default: `${SITE_URL}/socials` }),
-      INSTAGRAM: envField.string({ context: "client", access: "public", default: `${SITE_URL}/socials` }),
-      LINKEDIN: envField.string({ context: "client", access: "public", default: `${SITE_URL}/socials` }),
-      YOUTUBE: envField.string({ context: "client", access: "public", default: `${SITE_URL}/socials` }),
-      TIKTOK: envField.string({ context: "client", access: "public", default: `${SITE_URL}/socials` }),
+      GITHUB: envField.string({ context: "client", access: "public", default: `https://7th-heaven.blog/socials` }),
+      DISCORD: envField.string({ context: "client", access: "public", default: `https://7th-heaven.blog/socials`  }),
+      REDDIT: envField.string({ context: "client", access: "public", default: `https://7th-heaven.blog/socials`  }),
+      X: envField.string({ context: "client", access: "public", default: `https://7th-heaven.blog/socials`  }),
+      FACEBOOK: envField.string({ context: "client", access: "public", default: `https://7th-heaven.blog/socials`  }),
+      INSTAGRAM: envField.string({ context: "client", access: "public", default: `https://7th-heaven.blog/socials`  }),
+      LINKEDIN: envField.string({ context: "client", access: "public", default: `https://7th-heaven.blog/socials`  }),
+      YOUTUBE: envField.string({ context: "client", access: "public", default: `https://7th-heaven.blog/socials`  }),
+      TIKTOK: envField.string({ context: "client", access: "public", default: `https://7th-heaven.blog/socials`  }),
       CONTACT_EMAIL: envField.string({ context: "client", access: "public", 'john@doe.com' }),
       SUPPORT_EMAIL: envField.string({ context: "client", access: "public", 'john@doe.com' }),
     }
