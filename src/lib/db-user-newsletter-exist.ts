@@ -1,3 +1,4 @@
+export const prerender = false;
 import { db, eq, Newsletter } from "astro:db";
 
 /**

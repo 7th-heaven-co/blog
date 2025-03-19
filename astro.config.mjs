@@ -8,18 +8,59 @@ import node from '@astrojs/node';
 
 import { loadEnv } from "vite";
 
+import cloudflare from "@astrojs/cloudflare";
+
 const { SITE_URL } = loadEnv(process.env.NODE_ENV, process.cwd(), "");
 
 // https://astro.build/config
 export default defineConfig({
   site: SITE_URL,
   integrations: [    
-    sitemap({
-      changefreq: 'weekly',
-    }), mdx(), db(), react()],
-  adapter: node({
-    mode: 'standalone',
-  }),
+    sitemap({changefreq: 'weekly',}), 
+    mdx(), 
+    db(), 
+    react()],
+  adapter: cloudflare(),
+  output: 'server',
+  vite: {
+    resolve: {
+      // Use react-dom/server.edge instead of react-dom/server.browser for React 19.
+      // Without this, MessageChannel from node:worker_threads needs to be polyfilled.
+      alias: {
+        "react-dom/server.browser": "react-dom/server.edge",
+      },
+    },
+    ssr: {
+      external: [
+        'node:fs',
+        'node:path',
+        'node:vm',
+        'node:events',
+        'node:url',
+        'node:util',
+        'node:https',
+        'node:http',
+        'node:stream',
+        'node:zlib',
+        'node:buffer',
+        'node:net',
+        'node:tls',
+        'node:crypto',
+        'node:assert',
+        'node:string_decoder',
+        'node:child_process',
+        'node:os',
+        'node:whatwg-url',
+        'node:jsdom'
+      ],
+    },
+    build: {
+      minify: false,
+      rollupOptions: {
+      external: ["jsdom"],
+      },
+    },
+  },
   env: {
     schema: {
       ASTRO_DB_REMOTE_URL: envField.string({ context: "server", access: "secret" }),

@@ -1,26 +1,12 @@
+export const prerender = false;
+
 import { db, eq, isDbError, Users, Newsletter } from "astro:db";
 import { z } from "zod";
-import createDOMPurify from "dompurify";
-import { JSDOM } from "jsdom";
 
-// Setup DOMPurify with a JSDOM window (suitable for server-side usage)
-const window = new JSDOM("").window;
-const DOMPurify = createDOMPurify(window);
-
-// Define the schema for user input with transformation for sanitization
+// Define the schema for user input
 const userSchema = z.object({
-  first_name: z
-    .string()
-    .optional()
-    .transform((val) =>
-      val ? DOMPurify.sanitize(val.trim()).substring(0, 50) : ""
-    ),
-  last_name: z
-    .string()
-    .optional()
-    .transform((val) =>
-      val ? DOMPurify.sanitize(val.trim()).substring(0, 50) : ""
-    ),
+  first_name: z.string().optional().transform((val) => val?.trim().substring(0, 50) || ""),
+  last_name: z.string().optional().transform((val) => val?.trim().substring(0, 50) || ""),
   email: z.string().email().transform((val) => val.trim()),
 });
 
@@ -45,7 +31,7 @@ export interface SubscriptionResult {
 /**
  * Subscribes a user to the newsletter securely.
  *
- * This function validates and transforms the input using Zod and DOMPurify before performing a batch insert
+ * This function validates and transforms the input using Zod before performing a batch insert
  * into the Users and Newsletter tables. If validation fails or the database operation encounters an issue,
  * an error is thrown.
  *
@@ -74,7 +60,10 @@ export async function dbNewsletterSubscribe(
         user_flagged: false,
       });
 
-      const [ user ] = await tx.select({ id : Users.id }).from(Users).where(eq(Users.user_email, parsedUser.email));
+      const [user] = await tx
+        .select({ id: Users.id })
+        .from(Users)
+        .where(eq(Users.user_email, parsedUser.email));
 
       // Now insert the newsletter subscription with the proper user id
       await tx.insert(Newsletter).values({
@@ -100,4 +89,3 @@ export async function dbNewsletterSubscribe(
     throw new Error("DB Error. Please try again.");
   }
 }
-

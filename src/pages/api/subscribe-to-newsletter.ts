@@ -3,19 +3,12 @@ export const prerender = false; // Disable prerendering for server-side endpoint
 import type { APIRoute } from "astro";
 import { dbNewsletterSubscribe } from "../../lib/db-newsletter-subscribe";
 import { dbUserNewsletterExist } from "../../lib/db-user-newsletter-exist";
-import { db } from "astro:db";
 import { z } from "zod";
-import createDOMPurify from "dompurify";
-import { JSDOM } from "jsdom";
-
-// Set up DOMPurify for server-side sanitization using a JSDOM window instance
-const window = new JSDOM("").window;
-const DOMPurify = createDOMPurify(window);
 
 /**
  * Subscribes a user to the newsletter securely.
  *
- * This endpoint validates and sanitizes user input using Zod and DOMPurify. It extracts form data,
+ * This endpoint validates user input using Zod. It extracts form data,
  * ensures that required fields (including at least one newsletter category) are provided, and confirms
  * that the user does not already exist in the database. On passing validation, the function inserts
  * records into both the Users and Newsletter tables.
@@ -44,13 +37,13 @@ export const POST: APIRoute = async ({ request }) => {
       releases: data.get("releases") === "on",
     };
 
-    // Define Zod schema for user data and sanitize name fields (trim and limit to 50 characters)
+    // Define Zod schema for user data
     const userSchema = z.object({
       first_name: z.string().optional().transform((val) =>
-        val ? DOMPurify.sanitize(val.trim()).substring(0, 50) : ""
+        val ? val.trim().substring(0, 50) : ""
       ),
       last_name: z.string().optional().transform((val) =>
-        val ? DOMPurify.sanitize(val.trim()).substring(0, 50) : ""
+        val ? val.trim().substring(0, 50) : ""
       ),
       email: z.string().email().transform((val) => val.trim()),
     });
@@ -65,7 +58,7 @@ export const POST: APIRoute = async ({ request }) => {
       releases: z.boolean().default(false),
     });
 
-    // Validate and sanitize inputs for user and newsletter data
+    // Validate inputs for user and newsletter data
     const parsedUser = userSchema.parse({
       first_name: rawData.first_name,
       last_name: rawData.last_name,

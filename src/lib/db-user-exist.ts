@@ -1,4 +1,4 @@
-import { db, eq, Users } from "astro:db";
+export const prerender = false;
 
 /**
  * Interface representing an email address.
