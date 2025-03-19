@@ -77,8 +77,8 @@ export default defineConfig({
       LINKEDIN: envField.string({ context: "client", access: "public", default: 'https://7th-heaven.blog/socials'  }),
       YOUTUBE: envField.string({ context: "client", access: "public", default: 'https://7th-heaven.blog/socials'  }),
       TIKTOK: envField.string({ context: "client", access: "public", default: 'https://7th-heaven.blog/socials'  }),
-      CONTACT_EMAIL: envField.string({ context: "client", access: "public", 'john@doe.com' }),
-      SUPPORT_EMAIL: envField.string({ context: "client", access: "public", 'john@doe.com' }),
+      CONTACT_EMAIL: envField.string({ context: "client", access: "public", default: 'john@doe.com' }),
+      SUPPORT_EMAIL: envField.string({ context: "client", access: "public", default: 'john@doe.com' }),
     }
   }
 });
