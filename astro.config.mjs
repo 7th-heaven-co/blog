@@ -2,7 +2,6 @@
 import { defineConfig, envField } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
-import db from '@astrojs/db';
 import react from '@astrojs/react';
 import node from '@astrojs/node';
 
@@ -16,12 +15,15 @@ export default defineConfig({
   integrations: [    
     sitemap({changefreq: 'weekly',}), 
     mdx(), 
-    db(), 
     react()],
   adapter: cloudflare(),
   output: 'server',
   vite: {
-    resolve: {
+    define: {
+    'env.TURSO_DATABASE_URL': JSON.stringify(process.env.TURSO_DATABASE_URL),
+    'env.TURSO_AUTH_TOKEN': JSON.stringify(process.env.TURSO_AUTH_TOKEN),
+  },
+  resolve: {
       // Use react-dom/server.edge instead of react-dom/server.browser for React 19.
       // Without this, MessageChannel from node:worker_threads needs to be polyfilled.
       alias: {

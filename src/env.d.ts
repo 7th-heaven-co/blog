@@ -1,6 +1,6 @@
 interface ImportMetaEnv {
-  readonly ASTRO_DB_REMOTE_URL: string
-  readonly ASTRO_DB_APP_TOKEN: string
+  readonly TURSO_DATABASE_URL: string
+  readonly TURSO_AUTH_TOKEN: string
 
   readonly SITE_TITLE: string
   readonly SITE_DESCRIPTION: string
