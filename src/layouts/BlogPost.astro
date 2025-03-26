@@ -4,6 +4,7 @@ import BaseHead from "../components/BaseHead.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import FormattedDate from "../components/FormattedDate.astro";
+import LoaderPg from "../components/LoaderPg.astro";
 
 const { title, description, pubDate, updatedDate } = Astro.props;
 ---
@@ -11,8 +12,21 @@ const { title, description, pubDate, updatedDate } = Astro.props;
 <html lang="en">
   <head>
     <BaseHead title={title} description={description} />
+    <script is:inline type="module">
+      import { init } from "/scripts/fadeContentWithPollingPreLoad.js";
+      init({
+        loaderId: "pre-loader",
+        fadeOutDuration: 1000,
+        fadeInDuration: 1000,
+        fadeInTimeout: 0,
+        transitionDelay: 2000,
+        contentSelector: ".content",
+      });
+    </script>
   </head>
   <body id="blogpost">
+    <!-- Loader overlay -->
+    <LoaderPg />
     <div class="bg-gradient-linear-dark"></div>
     <div class="content">
       <Header />

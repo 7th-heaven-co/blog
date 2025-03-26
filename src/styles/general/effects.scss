@@ -258,6 +258,13 @@
   z-index: 1;
 }
 
+.border-square {
+  /* Set a solid border width */
+  border: 4px solid;
+  /* Use the gradient as the border image */
+  border-image: linear-gradient(45deg, oklch(0.962 0.018 272.314), oklch(0.929 0.013 255.508), oklch(0.87 0.065 274.039), oklch(0.984 0.003 247.858), oklch(0.929 0.013 255.508)) 1;
+}
+
 .aurora-text-light {
   position: relative; /* Needed for the pseudo-element */
   background: linear-gradient(45deg, oklch(0.962 0.018 272.314), oklch(0.929 0.013 255.508), oklch(0.87 0.065 274.039), oklch(0.984 0.003 247.858), oklch(0.929 0.013 255.508));

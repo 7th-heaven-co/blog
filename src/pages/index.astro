@@ -4,17 +4,33 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import Landing from "../components/Landing.astro";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
+import LoaderPg from "../components/LoaderPg.astro";
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
     <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    <script is:inline type="module">
+      import { init } from '/scripts/fadeContentWithPollingPreLoad.js';
+      init({
+        loaderId: "pre-loader",
+        fadeOutDuration: 1000,
+        fadeInDuration: 1000,
+        fadeInTimeout: 500,
+        transitionDelay: 3000,
+        contentSelector: ".content"
+      });
+    </script>
   </head>
   <body id="home">
+    <!-- Loader overlay -->
+    <LoaderPg />
+    <!-- Bg -->
     <div class="bg-waves"></div>
     <div class="bg-stars"></div>
     <div class="bg-gradient-linear-dark"></div>
+    <!-- Home Page -->
     <div class="content">
       <Header />
       <Landing />

@@ -4,18 +4,30 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import SubscribeNewsletter from "../components/SubscribeNewsletter.tsx";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
+import LoaderPg from "../components/LoaderPg.astro";
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
     <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    <script is:inline type="module">
+      import { init } from "/scripts/fadeContentWithPollingPreLoad.js";
+      init({
+        loaderId: "pre-loader",
+        fadeOutDuration: 1000,
+        fadeInDuration: 1000,
+        fadeInTimeout: 0,
+        transitionDelay: 2000,
+        contentSelector: ".content",
+      });
+    </script>
   </head>
   <body id="newsletter">
-    <div class="bg-waves"></div>
-    <div class="bg-stars"></div>
+    <!-- Loader overlay -->
+    <LoaderPg />
+    <div class="bg-gradient-linear-dark"></div>
     <div class="content">
-      <div class="bg-gradient-linear-dark"></div>
       <Header />
       <SubscribeNewsletter client:load />
       <Footer />
