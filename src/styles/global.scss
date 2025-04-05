@@ -1,19 +1,16 @@
-/*
-  The CSS in this style tag is based off of Bear Blog's default CSS.
-  https://github.com/HermanMartinus/bearblog/blob/297026a877bc2ab2b3bdfbd6b9f7961c350917dd/templates/styles/blog/default.css
-  License MIT: https://github.com/HermanMartinus/bearblog/blob/master/LICENSE.md
- */
-
 @use './general/font';
 @use './general/header';
 @use './general/footer';
 @use './general/bg';
 @use './general/effects';
+@use './general/preloader.scss';
+@use './general/preloader-radical.scss';
 @use './blog/blog';
 @use './blog/blog-post';
 @use './newsletter/newsletter';
 @use './newsletter/newsletter-subscribe';
 @use 'home';
+
 
 :root {
 	// --color-1: #d3cbe7;
@@ -38,6 +35,31 @@
 		0 2px 6px rgba(var(--gray), 25%), 0 8px 24px rgba(var(--gray), 33%),
 		0 16px 32px rgba(var(--gray), 33%);
 	--border-light: rgba(211, 203, 231, 0.15);
+
+	--galaxy: url("/galaxy.jpg");
+	--grad-stop: 100%;
+	--preload-base: #e5e9f0ff;
+  	--preload-lines: #d3cbe71a;
+}
+
+/* Customize scrollbar width */
+*::-webkit-scrollbar {
+  	width: 6px;
+}
+/* Set the background of the scrollbar track */
+*::-webkit-scrollbar-track {
+  	background: transparent; /* Change to desired background color */
+}
+/* Customize the scrollbar thumb */
+*::-webkit-scrollbar-thumb {
+  	background-color: rgba(41, 55, 97, 0.7); /* Change to desired thumb color */
+  	// border-radius: 0px;     /* Optional: round the thumb */
+	// border: 0px solid #f1f1f1; /* Optional: add space around thumb matching track */
+}
+* {
+  	scrollbar-width: thin; /* Options: auto, thin, none */
+  	scrollbar-color: rgba(41, 55, 97, 0.7) transparent; /* thumb color and track color */
+	scrollbar-gutter: none;
 }
 
 html, body {
@@ -46,24 +68,26 @@ html, body {
     margin: 0;
 	padding: 0;
 	background-color: var(--gray-dark);
+	overflow: auto;
 }
 
 /* Background */
 body::before {
-	content:"";
-	position: fixed;
-	inset:0;
-	z-index: -1000;
-	/* Full height */
-	height: 100%;
-	/* Center and scale the image nicely */
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: cover;
-	opacity:0.2;	
-	background-color: var(--gray-dark);
-	background-image: url("/galaxy.jpg");
+  content: "";
+  z-index: -1000;
+  position: fixed;
+  padding: 0;
+  margin: 0;
+  inset: 0;
+  height: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 0.2;
+  background-color: var(--gray-dark);	
+  background-image: url("/galaxy.jpg");
 }
+
 body {
 	z-index: 0;
 	/* font */
@@ -80,10 +104,9 @@ body {
 	display: flex;
     flex-direction: column;
 	justify-content: space-between;
-	gap: 2em;	
-	background-color: rgba(var(--gray-dark));
+	gap: 2em;
+	background-color: rgba(var(--gray-dark));	
 	overflow: auto;
-
 
 	main {
 		width: 100%;
@@ -96,6 +119,20 @@ body {
 		align-items: center;
 		text-align: center;
 	}
+}
+
+/* Page Transition */
+.content {
+  opacity: 0; // fallback if JavaScript is disabled
+  transition: opacity 1s ease-in-out;
+}
+/* When visible, the content fades in to full opacity */
+.content.visible {
+  opacity: 1;
+}
+/* When fading-out, the content fades out to opacity 0 */
+.content.fading-out {
+  opacity: 0;
 }
 
 /* Headings*/

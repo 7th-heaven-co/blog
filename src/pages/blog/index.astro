@@ -5,6 +5,9 @@ import Footer from "../../components/Footer.astro";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../../consts";
 import { getCollection } from "astro:content";
 import FormattedDate from "../../components/FormattedDate.astro";
+import PgLoader from "../../components/PgLoader.astro";
+import PgLoaderRadical from "../../components/PgLoaderRadical.astro";
+import PgBg from "../../components/PgBg.astro";
 
 const heaven = await getCollection("heaven");
 const announcements = await getCollection("announcements");
@@ -27,9 +30,22 @@ const posts = [
 <html lang="en">
   <head>
     <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    <script is:inline type="module">
+      import { init } from "/scripts/fadeContentWithPollingPreLoadRadical.js";
+      init({
+        loaderId: "pre-loader",
+        fadeOutDuration: 1000,
+        fadeInDuration: 1000,
+        fadeInTimeout: 0,
+        transitionDelay: 2000,
+        contentSelector: ".content",
+      });
+    </script>
   </head>
   <body id="dir">
-    <div class="bg-gradient-linear-dark"></div>
+    <PgLoader />
+    <PgBg />
+    <PgLoaderRadical />
     <div class="content">
       <Header />
       <main>

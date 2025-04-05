@@ -4,6 +4,9 @@ import BaseHead from "../components/BaseHead.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import FormattedDate from "../components/FormattedDate.astro";
+import PgLoader from "../components/PgLoader.astro";
+import PgLoaderRadical from "../components/PgLoaderRadical.astro";
+import PgBg from "../components/PgBg.astro";
 
 const { title, description, pubDate, updatedDate } = Astro.props;
 ---
@@ -11,9 +14,22 @@ const { title, description, pubDate, updatedDate } = Astro.props;
 <html lang="en">
   <head>
     <BaseHead title={title} description={description} />
+    <script is:inline type="module">
+      import { init } from "/scripts/fadeContentWithPollingPreLoadRadical.js";
+      init({
+        loaderId: "pre-loader",
+        fadeOutDuration: 1000,
+        fadeInDuration: 1000,
+        fadeInTimeout: 500,
+        transitionDelay: 4000,
+        contentSelector: ".content",
+      });
+    </script>
   </head>
   <body id="blogpost">
-    <div class="bg-gradient-linear-dark"></div>
+    <PgLoader />
+    <PgBg />
+    <PgLoaderRadical />
     <div class="content">
       <Header />
       <main>

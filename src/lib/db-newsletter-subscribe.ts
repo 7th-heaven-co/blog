@@ -1,7 +1,10 @@
 export const prerender = false;
 
-import { db, eq, isDbError, Users, Newsletter } from "astro:db";
 import { z } from "zod";
+import { createClient } from "@libsql/client/web";
+import getTursoClient from "../../db/client";
+
+const client = getTursoClient();
 
 // Define the schema for user input
 const userSchema = z.object({
@@ -47,45 +50,76 @@ export async function dbNewsletterSubscribe(
   const parsedUser = userSchema.parse(user);
   const parsedNewsletter = newsletterSchema.parse(newsletter);
 
+  const now = new Date().toISOString();
+
   try {
-    // Use a transaction for atomic operations
-    await db.transaction(async (tx) => {
-      // Insert the user and retrieve the generated ID
-      const userResult = await tx.insert(Users).values({
-        user_first_name: parsedUser.first_name,
-        user_last_name: parsedUser.last_name,
-        user_email: parsedUser.email,
-        user_created_at: new Date(),
-        user_updated_at: new Date(),
-        user_flagged: false,
-      });
+    // Prepare batch queries
+    const queries = [
+      {
+        sql: `
+          INSERT INTO Users (
+            user_first_name,
+            user_last_name,
+            user_email,
+            user_created_at,
+            user_updated_at,
+            user_flagged
+          ) VALUES (?, ?, ?, ?, ?, ?);
+        `,
+        args: [
+          parsedUser.first_name,
+          parsedUser.last_name,
+          parsedUser.email,
+          now,
+          now,
+          0, // user_flagged as 0 (false)
+        ],
+      },
+      {
+        sql: `
+          INSERT INTO Newsletter (
+            user_id,
+            news_email,
+            news_heaven,
+            news_announcements,
+            news_community,
+            news_events,
+            news_author,
+            news_releases,
+            news_active
+          ) VALUES (
+            last_insert_rowid(),
+            ?,
+            ?,
+            ?,
+            ?,
+            ?,
+            ?,
+            ?,
+            ?
+          );
+        `,
+        args: [
+          parsedUser.email,
+          parsedNewsletter.heaven ? 1 : 0,
+          parsedNewsletter.announcements ? 1 : 0,
+          parsedNewsletter.community ? 1 : 0,
+          parsedNewsletter.events ? 1 : 0,
+          parsedNewsletter.author ? 1 : 0,
+          parsedNewsletter.releases ? 1 : 0,
+          1, // news_active as 1 (true)
+        ],
+      },
+    ];
 
-      const [user] = await tx
-        .select({ id: Users.id })
-        .from(Users)
-        .where(eq(Users.user_email, parsedUser.email));
+    // Execute the batch of queries
+    const result = await client.batch(queries);
 
-      // Now insert the newsletter subscription with the proper user id
-      await tx.insert(Newsletter).values({
-        user_id: user.id,
-        news_email: parsedUser.email,
-        news_heaven: parsedNewsletter.heaven,
-        news_announcements: parsedNewsletter.announcements,
-        news_community: parsedNewsletter.community,
-        news_events: parsedNewsletter.events,
-        news_author: parsedNewsletter.author,
-        news_releases: parsedNewsletter.releases,
-        news_active: true,
-      });
-    });
     return { success: true };
+    
   } catch (error) {
-    if (isDbError(error)) {
-      console.error("Database error:", error.message);
-    } else {
-      console.error("Database error:", error);
-    }
+    console.error("File: db-newsletter-subscribe | Database error:", error);
 
-    throw new Error("DB Error. Please try again.");
+    throw new Error("Newsletter Subscribe Error: Please try again.");
   }
 }

@@ -2,13 +2,10 @@
 import { defineConfig, envField } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
-import db from '@astrojs/db';
 import react from '@astrojs/react';
 import node from '@astrojs/node';
-
-import { loadEnv } from "vite";
-
 import cloudflare from "@astrojs/cloudflare";
+import { loadEnv } from "vite";
 
 // https://astro.build/config
 export default defineConfig({
@@ -16,12 +13,11 @@ export default defineConfig({
   integrations: [    
     sitemap({changefreq: 'weekly',}), 
     mdx(), 
-    db(), 
     react()],
   adapter: cloudflare(),
   output: 'server',
   vite: {
-    resolve: {
+  resolve: {
       // Use react-dom/server.edge instead of react-dom/server.browser for React 19.
       // Without this, MessageChannel from node:worker_threads needs to be polyfilled.
       alias: {
@@ -61,8 +57,8 @@ export default defineConfig({
   },
   env: {
     schema: {
-      ASTRO_DB_REMOTE_URL: envField.string({ context: "server", access: "secret" }),
-      ASTRO_DB_APP_TOKEN: envField.string({ context: "server", access: "secret" }),
+      TURSO_DATABASE_URL: envField.string({ context: "server", access: "secret" }),
+      TURSO_AUTH_TOKEN: envField.string({ context: "server", access: "secret" }),
       SITE_TITLE: envField.string({ context: "client", access: "public", default: "7th Heaven" }),
       SITE_DESCRIPTION: envField.string({ context: "client", access: "public", default: "Before The Fall" }),
       SITE_URL: envField.string({ context: "client", access: "public", default: 'https://7th-heaven.blog' }),

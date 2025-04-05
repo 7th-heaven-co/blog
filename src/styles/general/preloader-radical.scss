@@ -1,0 +1,73 @@
+// pre-loader bg transparent edges, white center
+.pre-loader-radical {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--preload-base); /* solid background */
+  z-index: 100;
+  overflow: hidden;
+  transition: background-color 2s ease-in-out; /* Add transition */
+}
+
+/* The radial gradient overlay using a pseudo-element */
+.pre-loader-radical::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100vw;  /* adjust as needed */
+  height: 100vh;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, var(--preload-base), transparent 70%);
+  opacity: 1;
+  transition: opacity 2s ease-in-out;
+}
+
+/* When the .fade-out class is added, the pseudo-element fades to transparent */
+.pre-loader-radical.fade-out::before {
+  opacity: 0;
+}
+
+/* And the element's background-color transitions to transparent */
+.pre-loader-radical.fade-out {
+  background-color: transparent;
+}
+
+// pre-loader base inverse
+.pre-loader-radical-inverse {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--preload-base); /* solid background */
+  z-index: 100;
+  overflow: hidden;
+  transition: background-color 2s ease-in-out; /* Add transition */
+}
+
+/* The radial gradient overlay using a pseudo-element */
+.pre-loader-radical-inverse::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100vw;  /* adjust as needed */
+  height: 100vh;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, transparent, var(--preload-base) 70%);
+  opacity: 1;
+  transition: opacity 2s ease-in-out;
+}
+
+/* When the .fade-out class is added, the pseudo-element fades to transparent */
+.pre-loader-radical-inverse.fade-out::before {
+  opacity: 0;
+}
+
+/* And the element's background-color transitions to transparent */
+.pre-loader-radical-inverse.fade-out {
+  background-color: transparent;
+}
