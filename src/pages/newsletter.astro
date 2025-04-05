@@ -4,7 +4,9 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import SubscribeNewsletter from "../components/SubscribeNewsletter.tsx";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
-import LoaderPg from "../components/LoaderPg.astro";
+import PgLoader from "../components/PgLoader.astro";
+import PgLoaderRadical from "../components/PgLoaderRadical.astro";
+import PgBg from "../components/PgBg.astro";
 ---
 
 <!doctype html>
@@ -12,21 +14,23 @@ import LoaderPg from "../components/LoaderPg.astro";
   <head>
     <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
     <script is:inline type="module">
-      import { init } from "/scripts/fadeContentWithPollingPreLoad.js";
+      import { init } from "/scripts/fadeContentWithPollingPreLoadRadical.js";
       init({
         loaderId: "pre-loader",
         fadeOutDuration: 1000,
         fadeInDuration: 1000,
-        fadeInTimeout: 0,
-        transitionDelay: 2000,
+        fadeInTimeout: 500,
+        transitionDelay: 4000,
         contentSelector: ".content",
       });
     </script>
   </head>
   <body id="newsletter">
     <!-- Loader overlay -->
-    <LoaderPg />
-    <div class="bg-gradient-linear-dark"></div>
+    <PgLoader />
+    <PgLoaderRadical />
+    <!-- content -->
+    <PgBg />
     <div class="content">
       <Header />
       <SubscribeNewsletter client:load />

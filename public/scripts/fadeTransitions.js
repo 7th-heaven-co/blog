@@ -1,4 +1,4 @@
-// src/scripts/fadeTransitions.js
+// public/scripts/fadeTransitions.js
 
 /**
  * Fades an element out by transitioning its opacity from 1 to 0.
