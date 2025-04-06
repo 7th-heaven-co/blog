@@ -23,12 +23,12 @@ const formSchema = z.object({
     val ? DOMPurify.sanitize(val.trim()).substring(0, 50) : ""
   ),
   email: z.string().email().transform((val) => val.trim()),
-  heaven: z.boolean().default(false),
-  announcements: z.boolean().default(false),
-  community: z.boolean().default(false),
-  author: z.boolean().default(false),
-  events: z.boolean().default(false),
-  releases: z.boolean().default(false),
+  heaven: z.boolean().default(true),
+  announcements: z.boolean().default(true),
+  community: z.boolean().default(true),
+  author: z.boolean().default(true),
+  events: z.boolean().default(true),
+  releases: z.boolean().default(true),
 });
 
 export default function SubscribeNewsletterForm({ status, setStatus }) {
@@ -38,12 +38,12 @@ export default function SubscribeNewsletterForm({ status, setStatus }) {
 
   // Controlled state for newsletter preferences checkboxes.
   const [preferences, setPreferences] = useState({
-    heaven: false,
-    announcements: false,
-    community: false,
-    author: false,
-    events: false,
-    releases: false,
+    heaven: true,
+    announcements: true,
+    community: true,
+    author: true,
+    events: true,
+    releases: true,
   });
 
   // Compute if the "All" checkbox should be checked (only if all individual preferences are true).
@@ -242,7 +242,7 @@ export default function SubscribeNewsletterForm({ status, setStatus }) {
                   </span>
                   <label>All</label>
                 </div>
-                <p>New chapter releases for 7th Heaven</p>
+                <p>Subscribe to All Categories</p>
               </li>
               {/* Individual newsletter topic checkboxes */}
               <li>
@@ -255,7 +255,7 @@ export default function SubscribeNewsletterForm({ status, setStatus }) {
                       onChange={handlePreferenceChange}
                     />
                   </span>
-                  <label>7th-Heaven</label>
+                  <label><span>Category:&nbsp;</span>7th-Heaven</label>
                 </div>
                 <p>New chapter releases for 7th Heaven</p>
               </li>
@@ -269,7 +269,7 @@ export default function SubscribeNewsletterForm({ status, setStatus }) {
                       onChange={handlePreferenceChange}
                     />
                   </span>
-                  <label>Announcements</label>
+                  <label><span>Category:&nbsp;</span>Announcements</label>
                 </div>
                 <p>Important updates to 7th Heaven</p>
               </li>
@@ -283,7 +283,7 @@ export default function SubscribeNewsletterForm({ status, setStatus }) {
                       onChange={handlePreferenceChange}
                     />
                   </span>
-                  <label>Community</label>
+                  <label><span>Category:&nbsp;</span>Community</label>
                 </div>
                 <p>Community and Social Media updates</p>
               </li>
@@ -297,7 +297,7 @@ export default function SubscribeNewsletterForm({ status, setStatus }) {
                       onChange={handlePreferenceChange}
                     />
                   </span>
-                  <label>Author</label>
+                  <label><span>Category:&nbsp;</span>Author</label>
                 </div>
                 <p>Author speaking directly to the community</p>
               </li>
@@ -311,7 +311,7 @@ export default function SubscribeNewsletterForm({ status, setStatus }) {
                       onChange={handlePreferenceChange}
                     />
                   </span>
-                  <label>Events</label>
+                  <label><span>Category:&nbsp;</span>Events</label>
                 </div>
                 <p>Meet-ups and product give-aways</p>
               </li>
@@ -325,7 +325,7 @@ export default function SubscribeNewsletterForm({ status, setStatus }) {
                       onChange={handlePreferenceChange}
                     />
                   </span>
-                  <label>Releases</label>
+                  <label><span>Category:&nbsp;</span>Releases</label>
                 </div>
                 <p>New chapter releases for all novels</p>
               </li>
