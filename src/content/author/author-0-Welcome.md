@@ -1,4 +1,5 @@
 ---
+id: 0
 category: 'author'
 title: 'Welcome'
 description: 'Lorem ipsum dolor sit amet'

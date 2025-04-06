@@ -6,6 +6,7 @@ const heaven = defineCollection({
 	loader: glob({ base: './src/content/heaven', pattern: '**/*.{md,mdx}' }),
 	// Type-check frontmatter using a schema
 	schema: z.object({
+		id: z.number(),
 		category: z.string(),
 		title: z.string(),
 		description: z.string(),
@@ -23,6 +24,7 @@ const announcements = defineCollection({
 	loader: glob({ base: './src/content/announcements', pattern: '**/*.{md,mdx}' }),
 	// Type-check frontmatter using a schema
 	schema: z.object({
+		id: z.number(),
 		category: z.string(),
 		title: z.string(),
 		description: z.string(),
@@ -40,6 +42,7 @@ const community = defineCollection({
 	loader: glob({ base: './src/content/community', pattern: '**/*.{md,mdx}' }),
 	// Type-check frontmatter using a schema
 	schema: z.object({
+		id: z.number(),
 		category: z.string(),
 		title: z.string(),
 		description: z.string(),
@@ -57,6 +60,7 @@ const author = defineCollection({
 	loader: glob({ base: './src/content/author', pattern: '**/*.{md,mdx}' }),
 	// Type-check frontmatter using a schema
 	schema: z.object({
+		id: z.number(),
 		category: z.string(),
 		title: z.string(),
 		description: z.string(),
@@ -74,6 +78,7 @@ const events = defineCollection({
 	loader: glob({ base: './src/content/events', pattern: '**/*.{md,mdx}' }),
 	// Type-check frontmatter using a schema
 	schema: z.object({
+		id: z.number(),
 		category: z.string(),
 		title: z.string(),
 		description: z.string(),
@@ -91,6 +96,7 @@ const releases = defineCollection({
 	loader: glob({ base: './src/content/releases', pattern: '**/*.{md,mdx}' }),
 	// Type-check frontmatter using a schema
 	schema: z.object({
+		id: z.number(),
 		category: z.string(),
 		title: z.string(),
 		description: z.string(),

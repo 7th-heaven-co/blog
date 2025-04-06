@@ -2,6 +2,7 @@
 import { type CollectionEntry, getCollection } from "astro:content";
 import BlogPost from "../../layouts/BlogPost.astro";
 import { render } from "astro:content";
+import { ftSlug } from "../../utils/strUtil";
 
 export async function getStaticPaths() {
   const heaven = await getCollection("heaven");
@@ -18,10 +19,13 @@ export async function getStaticPaths() {
     ...author,
     ...events,
     ...releases,
-  ].map((post) => ({
-    params: { slug: `${post.data.category}/${post.id}` },
-    props: post,
-  }));
+  ].map((post) => {
+    const slug = ftSlug(post);
+    return {
+      params: { slug: `${slug}` },
+      props: post,
+    };
+  });
 }
 
 export const prerender = true;
