@@ -8,6 +8,7 @@ import FormattedDate from "../../components/FormattedDate.astro";
 import PgLoader from "../../components/PgLoader.astro";
 import PgLoaderRadical from "../../components/PgLoaderRadical.astro";
 import PgBg from "../../components/PgBg.astro";
+import { ftSlug } from "../../utils/strUtil";
 
 const heaven = await getCollection("heaven");
 const announcements = await getCollection("announcements");
@@ -53,16 +54,19 @@ const posts = [
         <section class="posts">
           <ul>
             {
-              posts.map((post) => (
-                <li>
-                  <a href={`blog/${post.data.category}/${post.id}/`}>
-                    <h4 class="title">{post.data.title}</h4>
-                    <p class="date">
-                      <FormattedDate date={post.data.pubDate} />
-                    </p>
-                  </a>
-                </li>
-              ))
+              posts.map((post) => {
+                const slug = ftSlug(post);
+                return (
+                  <li>
+                    <a href={`blog/${slug}`}>
+                      <h4 class="title">{post.data.title}</h4>
+                      <p class="date">
+                        <FormattedDate date={post.data.pubDate} />
+                      </p>
+                    </a>
+                  </li>
+                )
+              })
             }
           </ul>
         </section>

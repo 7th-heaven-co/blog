@@ -29,52 +29,7 @@ const { title, description } = Astro.props;
 <meta name="generator" content={Astro.generator} />
 
 <!-- Bg preloads -->
-<link rel="preload" href="/galaxy.jpg" crossorigin />
-<link rel="preload" href="/the_creation_of_adam.jpg" crossorigin />
-
-<!-- Font preloads -->
-<link
-  rel="preload"
-  href="/fonts/SpaceMono/SpaceMono-Bold.ttf"
-  as="font"
-  type="font/ttf"
-  crossorigin
-/>
-<link
-  rel="preload"
-  href="/fonts/SpaceMono/SpaceMono-BoldItalic.ttf"
-  as="font"
-  type="font/ttf"
-  crossorigin
-/>
-<link
-  rel="preload"
-  href="/fonts/SpaceMono/SpaceMono-Italic.ttf"
-  as="font"
-  type="font/ttf"
-  crossorigin
-/>
-<link
-  rel="preload"
-  href="/fonts/SpaceMono/SpaceMono-Regular.ttf"
-  as="font"
-  type="font/ttf"
-  crossorigin
-/>
-<link
-  rel="preload"
-  href="/fonts/Barlow/Barlow-Regular.ttf"
-  as="font"
-  type="font/ttf"
-  crossorigin
-/>
-<link
-  rel="preload"
-  href="/fonts/Barlow/Barlow-Italic.ttf"
-  as="font"
-  type="font/ttf"
-  crossorigin
-/>
+<link rel="preload" href="/galaxy.jpg" as="image" type="image/jpeg" />
 
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />

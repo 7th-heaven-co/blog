@@ -5,10 +5,7 @@ dist/
 .astro/
 
 # post-holder files
-# /src/content/*/post-holder-1.md
-/src/content/*/post-holder-2.md
-/src/content/*/post-holder-3.md
-/src/content/*/post-holder-4.md
+/src/content/*/*post-holder*
 
 # my saved files
 .archive
