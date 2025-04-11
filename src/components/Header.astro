@@ -1,6 +1,6 @@
 ---
 import HeaderLink from "./HeaderLink.astro";
-import { SITE_TITLE } from "../consts";
+import { SITE_TITLE, HOME, BLOG, ABOUT, NEWSLETTER } from "../consts";
 ---
 
 <header>
@@ -12,10 +12,10 @@ import { SITE_TITLE } from "../consts";
       >
     </h1>
     <div class="internal-links">
-      <HeaderLink href="/">Home</HeaderLink>
-      <HeaderLink href="/blog">Blog</HeaderLink>
-      <HeaderLink href="/about">About</HeaderLink>
-      <HeaderLink href="/newsletter">Newsletter</HeaderLink>
+      <HeaderLink href=`${HOME}`>Home</HeaderLink>
+      <HeaderLink href=`${BLOG}`>Blog</HeaderLink>
+      <HeaderLink href=`${ABOUT}`>About</HeaderLink>
+      <HeaderLink href=`${NEWSLETTER}`>Newsletter</HeaderLink>
     </div>
   </nav>
 </header>

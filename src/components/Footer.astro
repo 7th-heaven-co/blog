@@ -1,6 +1,7 @@
 ---
 import HeaderLink from "./HeaderLink.astro";
 import BMCButton from "./BMCButton.astro";
+import { SITE_TITLE, HOME, BLOG, ABOUT, NEWSLETTER } from "../consts";
 const today = new Date();
 import {
   SITE_URL,
@@ -90,10 +91,10 @@ import {
   <section id="navigation">
     <h2>Navigation</h2>
     <ul>
-      <li><HeaderLink href="/">Home</HeaderLink></li>
-      <li><HeaderLink href="/blog">Blog</HeaderLink></li>
-      <li><HeaderLink href="/about">About</HeaderLink></li>
-      <li><HeaderLink href="/newsletter">Newsletter</HeaderLink></li>
+      <li><HeaderLink href=`${HOME}`>Home</HeaderLink></li>
+      <li><HeaderLink href=`${BLOG}`>Blog</HeaderLink></li>
+      <li><HeaderLink href=`${ABOUT}`>About</HeaderLink></li>
+      <li><HeaderLink href=`${NEWSLETTER}`>Newsletter</HeaderLink></li>
     </ul>
   </section>
   <section id="helpful-links">
