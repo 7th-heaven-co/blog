@@ -1,0 +1,49 @@
+/* Media Queries */
+$media-xl: 1720px;
+$media-l: 1536px;
+$media-m: 1280px;
+$media-sm: 1024px;
+$media-s: 780px;
+$media-xs: 600px;
+
+/* Colors */
+$color-1: rgba(211, 203, 231, 1);
+$color-2: rgba(152, 165, 220, 1);
+$color-3: rgba(93, 130, 192, 1);
+$color-4: rgba(66, 102, 148, 1);
+$color-5: rgba(41, 55, 97, 1);
+$accent: rgba(229, 233, 240, 1);
+$accent-dark: rgba(34, 41, 57, 1);
+$silver: rgba(192, 192, 192, 1);
+$black: rgba(15, 18, 25, 1);
+$gray: rgba(96, 115, 159, 1);
+$gray-light: rgba(229, 233, 240, 1);
+$gray-dark: rgba(34, 41, 57, 1);
+$border-light: rgba(211, 203, 231, 0.15);
+$preload-base: #e5e9f0ff;
+$preload-lines: #d3cbe71a;
+
+/* Font Sizes */
+$heading-xxl: 72px;
+$heading-xl: 64px;
+$heading-l: 56px;
+$heading-m: 48px;
+$heading-s: 36px;
+$heading-xs: 28px;
+$heading-xxs: 20px;
+$font-xl: 24px;
+$font-l: 20px;
+$font-ml: 18px;
+$font-m: 16px;
+$font-sm: 14px;
+$font-s: 12px;
+$font-xs: 8px;
+$font-xxs: 4px;
+
+/* Other */
+$galaxy: url("/galaxy.jpg");
+$grad-stop: 100%;
+
+$box-shadow: 0 2px 6px rgba(96, 115, 159, 0.25),
+              0 8px 24px rgba(96, 115, 159, 0.33),
+              0 16px 32px rgba(96, 115, 159, 0.33);

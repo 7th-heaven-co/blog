@@ -1,0 +1,170 @@
+// src/styles/blog/blog-page/_blog-posts.scss
+
+@use '../../_variables' as *;
+
+#blog {
+  .posts {
+
+    div,
+    ul li > :first-child {
+      & {
+        h2 {
+          font-size: $font-l;
+        }
+
+        h3 {
+          font-size: $font-m;
+        }
+
+        :first-child {
+          width: 100px;
+        }
+
+        > :nth-child(2) {
+          width: 200px;
+        }
+
+        > :nth-child(3) {
+          width: auto;
+
+          span {
+            display: inline-block;
+            max-width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+
+          & {
+            color: $gray-light;
+          }
+        }
+
+        & {
+          padding: 0rem 1rem;
+          display: flex;
+          flex-direction: column;
+          text-align: left;
+          color: $gray-light;
+        }
+      }
+
+      @media (max-width: $media-m) {
+        :first-child {
+          width: 75px;
+        }
+
+        > :nth-child(2) {
+          width: 175px;
+        }
+
+        > :nth-child(3) {
+          span {
+            max-width: 100%;
+          }
+        }
+      }
+
+      @media (max-width: $media-s) {
+        h2 {
+          font-size: $font-ml;
+        }
+
+        h3 {
+          font-size: $font-sm;
+        }
+
+        :first-child {
+          width: 60px;
+        }
+
+        > :nth-child(2) {
+          width: 130px;
+        }
+
+        > :nth-child(3) {
+          span {
+            max-width: 100%;
+          }
+        }
+      }
+    }
+
+    & {
+      min-height: 35rem;
+      height: fit-content;
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+      color: $gray-light;
+    }
+
+    h2 {
+      font-size: $font-l;
+    }
+
+    h3 {
+      font-size: $font-m;
+    }
+
+    div {
+      & {
+        width: fit-content;
+        height: 3rem;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+      }
+
+      h2,
+      h3 {
+        color: $gray-light;
+      }
+    }
+
+    ul {
+      & {
+        margin: 0;
+        padding: 0;
+       
+        display: flex;
+        flex-direction: column;
+      }
+
+      li > :first-child {
+        & {
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+          align-items: flex-end;
+          text-align: left;
+        }
+      }
+
+      li {
+        & {
+          display: flex;
+          flex-direction: column;
+        }
+
+        a {
+          & {
+            font-size: $font-sm;
+
+            @media (max-width: $media-xs) {
+              font-size: $font-s;
+            }
+          }
+
+          h3 {
+            color: $color-1;
+          }
+
+          &:hover h3 {
+            color: $color-3;
+          }
+        }
+      }
+    }
+  }
+}

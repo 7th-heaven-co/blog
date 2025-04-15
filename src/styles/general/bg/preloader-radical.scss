@@ -1,3 +1,7 @@
+// src/styles/general/bg/preloader-radical.scss
+
+@use '../../_variables' as *;
+
 // pre-loader bg transparent edges, white center
 .pre-loader-radical {
   position: fixed;
@@ -5,7 +9,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: var(--preload-base); /* solid background */
+  background-color: $preload-base; /* solid background */
   z-index: 100;
   overflow: hidden;
   transition: background-color 2s ease-in-out; /* Add transition */
@@ -20,7 +24,7 @@
   width: 100vw;  /* adjust as needed */
   height: 100vh;
   transform: translate(-50%, -50%);
-  background: radial-gradient(circle, var(--preload-base), transparent 70%);
+  background: radial-gradient(circle, $preload-base, transparent 70%);
   opacity: 1;
   transition: opacity 2s ease-in-out;
 }
@@ -42,7 +46,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: var(--preload-base); /* solid background */
+  background-color: $preload-base; /* solid background */
   z-index: 100;
   overflow: hidden;
   transition: background-color 2s ease-in-out; /* Add transition */
@@ -57,7 +61,7 @@
   width: 100vw;  /* adjust as needed */
   height: 100vh;
   transform: translate(-50%, -50%);
-  background: radial-gradient(circle, transparent, var(--preload-base) 70%);
+  background: radial-gradient(circle, transparent, $preload-base 70%);
   opacity: 1;
   transition: opacity 2s ease-in-out;
 }

@@ -1,15 +1,22 @@
 ---
+// file: ./src/pages/blog/index.astro
+import "../../styles/global.scss";
+import { type CollectionEntry, getCollection } from "astro:content";
 import BaseHead from "../../components/BaseHead.astro";
 import Header from "../../components/Header.astro";
 import Footer from "../../components/Footer.astro";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../../consts";
-import { getCollection } from "astro:content";
-import FormattedDate from "../../components/FormattedDate.astro";
 import PgLoader from "../../components/PgLoader.astro";
 import PgLoaderRadical from "../../components/PgLoaderRadical.astro";
 import PgBg from "../../components/PgBg.astro";
 import { ftSlug } from "../../utils/strUtil";
+import { formatDate } from "../../utils/formatDate";
+import Catalog from "../../components/blog/Catalog.tsx";
 
+// This tells Astro to prerender this page at build time.
+export const prerender = true;
+
+// Fetch collections from your content sources.
 const heaven = await getCollection("heaven");
 const announcements = await getCollection("announcements");
 const community = await getCollection("community");
@@ -17,7 +24,8 @@ const author = await getCollection("author");
 const events = await getCollection("events");
 const releases = await getCollection("releases");
 
-const posts = [
+// Combine and sort your blogs (descending by publication date).
+const blogs = [
   ...heaven,
   ...announcements,
   ...community,
@@ -32,45 +40,29 @@ const posts = [
   <head>
     <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
     <script is:inline type="module">
-      import { init } from "/scripts/fadeContentWithPollingPreLoadRadical.js";
+      import { init } from "/scripts/fade/index.js";
       init({
         loaderId: "pre-loader",
-        fadeOutDuration: 1000,
+        fadeOutDuration: 100,
         fadeInDuration: 1000,
-        fadeInTimeout: 0,
-        transitionDelay: 2000,
+        fadeInTimeout: 500,
+        transitionDelay: 1000,
         contentSelector: ".content",
       });
     </script>
   </head>
-  <body id="dir">
+  <body id="blog">
+    <!-- Loader overlay -->
     <PgLoader />
-    <PgBg />
     <PgLoaderRadical />
-    <div class="content">
+
+    <!-- Bg -->
+    <PgBg />
+
+    <!-- Content -->
+    <div className="content">
       <Header />
-      <main>
-        <section class="filter"></section>
-        <section class="posts">
-          <ul>
-            {
-              posts.map((post) => {
-                const slug = ftSlug(post);
-                return (
-                  <li>
-                    <a href={`blog/${slug}`}>
-                      <h4 class="title">{post.data.title}</h4>
-                      <p class="date">
-                        <FormattedDate date={post.data.pubDate} />
-                      </p>
-                    </a>
-                  </li>
-                )
-              })
-            }
-          </ul>
-        </section>
-      </main>
+      <Catalog blogs={blogs} client:load />
       <Footer />
     </div>
   </body>

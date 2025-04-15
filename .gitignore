@@ -43,3 +43,10 @@ pnpm-debug.log*
 
 /.wrangler/
 .dev.vars
+
+### Sass ###
+.sass-cache/
+*.css.map
+*.sass.map
+*.scss.map
+/public/styles

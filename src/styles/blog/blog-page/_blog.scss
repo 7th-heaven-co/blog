@@ -1,0 +1,73 @@
+// src/styles/blog/blog-page/_blog.scss
+
+@use '../../_variables' as *;
+@use './_blog-filter.scss';
+@use './_blog-posts.scss';
+@use './_blog-pagination.scss';
+
+#blog {
+    overflow: scroll !important;
+  main {
+    width: auto;
+    margin: 1rem 0rem 3.2rem 0rem;
+    padding: 0;
+    height: 86vh;
+    overflow: hidden;
+
+    section:first-child {
+      box-sizing: border-box;
+      border-width: 1px 1px 1px 1px;
+      border-style: dashed;
+      border-color: $border-light;
+      color: $color-1;
+    }
+
+    section:not(:first-of-type) {
+      box-sizing: border-box;
+      border-width: 0px 1px 1px 1px;
+      border-style: dashed;
+      border-color: $border-light;
+    }
+
+    section {
+      padding: 8px 2px;
+      width: 100%;
+      max-width: 1000px;
+
+      @media (max-width: $media-xl) {
+        max-width: 800px;
+      }
+
+      @media (max-width: $media-m) {
+        max-width: 600px;
+      }
+
+      @media (max-width: $media-s) {
+        max-width: 400px;
+      }
+    }
+
+    ul {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    button {
+      background-color: transparent;
+      box-sizing: border-box;
+      border-width: 0px;
+      border-style: dashed;
+      border-color: $border-light;
+      color: $gray-light;
+    }
+
+    button.active {
+      color: $color-3;
+      font-weight: bold;
+    }
+
+    button:hover {
+      color: $color-3;
+    }
+  }
+}

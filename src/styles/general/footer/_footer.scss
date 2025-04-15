@@ -1,0 +1,110 @@
+@use '../../_variables' as *;
+@use './_footer-logo.scss';
+@use './_footer-links.scss';
+@use './_footer-policy.scss';
+@use './_footer-social.scss';
+@use './_footer-text.scss';
+
+footer {
+    /* Display */
+    padding: 0;
+    margin: 0;
+    height: auto;
+    width: 100%;
+    display: grid;
+
+    /* Border */
+    box-sizing: border-box;
+    border-top-width: 1px;
+    border-bottom-width: 0px;
+    border-left-width: 0px;
+    border-right-width: 0px;
+    border-style: dashed;
+    border-color: $border-light;
+
+    /* Style */
+    text-align: center;
+    font-size: 16px;
+    color: $color-3;
+
+    /* Mobile View */
+    @media (max-width: 720px) {
+        display: flex;
+        flex-direction: column;
+        height: auto;
+    }
+
+    section:first-child {
+        grid-column-start: 1;
+        grid-column-end: 4;
+        grid-row: 3;
+    }
+
+    section:nth-child(2) {
+        grid-column-start: 4;
+        grid-column-end: 5;
+        grid-row: 3;
+    }
+
+    section:nth-child(3) {
+        grid-column-start: 5;
+        grid-column-end: 6;
+        grid-row: 3;
+    }
+
+    section:nth-child(4) {
+        grid-column-start: 1;
+        grid-column-end: 6;
+        grid-row: 4;
+    }
+
+    section:nth-child(5) {
+        grid-column-start: 1;
+        grid-column-end: 6;
+        grid-row: 5;
+    }
+
+    section:nth-child(6) {
+        grid-column-start: 1;
+        grid-column-end: 6;
+        grid-row: 6;
+    }
+
+    section:nth-child(1),section:nth-child(2),section:nth-child(3) {
+        min-height: 14em;
+        padding: 1em 4em;
+        text-align: left;
+    }
+
+    section:nth-child(2),section:nth-child(3) {
+        /* Border */
+        border-style: dashed;
+        border-top-width: 0px;
+        border-bottom-width: 0px;
+        border-left-width: 1px;
+        border-right-width: 0px;
+        border-color: $border-light;
+
+        a {
+            text-decoration-line: none;
+        }
+        
+        /* Mobile View */
+        @media (max-width: 720px) {
+            border-left-width: 0px;
+            border-top-width: 1px;
+        }
+    }
+
+    section:nth-child(4),section:nth-child(5),section:nth-child(6) {
+        min-height: 2em;
+        height: fit-content;
+        /* Border */
+        border-style: dashed;
+        border-top-width: 1px;
+        border-bottom-width: 0px;
+        border-left-width: 0px;
+        border-right-width: 0px;
+        border-color: rgba(211, 203, 231, 0.15);
+    }
+}

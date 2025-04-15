@@ -15,21 +15,12 @@ const { title, description, pubDate, updatedDate } = Astro.props;
   <head>
     <BaseHead title={title} description={description} />
     <script is:inline type="module">
-      import { init } from "/scripts/fadeContentWithPollingPreLoadRadical.js";
-      init({
-        loaderId: "pre-loader",
-        fadeOutDuration: 1000,
-        fadeInDuration: 1000,
-        fadeInTimeout: 500,
-        transitionDelay: 4000,
-        contentSelector: ".content",
-      });
+      import { init } from "/scripts/fade/index.js";
+      init();
     </script>
   </head>
   <body id="blogpost">
-    <PgLoader />
     <PgBg />
-    <PgLoaderRadical />
     <div class="content">
       <Header />
       <main>

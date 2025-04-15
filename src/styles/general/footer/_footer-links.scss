@@ -1,0 +1,32 @@
+@use '../../_variables' as *;
+
+footer {
+  #helpful-links {
+    ul li {
+      margin-bottom: 2px;
+    }
+
+    a {
+      color: $gray-light;
+
+      &:hover {
+        color: $color-3;
+      }
+    }
+  }
+
+  #navigation {
+    font-size: $font-l;
+  }
+
+  #contact-email {
+    a {
+      color: $gray-light;
+      font-size: $font-sm;
+
+      &:hover {
+        color: $color-3;
+      }
+    }
+  }
+}

@@ -1,5 +1,6 @@
 // @ts-check
 import { defineConfig, envField } from 'astro/config';
+import sass from 'sass';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import react from '@astrojs/react';
@@ -17,6 +18,13 @@ export default defineConfig({
   adapter: cloudflare(),
   output: 'server',
   vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          includePaths: ['src/styles'],
+        },
+      },
+    },
   resolve: {
       // Use react-dom/server.edge instead of react-dom/server.browser for React 19.
       // Without this, MessageChannel from node:worker_threads needs to be polyfilled.

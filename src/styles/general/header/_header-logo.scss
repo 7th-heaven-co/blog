@@ -1,0 +1,26 @@
+@use '../../_variables' as *;
+
+header {
+  #logo {
+    position: relative;
+    font-family: 'SpaceMono-Bold', sans-serif;
+    font-style: italic;
+    font-size: 48px;
+
+    .title-transparent-text-with-underline {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+      color: transparent;
+      text-underline-offset: 6px;
+    }
+
+    a {
+      color: transparent;
+      text-decoration-style: wavy;
+      text-decoration-color: $color-5;
+      text-decoration-thickness: 2px;
+    }
+  }
+}

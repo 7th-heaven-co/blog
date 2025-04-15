@@ -1,0 +1,30 @@
+@use '../../_variables' as *;
+
+footer {
+  #logo-2 {
+    position: relative;
+    font-family: 'SpaceMono-Bold', sans-serif;
+    font-style: italic;
+    font-size: 48px;
+
+    .title-transparent-text-with-underline {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+      color: transparent;
+      text-underline-offset: 6px;
+    }
+
+    a {
+      color: $color-2;
+      text-decoration-style: wavy;
+      text-decoration-color: $color-5 !important;
+      text-decoration-thickness: 2px;
+
+      &:hover {
+        color: $color-1;
+      }
+    }
+  }  
+}

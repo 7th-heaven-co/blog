@@ -1,0 +1,39 @@
+// ./src/styles/newsletter/newsletter-subscribe/_newsletter-input-button.scss
+
+@use '../../_variables' as *;
+
+#newsletter {
+  input {
+    width: 100%;
+    border-style: dashed;
+    border-width: 0 0 1px 0;
+    border-color: $border-light;
+    background-color: transparent;
+    font-family: 'SpaceMono', sans-serif;
+    font-size: 14px;
+    color: $gray-light;
+
+    &:focus {
+      border-color: $color-5;
+      outline: none;
+      box-shadow: 0 0 3px rgba(152, 165, 220, 0.5);
+    }
+  }
+
+  button {
+    width: auto;
+    border-style: dashed;
+    border-width: 1px 0 0 0;
+    border-color: $border-light;
+    background: linear-gradient(to left, transparent 0%, rgba(152, 165, 220, 0.1) 100%);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    font-family: 'SpaceMono', sans-serif;
+    font-size: $font-m;
+    color: $gray-light;
+
+    &:hover {
+      background-color: rgba(152, 165, 220, 0.7);
+    }
+  }
+}

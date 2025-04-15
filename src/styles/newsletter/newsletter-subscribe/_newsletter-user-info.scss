@@ -1,0 +1,38 @@
+// ./src/styles/newsletter/newsletter-subscribe/_newsletter-user-info.scss
+
+@use '../../_variables' as *;
+
+#newsletter {
+  #userInfo {
+    #name, #email {
+      line-height: 1.2;
+    }
+    #name {
+      .container {
+        label {
+          display: flex;
+          flex-direction: column-reverse;
+        }
+
+        span:nth-child(1) {
+          color: $color-4;
+          font-size: 12px;
+        }
+      }
+    }
+
+    label {
+      height: 40px;
+      width: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(to left, transparent 0%, rgba(152, 165, 220, 0.1) 100%);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-style: dashed;
+      border-width: 0 1px 1px 0;
+      border-color: $border-light;
+    }
+  }
+}

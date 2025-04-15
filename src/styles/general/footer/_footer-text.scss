@@ -1,0 +1,50 @@
+@use '../../_variables' as *;
+
+footer h2 {
+  text-decoration-line: underline;
+  text-underline-offset: 4px;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 1px;
+  text-decoration-color: $color-5;
+  line-height: 1em;
+}
+
+footer ul {
+  margin-bottom: 2em;
+
+  li {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5em;
+
+    a {
+      text-decoration: none;
+      color: $color-3;
+
+      &:hover {
+        color: $color-2;
+      }
+    }
+  }
+}
+
+footer p {
+  margin: 0;
+  padding: 8px 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  font-family: 'SpaceMono', sans-serif;
+  text-align: center;
+
+  span {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+}

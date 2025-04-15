@@ -1,76 +1,41 @@
-@use './general/font';
-@use './general/header';
-@use './general/footer';
-@use './general/bg';
-@use './general/effects';
-@use './general/preloader.scss';
-@use './general/preloader-radical.scss';
-@use './blog/blog';
-@use './blog/blog-post';
-@use './newsletter/newsletter';
-@use './newsletter/newsletter-subscribe';
-@use 'home';
+// ./src/styles/global.scss
 
-:root {
-	// --color-1: #d3cbe7;
-	--color-1: rgba(211, 203, 231, 1);
-	// --color-2: #98a5dc;
-	--color-2: rgba(152, 165, 220, 1);
-	// --color-3: #5d82c0;
-	--color-3: rgba(93, 130, 192, 1);
-	// --color-4: #426694;
-	--color-4: rgba(66, 102, 148, 1);
-	// --color-5: #293761;
-	--color-5: rgba(41, 55, 97, 1);
-	--accent: var(--gray-light);
-	--accent-dark: var(--gray-dark);
-	--silver: rgba(192, 192, 192, 1);
-	--black: rgba(15, 18, 25, 1);
-	--gray: rgba(96, 115, 159, 1);
-	--gray-light: rgba(229, 233, 240, 1);
-	--gray-dark: rgba(34, 41, 57, 1);
-	--gray-gradient: rgba(var(--gray-light), 50%), #fff;
-	--box-shadow:
-		0 2px 6px rgba(var(--gray), 25%), 0 8px 24px rgba(var(--gray), 33%),
-		0 16px 32px rgba(var(--gray), 33%);
-	--border-light: rgba(211, 203, 231, 0.15);
-
-	--galaxy: url("/galaxy.jpg");
-	--grad-stop: 100%;
-	--preload-base: #e5e9f0ff;
-  	--preload-lines: #d3cbe71a;
-}
+@use './_variables' as *;
+@use './general/bg/bg.scss';
+@use './general/bg/preloader.scss';
+@use './general/bg/preloader-radical.scss';
+@use './general/effects.scss';
+@use './general/font.scss';
+@use './general/icons/icons.scss';
+@use './general/header/_header.scss';
+@use './general/footer/_footer.scss';
+@use './blog/blog-page/_blog.scss';
+@use './blog/blog-post.scss';
+@use './newsletter/_newsletter.scss';
+@use './home/home.scss';
 
 /* Customize scrollbar width */
 *::-webkit-scrollbar {
   	width: 6px;
 }
-/* Set the background of the scrollbar track */
 *::-webkit-scrollbar-track {
-  	background: transparent; /* Change to desired background color */
+  	background: transparent;
 }
-/* Customize the scrollbar thumb */
 *::-webkit-scrollbar-thumb {
-  	background-color: rgba(41, 55, 97, 0.7); /* Change to desired thumb color */
-  	// border-radius: 0px;     /* Optional: round the thumb */
-	// border: 0px solid #f1f1f1; /* Optional: add space around thumb matching track */
+  	background-color: $color-5;
 }
 * {
-  	scrollbar-width: thin; /* Options: auto, thin, none */
-  	scrollbar-color: rgba(41, 55, 97, 0.7) transparent; /* thumb color and track color */
-	scrollbar-gutter: none;
+  	scrollbar-width: thin;
+  	scrollbar-color: rgba($gray-light, 0.5) transparent;
 }
 
 html, body {
-    height: 100vh;
 	width: 100vw;
     margin: 0;
 	padding: 0;
-	background-color: var(--gray-dark);
 	overflow: auto;
 }
 
-/* Background */
 body::before {
   content: "";
   z-index: -1000;
@@ -83,33 +48,31 @@ body::before {
   background-repeat: no-repeat;
   background-size: cover;
   opacity: 0.2;
-  background-color: var(--gray-dark);	
-  background-image: url("/galaxy.jpg");
+  background-color: $gray-dark;
+  background-image: $galaxy;
 }
 
 body {
 	z-index: 0;
-	/* font */
 	font-family: 'SpaceMono', sans-serif;
-	color: #f6f4fb;
+	color: $gray-light;
 	font-size: 20px;
 	line-height: 1.7;
-	/* background */
 	margin: 0;
 	padding: 0;
-	height: 100%;
-	// min-height: 100vh;
+	height: 100vh;
 	width: 100%;
 	display: flex;
     flex-direction: column;
 	justify-content: space-between;
 	gap: 2em;
-	background-color: rgba(var(--gray-dark));	
+	background-color: $gray-dark;
 	overflow: auto;
 
 	main {
+		min-height: 70vh;
+		height: auto;
 		width: 100%;
-		height: 100%;
 		margin: 0;
 		padding: 0;
 		display: flex;
@@ -117,73 +80,96 @@ body {
 		justify-content: flex-start;
 		align-items: center;
 		text-align: center;
+		overflow: auto;
 	}
 }
 
 .content {
-  	/* Border */
     box-sizing: border-box;
     border-top-width: 0px;
     border-bottom-width: 0px;
     border-left-width: 0px;
     border-right-width: 1px;
     border-style: dashed;
-    border-color: var(--border-light);
+    border-color: $border-light;
 }
 
-/* Page Transition */
 .content {
-	opacity: 0; // fallback if JavaScript is disabled
-	transition: opacity 1s ease-in-out;
+	opacity: 0;
+	transition: opacity 3s ease-in-out;
 }
-/* When visible, the content fades in to full opacity */
 .content.visible {
   	opacity: 1;
 }
-/* When fading-out, the content fades out to opacity 0 */
 .content.fading-out {
   	opacity: 0;
 }
 
-/* Headings*/
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1, h2, h3, h4, h5, h6 {
 	margin: 0 0 0.5rem 0;
-	color: var(--color-2);
 	line-height: 1.2;
 	font-family: 'SpaceMono-Bold', sans-serif;
 }
 
-/* Text */
-strong,
-b {
+strong, b {
 	font-weight: 700;
 }
 p {
 	font-family: 'Barlow', sans-serif;
 }
 
-/* Text Links*/
 a {
-	color: var(--accent);
+	color: $accent;
 }
 a:hover {
-	color: var(--color-2);
+	color: $color-2;
 }
 
-/* List */
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  display: inline-block;
+}
+
 ul {
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
 }
 
-/* Divider */
 hr {
 	border: none;
-	border-top: 1px solid rgb(var(--gray-light));
+	border-top: 1px solid $gray-light;
+}
+
+hr.aurora-light {
+	border: 0;
+	height: 1px;
+	background: linear-gradient(to right, transparent, oklch(0.962 0.018 272.314), oklch(0.929 0.013 255.508), oklch(0.87 0.065 274.039), oklch(0.984 0.003 247.858), oklch(0.929 0.013 255.508), transparent);
+	animation: aurora-animation 10s ease-in-out infinite;
+	margin: 10px 0;
+}
+
+hr.aurora-dark {
+	border: 0;
+	height: 1px;
+	background: linear-gradient(to right, transparent, $color-4, $color-1, $color-3, $color-2, $color-5, transparent);
+	animation: aurora-animation 10s ease-in-out infinite;
+	opacity: 0.3;
+	margin: 10px 0;
+}
+
+hr.faded-dark {
+	border: 0;
+	height: 1px;
+	background: $color-5;
+	animation: aurora-animation 10s ease-in-out infinite;
+	opacity: 0.3;
+	margin: 10px 0;
+}
+
+button {
+	font-family: 'SpaceMono', sans-serif;
 }
