@@ -3,9 +3,11 @@ interface Props {
   date: Date;
 }
 
-import {formatDate} from "../utils/formatDate.ts"; 
+import { dateFormats } from "../utils/dateFormats.ts";
 
-const {date} = Astro.props; 
+const { date } = Astro.props;
+
+const dateFormatted = dateFormats.date.long(date);
 ---
 
-<span>{formatDate(date)}</span>
+<span>{dateFormatted}</span>

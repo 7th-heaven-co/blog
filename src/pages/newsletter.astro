@@ -14,13 +14,13 @@ import PgBg from "../components/PgBg.astro";
   <head>
     <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
     <script is:inline type="module">
-      import { init } from "/scripts/fadeContentWithPollingPreLoadRadical.js";
+      import { init } from "/scripts/fade/index.js";
       init({
         loaderId: "pre-loader",
         fadeOutDuration: 1000,
         fadeInDuration: 1000,
         fadeInTimeout: 500,
-        transitionDelay: 4000,
+        transitionDelay: 1000,
         contentSelector: ".content",
       });
     </script>
@@ -29,8 +29,11 @@ import PgBg from "../components/PgBg.astro";
     <!-- Loader overlay -->
     <PgLoader />
     <PgLoaderRadical />
-    <!-- content -->
+
+    <!-- Bg -->
     <PgBg />
+
+    <!-- content -->
     <div class="content">
       <Header />
       <SubscribeNewsletter client:load />
