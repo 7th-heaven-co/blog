@@ -1,0 +1,123 @@
+// src/styles/blog/blog-page/_blog-pagination.scss
+
+@use '../../_variables' as *;
+
+#blog {
+  .pagination {
+    li,
+    span,
+    button {
+      & {
+        font-size: $font-m;
+      }
+
+      @media (max-width: $media-xs) {
+        font-size: $font-sm;
+      }
+    }
+
+    ul {
+      & {
+        margin: 0;
+        padding: 0;
+        height: 30px;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 0.6rem;
+        line-height: 1;
+      }
+
+      .pagNumsGroup {
+        & {
+          height: 100%;
+          min-width: 180px;
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          align-items: center;
+          gap: 0.4rem;
+        }
+
+        .pagNum {
+          > span {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: end;
+            justify-content: end;
+            text-align: center;
+
+            button {
+              height: 100%;
+              margin-left: 1px;
+              margin-right: 1px;
+            }
+          }
+
+          #ellipsis {
+            padding-bottom: 4px;
+          }
+        }
+        @media (max-width: $media-m) {
+          min-width: 130px;
+        }
+        @media (max-width: $media-xs) {
+          min-width: 120px;
+        }
+      }
+
+      li:not(.pagNumsGroup) button {
+        margin-left: 1px;
+        margin-right: 1px;
+        width: 60px;
+        color: $color-1;
+
+        @media (max-width: $media-m) {
+          width: 50px;
+        }
+
+        @media (max-width: $media-xs) {
+          width: 40px;
+        }
+
+        &:hover {
+          color: $color-3;
+        }
+      }
+    }
+
+    @media (max-width: $media-xs) {
+      & {
+        gap: 0.1rem;
+      }
+
+      .pagNumsGroup {
+        min-width: 100px;
+      }
+
+      .pagNum button {
+        margin-left: 1px;
+        margin-right: 1px;
+      }
+
+      li:not(.pagNum) button {
+        margin-left: 1px;
+        margin-right: 1px;
+      }
+    }
+
+    li {
+      button {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+  }
+}

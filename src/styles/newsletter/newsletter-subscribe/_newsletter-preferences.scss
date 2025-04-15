@@ -1,0 +1,65 @@
+// ./src/styles/newsletter/newsletter-subscribe/_newsletter-preferences.scss
+
+@use '../../_variables' as *;
+
+#newsletter {
+  #preferences {
+    ul > li {
+      min-height: 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      padding-left: 4px;
+      border-style: dashed;
+      border-top-width: 1px;
+      border-color: $border-light;
+
+      .container {
+        color: $color-2;
+
+        label > span {
+          color: $silver;
+        }
+      }
+
+      input {
+        width: fit-content !important;
+
+        &[type="checkbox"] {
+          accent-color: $color-2;
+          margin: 0;
+          padding: 0;
+        }
+      }
+
+      label {
+        margin-left: 4px;
+        margin-right: 4px;
+      }
+
+      span {
+        width: fit-content !important;
+
+        label {
+          text-align: right;
+        }
+      }
+
+      p {
+        text-align: left;
+        text-wrap: wrap;
+        color: $gray-light;
+        font-family: 'Barlow', sans-serif;
+        line-height: 1;
+        margin: 0;
+        padding: 0;
+      }
+    }
+
+    ul li:last-child {
+      p {
+        font-family: 'SpaceMono', sans-serif;
+      }
+    }
+  }
+}

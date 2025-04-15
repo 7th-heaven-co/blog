@@ -1,6 +1,8 @@
-/* home.scss */
-#home {
+// ./src/styles/home/home.scss
 
+@use '../_variables' as *;
+
+#home {
   main {
     justify-content: center;
     width: 100%;
@@ -64,11 +66,12 @@
         font-size: 7rem;
       }
       @media (max-width: 600px) {
-        font-size: 6rem;
+        font-size: 5.5rem;
       }
 
       span {
         font-style: italic;
+        text-decoration-color: $color-2;
         text-decoration-line: underline;
         text-decoration-style: double;
       }

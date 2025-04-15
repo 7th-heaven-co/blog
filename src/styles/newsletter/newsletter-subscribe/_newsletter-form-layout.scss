@@ -1,0 +1,24 @@
+// ./src/styles/newsletter/newsletter-subscribe/_newsletter-form-layout.scss
+
+@use '../../_variables' as *;
+
+#newsletter {
+  .sub-news-form-empty, form {
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    height: fit-content;
+    min-height: 500px;
+    justify-content: space-between;
+    font-family: 'SpaceMono', sans-serif;
+    color: $gray-light;
+    font-size: $font-m;
+
+    .container {
+      height: fit-content;
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+    }
+  }
+}

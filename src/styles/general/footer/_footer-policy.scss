@@ -1,0 +1,35 @@
+@use '../../_variables' as *;
+
+footer {
+  #policy {
+    height: 100%;
+    font-size: $font-sm !important;
+
+    ul {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 1em;
+
+      a {
+        color: $color-2;
+
+        &:hover {
+          color: $color-1;
+        }
+      }
+
+      li {
+        text-align: center;
+      }
+    }
+  }
+
+  #cc {
+    font-size: $font-sm;
+  }  
+}
