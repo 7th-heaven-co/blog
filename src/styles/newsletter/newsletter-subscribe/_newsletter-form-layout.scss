@@ -13,6 +13,9 @@
     font-family: 'SpaceMono', sans-serif;
     color: $gray-light;
     font-size: $font-m;
+    border-style: dashed;
+    border-width: 1px 1px;
+    border-color: $border-light;
 
     .container {
       height: fit-content;
