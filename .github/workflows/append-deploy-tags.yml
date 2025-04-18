@@ -1,34 +1,56 @@
+# .github/workflows/auto-append-deploy-tags.yml
 name: Auto Append Deploy Tags
 
 on:
   push:
     branches: [staging]
 
+# The bot must be allowed to write commits *and* open PRs
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
-  parse-commits:
+  append-deploy-tags:
     runs-on: ubuntu-latest
+
     steps:
+      # ───────── 1. Check out the current staging tip ─────────
       - name: 🧾 Checkout Repo
         uses: actions/checkout@v4
 
+      # ───────── 2. Extract the special deploy tags from the last 20 commits ─────────
       - name: 🔍 Extract Tags from Commits
         id: extract
         run: |
           git log -n 20 --pretty=format:%s > commits.txt
           echo "Deploy tags:" > deploy-append.txt
+          # Add lines that match our tag patterns (silently succeed if none)
           grep -E "#add-post:|#delete-post:|#update-section:" commits.txt >> deploy-append.txt || true
 
-      - name: 📄 Append to deploy-changelog.md
+      # ───────── 3. Append them to deploy‑changelog.md (if there are any) ─────────
+      - name: 📄 Append to deploy‑changelog.md
         run: |
           if [ -s deploy-append.txt ]; then
-            echo "\n# Auto-appended on $(date +%Y-%m-%d)" >> deploy-changelog.md
+            printf "\n# Auto‑appended on $(date +%Y-%m-%d)\n" >> deploy-changelog.md
             cat deploy-append.txt >> deploy-changelog.md
           fi
 
-      - name: ✅ Commit if changed
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git add deploy-changelog.md
-          git diff --cached --quiet || git commit -m "chore: auto-update deploy changelog"
-          git push
+      # ───────── 4. If deploy‑changelog.md changed, open a PR to staging ─────────
+      - name: 🤖 Create pull request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          # PR branch will be created automatically if it doesn’t exist
+          branch: auto/deploy-changelog           # ← what the bot pushes to
+          base: staging                           # ← opens PR *into* staging
+          commit-message: "chore(deploy): auto-update deploy changelog"
+          title: "chore(deploy): auto‑update deploy changelog"
+          body: |
+            This PR appends the latest deploy tags to **deploy‑changelog.md**.
+            It was generated automatically by the _Auto Append Deploy Tags_ workflow.
+          labels: |
+            type:chore
+            target:staging
+          delete-branch: true                     # cleans up after merge
+          signoff: false                          # no Signed‑off‑by needed
+          draft: false

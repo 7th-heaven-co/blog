@@ -10,4 +10,5 @@ export default {
     'scope-case': [2, 'always', 'kebab-case'],
     'subject-case': [0],
   },
+  ignores: [(msg) => msg.startsWith('chore(release)')],
 };
