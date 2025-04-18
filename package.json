@@ -1,7 +1,7 @@
 {
   "name": "seventh-heaven-blog",
   "type": "module",
-  "version": "0.0.5",
+  "version": "1.0.0-beta.1",
   "scripts": {
     "dev": "astro dev --remote",
     "dev-sass": "npx sass --watch src/styles/global.scss:public/styles/global.css",
