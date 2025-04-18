@@ -1,5 +1,6 @@
 # build output
 dist/
+.dist/
 
 # generated types
 .astro/
@@ -27,6 +28,7 @@ pnpm-debug.log*
 .env.local
 .env.development.local
 .env.local.test
+!.env.sample
 
 # macOS-specific files
 .DS_Store
@@ -35,6 +37,9 @@ pnpm-debug.log*
 .idea/
 
 # Playwright
+tests-examples/
+test-examples/
+/tests-examples
 /test-examples
 /test-results/
 /playwright-report/
@@ -50,3 +55,9 @@ pnpm-debug.log*
 *.sass.map
 *.scss.map
 /public/styles
+
+# ignore local‑test artifacts
+deploy-changelog.test.md
+deploy-changelog.*.md
+scripts/parsed-paths.test.json
+scripts/parsed-paths.*.json

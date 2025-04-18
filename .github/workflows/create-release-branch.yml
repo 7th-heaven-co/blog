@@ -1,0 +1,72 @@
+# .github/workflows/create-release-branch.yml
+name: Create weekly release branch
+on:
+  schedule:
+    - cron: '0 4 * * 0'   # Sunday 00:00 ET
+  workflow_dispatch:
+
+concurrency:
+  group: create-release
+  cancel-in-progress: false
+
+env:
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  new-release:
+    runs-on: ubuntu-latest
+    steps:
+      # ───── Gate: abort if an earlier release branch isn't merged ─────
+      - name: Check for unmerged release branches
+        id: gate
+        run: |
+          git init -q
+          git remote add origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}
+          git fetch --quiet origin 'refs/heads/release/*:refs/remotes/origin/release/*' || true
+          UNMERGED=$(git branch -r --no-merged origin/main | grep 'origin/release/' || true)
+          if [[ -n "$UNMERGED" ]]; then
+            echo "SKIP=true"           >> $GITHUB_OUTPUT
+            echo "UNMERGED<<EOF"      >> $GITHUB_OUTPUT
+            echo "$UNMERGED"          >> $GITHUB_OUTPUT
+            echo "EOF"                >> $GITHUB_OUTPUT
+            echo "Unmerged release branch(es) detected. Skipping…" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      # ───── Slack notice when skipping ─────
+      # - name: Notify Slack – skipping new release
+      #   if: steps.gate.outputs.SKIP == 'true'
+      #   env:
+      #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      #     UNMERGED:           ${{ steps.gate.outputs.UNMERGED }}
+      #   run: |
+      #     curl -X POST "$SLACK_WEBHOOK_URL" \
+      #          -H 'Content-type: application/json' \
+      #          --data "{\"text\":\"⚠️ Weekly release skipped: unmerged release branch still pending.%0A${UNMERGED}\"}"
+
+      # - name: Exit if previous release still open
+      #   if: steps.gate.outputs.SKIP == 'true'
+      #   run: echo "Skipping this run—previous release branch still pending."
+
+      # ───── Compute branch name (date‑based) ─────
+      - name: Compute next branch name
+        if: steps.gate.outputs.SKIP != 'true'
+        id: vars
+        run: echo "BRANCH=release/$(date -u +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+
+      # ───── Create branch from staging ─────
+      - name: Create branch from staging
+        if: steps.gate.outputs.SKIP != 'true'
+        run: |
+          git clone --depth=1 --branch=staging https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }} .
+          git push origin HEAD:${{ steps.vars.outputs.BRANCH }}
+
+      # ───── Open PR staging → release/* ─────
+      - name: Open PR staging → release/*
+        if: steps.gate.outputs.SKIP != 'true'
+        uses: repo-sync/pull-request@v2
+        with:
+          github_token:       ${{ secrets.GITHUB_TOKEN }}
+          source_branch:      'staging'
+          destination_branch: ${{ steps.vars.outputs.BRANCH }}
+          pr_title:           'chore(release): promote staging to ${{ steps.vars.outputs.BRANCH }}'
+          pr_body:            'Automated weekly promotion'

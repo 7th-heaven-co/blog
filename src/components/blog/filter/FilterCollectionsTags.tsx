@@ -1,7 +1,5 @@
-// ./src/components/blog/CollectionsTags.tsx
-
-import React from "react";
-import { COLLECTIONS } from "../../../consts";
+import type React from 'react';
+import { COLLECTIONS } from '../../../consts';
 
 /**
  * CollectionsTags renders buttons for each individual collection.
@@ -15,15 +13,19 @@ interface FilterCollectionsTagsProps {
   onFilter: (collection: string) => void;
 }
 
-const FilterCollectionsTags: React.FC<FilterCollectionsTagsProps> = ({ activeCollection, onFilter }) => {
+const FilterCollectionsTags: React.FC<FilterCollectionsTagsProps> = ({
+  activeCollection,
+  onFilter,
+}) => {
   return (
     <>
       {COLLECTIONS.map((collection) => (
         <li key={collection}>
           <button
+            type="button"
             id={collection}
             onClick={() => onFilter(collection)}
-            className={activeCollection === collection ? "active" : ""}
+            className={activeCollection === collection ? 'active' : ''}
           >
             {collection}
           </button>

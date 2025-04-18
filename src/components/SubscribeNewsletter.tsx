@@ -1,64 +1,63 @@
 /**
  * SubscribeNewsletter Component
  *
- * This component renders the newsletter sign-up page.
- * It uses the SubscribeNewsletterForm component to capture user inputs and manages
- * the subscription status. When the subscription is successful, a toast notification is shown,
- * and the user is redirected to the home page.
+ * Renders the newsletter sign‑up page.
+ * When the subscription succeeds, a toast appears and the user is redirected home.
  */
 
-import { useState, useEffect } from "react";
-import { ToastContainer, toast, Bounce } from "react-toastify";
-import SubscribeNewsletterForm from "../components/SubscribeNewsletterForm.tsx";
+import { useCallback, useEffect, useState } from 'react';
+import { Bounce, ToastContainer, toast } from 'react-toastify';
+import SubscribeNewsletterForm from '../components/SubscribeNewsletterForm.tsx';
+
+const MESSAGE = 'Redirecting to 🏠 Page...';
 
 export default function SubscribeNewsletter() {
-  // Manage subscription status; possible values: "", "loading", "success", "error", etc.
-  const [status, setStatus] = useState("");
-
-  // Message to display when the subscription is successful.
-  const message = "Redirecting to 🏠 Page...";
+  // Subscription status: "", "loading", "success", "error", etc.
+  const [status, setStatus] = useState('');
 
   /**
-   * Triggers a toast notification using react-toastify.
-   * The toast is displayed at the top-center of the screen with a Bounce transition.
+   * Memoised toast function so it’s stable across renders and can be safely
+   * referenced in the useEffect dependency array.
    */
-  const notify = () =>
-    toast(`🦄 ${message}`, {
-      position: "top-center",
-      autoClose: 6000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-      transition: Bounce,
-    });
+  const notify = useCallback(
+    () =>
+      toast(`🦄 ${MESSAGE}`, {
+        position: 'top-center',
+        autoClose: 6000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+        transition: Bounce,
+      }),
+    [], // MESSAGE is a module‑level constant, so no deps needed
+  );
 
   /**
-   * Effect hook that listens for changes in the subscription status.
-   * When the status becomes "success", the toast notification is triggered,
-   * and the user is redirected to the home page after a short delay.
+   * Trigger toast + redirect when the subscription succeeds.
    */
   useEffect(() => {
-    if (status === "success") {
+    if (status === 'success') {
       notify();
-      setTimeout(() => {
-        window.location.href = "/";
-      }, 5000); 
+      const timer = setTimeout(() => {
+        window.location.href = '/';
+      }, 5000);
+      return () => clearTimeout(timer); // cleanup if component unmounts
     }
-  }, [status]);
+  }, [status, notify]); // ← notify now in deps, fixes lint warning
 
   return (
     <main>
-      {/* Page Header */}
       <h1>Newsletter</h1>
-      <h3>Sign-Up</h3>
-      {status === "success" && <p>Welcome to the 7th Heaven Newsletter! 🎉</p>}
-      {/* Newsletter Subscription Form Component */}
-      {/* The "client:load" directive ensures that the component loads on the client side. */}
+      <h3>Sign‑Up</h3>
+      {status === 'success' && <p>Welcome to the 7th Heaven Newsletter! 🎉</p>}
+
+      {/* Newsletter Subscription Form (client‑side only) */}
       <SubscribeNewsletterForm client:load status={status} setStatus={setStatus} />
-      {/* ToastContainer renders the toast notifications */}
+
+      {/* Toast notifications */}
       <ToastContainer />
     </main>
   );

@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 import SubscribeNewsletterForm from './SubscribeNewsletterForm';
 import '@testing-library/jest-dom';
@@ -7,7 +7,7 @@ import '@testing-library/jest-dom';
 global.fetch = vi.fn(() =>
   Promise.resolve({
     json: () => Promise.resolve({}),
-  })
+  }),
 );
 
 describe('SubscribeNewsletterForm Component', () => {
@@ -20,12 +20,12 @@ describe('SubscribeNewsletterForm Component', () => {
 
   test('renders all input fields and checkboxes', () => {
     const { container } = render(<SubscribeNewsletterForm status="" setStatus={mockSetStatus} />);
-    
+
     // Verify text inputs render
     expect(screen.getByLabelText(/Email:/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/First Name:/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Last Name:/i)).toBeInTheDocument();
-    
+
     // Query checkboxes using container.querySelector by their name attribute.
     const allCheckbox = container.querySelector('input[name="all"]');
     const heavenCheckbox = container.querySelector('input[name="heaven"]');
@@ -46,7 +46,7 @@ describe('SubscribeNewsletterForm Component', () => {
 
   test('toggles all individual checkboxes when All checkbox is clicked', () => {
     const { container } = render(<SubscribeNewsletterForm status="" setStatus={mockSetStatus} />);
-    
+
     // Get checkboxes by querying the DOM by their name attribute.
     const allCheckbox = container.querySelector('input[name="all"]');
     const heavenCheckbox = container.querySelector('input[name="heaven"]');
@@ -80,19 +80,17 @@ describe('SubscribeNewsletterForm Component', () => {
 
   test('shows validation error on invalid email', async () => {
     const { container } = render(<SubscribeNewsletterForm status="" setStatus={mockSetStatus} />);
-    
+
     // Change email to an invalid value.
     const emailInput = screen.getByLabelText(/Email:/i);
     fireEvent.change(emailInput, { target: { value: 'invalid-email' } });
-    
+
     // Submit the form.
     fireEvent.submit(screen.getByRole('form') || screen.getByText(/Submit/i));
 
     // Wait for validation error message to appear.
-    await waitFor(() =>
-      expect(screen.getByText(/Validation error/i)).toBeInTheDocument()
-    );
-    expect(mockSetStatus).toHaveBeenCalledWith("error");
+    await waitFor(() => expect(screen.getByText(/Validation error/i)).toBeInTheDocument());
+    expect(mockSetStatus).toHaveBeenCalledWith('error');
   });
 
   test('submits form and updates status on successful subscription', async () => {
@@ -101,11 +99,11 @@ describe('SubscribeNewsletterForm Component', () => {
     });
 
     const { container } = render(<SubscribeNewsletterForm status="" setStatus={mockSetStatus} />);
-    
+
     // Provide valid email input.
     const emailInput = screen.getByLabelText(/Email:/i);
     fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
-    
+
     // Click the "All" checkbox to select all newsletter preferences.
     const allCheckbox = container.querySelector('input[name="all"]');
     fireEvent.click(allCheckbox);

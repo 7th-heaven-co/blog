@@ -13,34 +13,40 @@
  * - Ensure that any sensitive data (such as database credentials) is managed securely.
  */
 
+/**
+ * Checks whether a user row exists for the supplied email.
+ *
+ * Returns the matching DB row (or undefined) if it exists.
+ */
+
 export const prerender = false;
 
-import { z } from "zod";
-import { createClient } from "@libsql/client/web";
-import getTursoClient from "../../db/client";
+import { z } from 'zod';
+import getTursoClient from '../../db/client';
 
 const client = getTursoClient();
-
 const emailSchema = z.string().email();
 
-export async function dbUserExist(email: string): Promise<any> {
+/** Minimal shape expected from Users table */
+export type UserRow = Record<string, unknown>;
+
+export async function dbUserExist(email: string): Promise<UserRow | undefined> {
   try {
-    // Validate the email input using the Zod schema.
     const validatedEmail = emailSchema.parse(email);
 
-    const { rows } = await client.execute(`SELECT * FROM Users WHERE user_email = '${validatedEmail}'`);
+    const { rows } = await client.execute({
+      sql: 'SELECT * FROM Users WHERE user_email = ? LIMIT 1;',
+      args: [validatedEmail],
+    });
 
     return rows[0];
+  } catch (error: unknown) {
+    console.error('File: db-user-exist | Error:', error);
 
-  } catch (error: any) {
-    console.error("File: db-user-exist | File Error\nError: ", error);
-
-    // Handle validation errors from Zod.
     if (error instanceof z.ZodError) {
-      throw new Error("DB User Error | Invalid email format provided.");
+      throw new Error('DB User Error | Invalid email format provided.');
     }
 
-    // Re-throw unexpected errors.
-    throw new Error("DB User Exist Error:\nPlease try again.");
+    throw new Error('DB User Exist Error. Please try again.');
   }
 }

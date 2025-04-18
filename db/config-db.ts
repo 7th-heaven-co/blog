@@ -1,4 +1,4 @@
-import getTursoClient from "./client";
+import getTursoClient from './client';
 
 const client = getTursoClient();
 
@@ -38,10 +38,10 @@ const queries = [
 async function setupDatabase() {
   try {
     await client.batch(queries);
-    console.log("Database setup completed successfully");
+    console.log('Database setup completed successfully');
     process.exit(0);
   } catch (error) {
-    console.error("Database setup failed:", error);
+    console.error('Database setup failed:', error);
     process.exit(1);
   }
 }

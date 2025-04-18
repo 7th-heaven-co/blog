@@ -1,0 +1,52 @@
+name: Changelog Preview
+
+on:
+  pull_request:
+    branches: [staging]            # dev→staging PRs land here
+
+jobs:
+  dry-run:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write          # needed to edit the PR
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Semantic-release dry-run
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Capture the markdown notes that semantic-release prints to stdout
+          npx semantic-release --dry-run --no-ci > sr-dry-run.txt
+
+          # Extract the "Release note" block (semantic-release prints it between ===)
+          awk '/^---$/,/^---$/' sr-dry-run.txt | sed '1d;$d' > CHANGELOG_PREVIEW.md
+
+      - name: Update PR body with changelog preview
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pr_number="${{ github.event.pull_request.number }}"
+          body_file="pr_body.md"
+
+          # Download existing body
+          gh pr view "$pr_number" --json body -q .body > "$body_file"
+
+          # Replace everything under the Changelog heading (simple delimiter approach)
+          awk '/📜 Changelog Preview/{exit}1' "$body_file" > tmp && mv tmp "$body_file"
+          {
+            echo '## 📜 Changelog Preview'
+            echo
+            cat CHANGELOG_PREVIEW.md
+          } >> "$body_file"
+
+          # Update the PR body in place
+          gh pr edit "$pr_number" --body-file "$body_file"

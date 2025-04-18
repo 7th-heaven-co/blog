@@ -1,0 +1,34 @@
+name: Purge Cloudflare Cache From Paths
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [staging]
+    paths:
+      - 'scripts/parsed-paths.json'
+
+jobs:
+  purge-cache:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🧾 Checkout
+        uses: actions/checkout@v4
+
+      - name: 📄 Read parsed-paths.json
+        id: read_paths
+        run: |
+          updated=$(jq -c .updatedPaths scripts/parsed-paths.json)
+          deleted=$(jq -c .deletedPaths scripts/parsed-paths.json)
+          combined=$(jq -c -n --argjson u "$updated" --argjson d "$deleted" '$u + $d')
+          echo "PATHS=$combined" >> $GITHUB_ENV
+
+      - name: ⚠️ Skip if no paths found
+        if: env.PATHS == "[]"
+        run: echo "No paths to purge. Skipping cache purge."
+
+      - name: 🚀 Trigger Worker Cache Purge
+        if: env.PATHS != "[]"
+        run: |
+          echo "🔍 Purging paths: $PATHS"
+          curl -X POST "${{ secrets.CF_PURGE_URL }}"             -H "Content-Type: application/json"             -d "{"paths": $PATHS}"

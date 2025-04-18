@@ -1,0 +1,64 @@
+name: Auto Label PR Based on Target / Source Branch
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    steps:
+      # ───────── TARGET‑BRANCH LABELS ─────────
+      - name: Label PRs targeting staging
+        if: github.event.pull_request.base.ref == 'staging'
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: |
+            target:staging
+            type:release
+
+      - name: Label PRs targeting dev
+        if: github.event.pull_request.base.ref == 'dev'
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: |
+            target:dev
+
+      # ───────── SOURCE‑BRANCH LABELS ─────────
+      - name: Label *feat/* branches
+        if: startsWith(github.event.pull_request.head.ref, 'feat/')
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: |
+            type:feat
+            source:feat
+
+      - name: Label *preview/* branches
+        if: startsWith(github.event.pull_request.head.ref, 'preview/')
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: |
+            type:preview
+            source:preview
+
+      - name: Label *fix/* branches
+        if: startsWith(github.event.pull_request.head.ref, 'fix/')
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: |
+            type:fix
+            source:fix
+
+      - name: Label *chore/* branches
+        if: startsWith(github.event.pull_request.head.ref, 'chore/')
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: |
+            type:chore
+            source:chore

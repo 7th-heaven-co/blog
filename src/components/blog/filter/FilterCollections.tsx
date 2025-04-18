@@ -1,7 +1,5 @@
-// ./src/components/blog/FilterCollections.tsx
-
-import React from "react";
-import FilterCollectionsTags from "./FilterCollectionsTags";
+import type React from 'react';
+import FilterCollectionsTags from './FilterCollectionsTags';
 
 /**
  * FilterCollections wraps the entire <ul> list structure for filtering,
@@ -28,14 +26,16 @@ const FilterCollections: React.FC<FilterCollectionsProps> = ({
       {/* "All" button to reset the current filter */}
       <li key="all">
         <button
+          type="button"
           onClick={onReset}
-          className={activeCollection === "all" ? "active" : ""}
+          className={activeCollection === 'all' ? 'active' : ''}
         >
           All
         </button>
       </li>
+
       {/* Dynamically render collection tags */}
-      <FilterCollectionsTags activeCollection={activeCollection} onFilter={onFilter} client:load/>
+      <FilterCollectionsTags activeCollection={activeCollection} onFilter={onFilter} client:load />
     </ul>
   );
 };

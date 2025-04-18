@@ -1,0 +1,38 @@
+name: Notify Discord (Reusable)
+
+on:
+  workflow_call:
+    inputs:
+      emoji: { type: string, required: false }
+      title: { type: string, required: false }
+      message: { type: string, required: true }
+      branch: { type: string, required: false }
+
+jobs:
+  notify:
+    uses: ./.github/workflows/notify-base.yml
+    with:
+      emoji: ${{ inputs.emoji }}
+      title: ${{ inputs.title }}
+      message: ${{ inputs.message }}
+      branch: ${{ inputs.branch }}
+
+  send:
+    needs: notify
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send to Discord
+        env:
+          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          PAYLOAD: |
+            {
+              "content": "${{ needs.notify.outputs.formatted_content }}"
+            }
+        run: |
+          if [ -z "$WEBHOOK_URL" ]; then
+            echo "ℹ️ DISCORD_WEBHOOK_URL not set. Skipping."
+            exit 0
+          fi
+          curl -X POST "$WEBHOOK_URL" \
+            -H 'Content-type: application/json' \
+            --data "$PAYLOAD"
