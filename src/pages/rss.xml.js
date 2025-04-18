@@ -1,7 +1,7 @@
-import { getCollection } from 'astro:content';
 // file: ./src/pages/rss.xml.js
+import { getCollection } from 'astro:content';
+import { SITE_DESCRIPTION, SITE_TITLE } from 'astro:env/client';
 import rss from '@astrojs/rss';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 
 export async function GET(context) {
   const announcements = (await getCollection('announcements')) || [];
