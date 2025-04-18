@@ -1,1 +1,1 @@
-Merge pull request #18 from jazicorn/dev
+Merge pull request #19 from jazicorn/auto/deploy-changelog
