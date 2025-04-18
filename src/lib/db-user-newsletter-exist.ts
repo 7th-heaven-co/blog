@@ -12,35 +12,46 @@
  * - Input is validated using Zod before performing the query.
  * - Ensure that any sensitive data (such as database credentials) is managed securely.
  */
+/**
+ * Checks whether a subscribed newsletter row exists for the supplied email.
+ *
+ * Returns the joined Users × Newsletter row (or undefined) if it exists.
+ */
 
-export const prerender = false;
-
-import { z } from "zod";
-import { createClient } from "@libsql/client/web";
-import getTursoClient from "../../db/client";
+import { z } from 'zod';
+import getTursoClient from './db/client';
 
 const client = getTursoClient();
-
 const emailSchema = z.string().email();
 
-export async function dbUserNewsletterExist(email: string): Promise<any> {
-  try {
-    // Validate the email input using the Zod schema.
-    const validatedEmail = emailSchema.parse(email);
+export type UserNewsletterRow = Record<string, unknown>;
 
-    const { rows } = await client.execute(`SELECT * FROM Newsletter WHERE news_email = '${validatedEmail}'`);
+export async function dbUserNewsletterExist(email: string): Promise<UserNewsletterRow | undefined> {
+  try {
+    const validated = emailSchema.parse(email);
+
+    const { rows } = await client.execute({
+      sql: `
+        SELECT u.*, n.*
+        FROM Users AS u
+        JOIN Newsletter AS n ON n.user_id = u.user_id
+        WHERE u.user_email = ?
+          AND n.news_active = 1
+        LIMIT 1;
+      `,
+      args: [validated],
+    });
 
     return rows[0];
-
-  } catch (error: any) {
-    console.error("File: db-user-newsletter-exist | File Error\nError: ", error);
-
-    // Handle validation errors from Zod.
+  } catch (error: unknown) {
     if (error instanceof z.ZodError) {
-      throw new Error("DB Newsletter Error | Invalid email format provided.");
+      console.error('db-user-newsletter-exist | Invalid email:', error.message);
+    } else if (error instanceof Error) {
+      console.error('db-user-newsletter-exist | DB error:', error.message);
+    } else {
+      console.error('db-user-newsletter-exist | Unknown error:', error);
     }
 
-    // Re-throw unexpected errors.
-    throw new Error("DB Newsletter Exist Error:\nPlease try again.");
+    throw new Error('User/Newsletter lookup failed. Please try again.');
   }
 }

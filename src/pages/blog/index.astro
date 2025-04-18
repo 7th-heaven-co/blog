@@ -1,38 +1,33 @@
 ---
 // file: ./src/pages/blog/index.astro
-import "../../styles/global.scss";
-import { type CollectionEntry, getCollection } from "astro:content";
-import BaseHead from "../../components/BaseHead.astro";
-import Header from "../../components/Header.astro";
-import Footer from "../../components/Footer.astro";
-import { SITE_TITLE, SITE_DESCRIPTION } from "../../consts";
-import PgLoader from "../../components/PgLoader.astro";
-import PgLoaderRadical from "../../components/PgLoaderRadical.astro";
-import PgBg from "../../components/PgBg.astro";
-import { ftSlug } from "../../utils/strUtil";
-import { formatDate } from "../../utils/formatDate";
-import Catalog from "../../components/blog/Catalog.tsx";
+import '../../styles/global.scss';
+import { type CollectionEntry, getCollection } from 'astro:content';
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import PgBg from '../../components/PgBg.astro';
+import PgLoader from '../../components/PgLoader.astro';
+import PgLoaderRadical from '../../components/PgLoaderRadical.astro';
+import Catalog from '../../components/blog/Catalog.tsx';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
+import { formatDate } from '../../utils/formatDate';
+import { ftSlug } from '../../utils/strUtil';
 
 // This tells Astro to prerender this page at build time.
 export const prerender = true;
 
 // Fetch collections from your content sources.
-const heaven = await getCollection("heaven");
-const announcements = await getCollection("announcements");
-const community = await getCollection("community");
-const author = await getCollection("author");
-const events = await getCollection("events");
-const releases = await getCollection("releases");
+const heaven = await getCollection('heaven');
+const announcements = await getCollection('announcements');
+const community = await getCollection('community');
+const author = await getCollection('author');
+const events = await getCollection('events');
+const releases = await getCollection('releases');
 
 // Combine and sort your blogs (descending by publication date).
-const blogs = [
-  ...heaven,
-  ...announcements,
-  ...community,
-  ...author,
-  ...events,
-  ...releases,
-].sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const blogs = [...heaven, ...announcements, ...community, ...author, ...events, ...releases].sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
 ---
 
 <!doctype html>

@@ -1,6 +1,6 @@
 // src/hooks/usePagination.ts
 
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 /**
  * usePagination is a custom React hook that manages paginated batch logic.
@@ -33,14 +33,13 @@ export const usePagination = ({
   batchSize = 5,
 }: { currentPage: number; totalPages: number; batchSize?: number }) => {
   // Compute where the last block starts (dynamic)
-  const lastBlockStart = useMemo(() => (
-    totalPages >= batchSize ? totalPages - batchSize + 1 : 1
-  ), [totalPages, batchSize]);
+  const lastBlockStart = useMemo(
+    () => (totalPages >= batchSize ? totalPages - batchSize + 1 : 1),
+    [totalPages, batchSize],
+  );
 
   // Determine if current page falls within the last block
-  const isLastBlock = useMemo(() => (
-    currentPage >= lastBlockStart
-  ), [currentPage, lastBlockStart]);
+  const isLastBlock = useMemo(() => currentPage >= lastBlockStart, [currentPage, lastBlockStart]);
 
   // Compute initial batch start
   const normalBatchStart = Math.floor((currentPage - 1) / batchSize) * batchSize + 1;
@@ -61,59 +60,68 @@ export const usePagination = ({
         pages.push(i);
       }
       const prefix = lastBlockStart - batchSize;
-      return prefix >= 1 ? [prefix, "ellipsis", ...pages] : pages;
+      return prefix >= 1 ? [prefix, 'ellipsis', ...pages] : pages;
     }
 
     const visibleEnd = Math.min(batchStart + batchSize - 1, totalPages);
-    const pages: (number | "ellipsis")[] = [];
+    const pages: (number | 'ellipsis')[] = [];
     for (let i = batchStart; i <= visibleEnd; i++) {
       pages.push(i);
     }
     if (visibleEnd < totalPages) {
-      const target = (batchStart + 9 <= totalPages) ? batchStart + 9 : totalPages;
-      pages.push("ellipsis");
+      const target = batchStart + 9 <= totalPages ? batchStart + 9 : totalPages;
+      pages.push('ellipsis');
       pages.push(target);
     }
     return pages;
   }, [batchStart, totalPages, batchSize, isLastBlock, lastBlockStart]);
 
-  const handleNextBatch = useCallback((onPageChange: (page: number) => void) => {
-    if (isLastBlock) {
-      if (currentPage < totalPages) {
-        onPageChange(totalPages);
+  const handleNextBatch = useCallback(
+    (onPageChange: (page: number) => void) => {
+      if (isLastBlock) {
+        if (currentPage < totalPages) {
+          onPageChange(totalPages);
+        }
+        return;
       }
-      return;
-    }
-    let newBatchStart = currentPage > batchStart ? currentPage : batchStart + batchSize;
-    if (newBatchStart + batchSize - 1 >= totalPages) {
-      newBatchStart = totalPages - newBatchStart + 1 >= 2 ? newBatchStart : totalPages;
-    }
-    setBatchStart(newBatchStart);
-    onPageChange(newBatchStart);
-  }, [isLastBlock, currentPage, batchStart, batchSize, totalPages]);
-
-  const handlePrevBatch = useCallback((onPageChange: (page: number) => void) => {
-    if (isLastBlock) {
-      const prefix = lastBlockStart - batchSize;
-      const newBatchStart = Math.max(prefix, 1);
+      let newBatchStart = currentPage > batchStart ? currentPage : batchStart + batchSize;
+      if (newBatchStart + batchSize - 1 >= totalPages) {
+        newBatchStart = totalPages - newBatchStart + 1 >= 2 ? newBatchStart : totalPages;
+      }
       setBatchStart(newBatchStart);
       onPageChange(newBatchStart);
-      return;
-    }
-    const newBatchStart = Math.max(batchStart - batchSize, 1);
-    setBatchStart(newBatchStart);
-    onPageChange(newBatchStart);
-  }, [isLastBlock, lastBlockStart, batchStart, batchSize]);
+    },
+    [isLastBlock, currentPage, batchStart, batchSize, totalPages],
+  );
+
+  const handlePrevBatch = useCallback(
+    (onPageChange: (page: number) => void) => {
+      if (isLastBlock) {
+        const prefix = lastBlockStart - batchSize;
+        const newBatchStart = Math.max(prefix, 1);
+        setBatchStart(newBatchStart);
+        onPageChange(newBatchStart);
+        return;
+      }
+      const newBatchStart = Math.max(batchStart - batchSize, 1);
+      setBatchStart(newBatchStart);
+      onPageChange(newBatchStart);
+    },
+    [isLastBlock, lastBlockStart, batchStart, batchSize],
+  );
 
   const handleFirst = useCallback((onPageChange: (page: number) => void) => {
     setBatchStart(1);
     onPageChange(1);
   }, []);
 
-  const handleLast = useCallback((onPageChange: (page: number) => void) => {
-    setBatchStart(lastBlockStart);
-    onPageChange(totalPages);
-  }, [lastBlockStart, totalPages]);
+  const handleLast = useCallback(
+    (onPageChange: (page: number) => void) => {
+      setBatchStart(lastBlockStart);
+      onPageChange(totalPages);
+    },
+    [lastBlockStart, totalPages],
+  );
 
   return {
     pagesToDisplay,

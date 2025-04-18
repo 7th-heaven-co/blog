@@ -1,9 +1,5 @@
 // src/components/blog/pagination/Pagination.tsx
 
-import React from "react";
-import { usePagination } from "../../../hooks/usePagination";
-import PaginationButton from "./PaginationButton";
-
 /**
  * The Pagination component displays navigation controls for switching between different pages.
  * It leverages the usePagination hook to determine the set of page numbers (and ellipsis markers)
@@ -21,24 +17,40 @@ import PaginationButton from "./PaginationButton";
  * - totalPages: The total number of pages available.
  * - onPageChange: A callback function to update the active page.
  */
-const Pagination: React.FC<{
+import type React from 'react';
+import { usePagination } from '../../../hooks/usePagination';
+import PaginationButton from './PaginationButton';
+
+/* ── props ───────────────────────────────────────────────────────────── */
+interface PaginationProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
-}> = ({ currentPage, totalPages, onPageChange }) => {
+}
+
+/* ── component ───────────────────────────────────────────────────────── */
+const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPageChange }) => {
   const batchSize = 5;
-  // usePagination hook computes pagesToDisplay and batch navigation handlers
+
+  /* derive visible pages and batch helpers */
   const { pagesToDisplay, handleNextBatch, handlePrevBatch, handleFirst, handleLast } =
     usePagination({ currentPage, totalPages, batchSize });
 
-  // Determine when the navigation buttons should be disabled
+  /* build {key,value} list so keys are stable */
+  let ellipsisId = 0;
+  const keyedPages = pagesToDisplay.map((p) =>
+    typeof p === 'number'
+      ? { key: p.toString(), value: p as number | 'ellipsis' }
+      : { key: `ellipsis-${ellipsisId++}`, value: 'ellipsis' as const },
+  );
+
   const disableFirst = currentPage === 1;
   const disableNext = currentPage === totalPages;
 
   return (
     <section className="pagination">
       <ul>
-        {/* "First" button: jumps to the first page */}
+        {/* FIRST */}
         <li className="pagFirst">
           <PaginationButton
             label="First"
@@ -47,7 +59,8 @@ const Pagination: React.FC<{
             client:load
           />
         </li>
-        {/* "Prev" button: navigates to the previous batch of pages */}
+
+        {/* PREV */}
         <li className="prevBatch">
           <PaginationButton
             label="Prev"
@@ -56,26 +69,27 @@ const Pagination: React.FC<{
             client:load
           />
         </li>
-        {/* Render each page number or ellipsis based on the computed pagesToDisplay */}
+
+        {/* PAGE NUMBERS + ELLIPSIS */}
         <li className="pagNumsGroup">
-        {pagesToDisplay.map((page, index) => (
-          <span key={index} className="pagNum">
-            {typeof page === "number" ? (
-              <PaginationButton
-                label={page}
-                onClick={() => onPageChange(page)}
-                active={page === currentPage}
-                disabled={page === currentPage}
-                client:load
-              />
-            ) : (
-              // Render ellipsis as a disabled button with the ellipsis marker
-              <PaginationButton label={page} onClick={() => {}} disabled client:load/>
-            )}
-          </span>
-        ))}
+          {keyedPages.map(({ key, value }) => (
+            <span key={key} className="pagNum">
+              {value === 'ellipsis' ? (
+                <PaginationButton label="ellipsis" onClick={() => {}} disabled client:load />
+              ) : (
+                <PaginationButton
+                  label={value}
+                  onClick={() => onPageChange(value)}
+                  active={value === currentPage}
+                  disabled={value === currentPage}
+                  client:load
+                />
+              )}
+            </span>
+          ))}
         </li>
-        {/* "Next" button: navigates to the next batch of pages */}
+
+        {/* NEXT */}
         <li className="nextBatch">
           <PaginationButton
             label="Next"
@@ -84,7 +98,8 @@ const Pagination: React.FC<{
             client:load
           />
         </li>
-        {/* "Last" button: jumps directly to the last page */}
+
+        {/* LAST */}
         <li className="pagLast">
           <PaginationButton
             label="Last"

@@ -1,43 +1,54 @@
-// src/components/blog/Catalog.tsx
+import React, { useState, useMemo, useEffect } from 'react';
+import { useContainerPostCount } from '../../hooks/useContainerPostCount';
+import { getPaginatedPosts, getTotalPages } from '../../utils/paginationUtils';
+import Filter from './filter/Filter';
+import Pagination from './pagination/Pagination';
+import Posts from './posts/Posts';
 
-import React, { useState, useEffect, useMemo } from "react";
-import Filter from "./filter/Filter";
-import Posts from "./posts/Posts";
-import Pagination from "./pagination/Pagination";
-import { getPaginatedPosts, getTotalPages } from "../../utils/paginationUtils";
-import { useContainerPostCount } from "../../hooks/useContainerPostCount";
-import { ftSlug } from "../../utils/strUtil";
+/** Minimal shape needed for filtering logic */
+type BlogEntry = {
+  data: { category: string };
+  [key: string]: unknown;
+};
 
-export default function Catalog({ blogs }: { blogs: any[] }) {
-  const [filteredPosts, setFilteredPosts] = useState(blogs);
+export default function Catalog({ blogs }: { blogs: readonly BlogEntry[] }) {
+  const [filteredPosts, setFilteredPosts] = useState<readonly BlogEntry[]>(blogs);
   const [currentPage, setCurrentPage] = useState(1);
-  const [activeCollection, setActiveCollection] = useState("all");
+  const [activeCollection, setActiveCollection] = useState('all');
 
-  // 🎯 use custom hook to calculate posts per page dynamically
+  /* dynamic page size (based on container height/width) */
   const { postsPerPage } = useContainerPostCount();
 
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [filteredPosts, postsPerPage]);
-
+  /* collection filtering */
   const filterByCollection = (collection: string) => {
-    const filtered = blogs.filter(post => post.data.category === collection);
-    setFilteredPosts(filtered);
+    setFilteredPosts(blogs.filter((p) => p.data.category === collection));
     setActiveCollection(collection);
+    setCurrentPage(1);
   };
 
   const resetFilter = () => {
     setFilteredPosts(blogs);
-    setActiveCollection("all");
+    setActiveCollection('all');
+    setCurrentPage(1);
   };
 
-  const paginatedPosts = useMemo(() => {
-    return getPaginatedPosts(filteredPosts, currentPage, postsPerPage);
-  }, [filteredPosts, currentPage, postsPerPage]);
+  /* paginated slice & page count */
+  const paginatedPosts = useMemo(
+    () => getPaginatedPosts(filteredPosts, currentPage, postsPerPage),
+    [filteredPosts, currentPage, postsPerPage],
+  );
 
-  const totalPages = useMemo(() => {
-    return getTotalPages(filteredPosts, postsPerPage);
-  }, [filteredPosts, postsPerPage]);
+  const totalPages = useMemo(
+    () => getTotalPages(filteredPosts, postsPerPage),
+    [filteredPosts, postsPerPage],
+  );
+
+  /* reset to first page whenever the calculated postsPerPage changes */
+  useEffect(() => {
+    setCurrentPage(1);
+    /* reference postsPerPage so the linter recognises it is used */
+    void postsPerPage;
+  }, [postsPerPage]);
 
   const offset = (currentPage - 1) * postsPerPage;
 
@@ -46,12 +57,14 @@ export default function Catalog({ blogs }: { blogs: any[] }) {
       <section>
         <h2>Blog</h2>
       </section>
+
       <Filter
         activeCollection={activeCollection}
         onFilter={filterByCollection}
         onReset={resetFilter}
         client:load
       />
+
       <Posts
         posts={paginatedPosts}
         totalPosts={filteredPosts.length}
@@ -59,6 +72,7 @@ export default function Catalog({ blogs }: { blogs: any[] }) {
         pageLength={postsPerPage}
         client:load
       />
+
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}

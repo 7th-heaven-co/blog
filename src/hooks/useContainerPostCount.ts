@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from 'react';
 
 /**
  * useContainerPostCount dynamically calculates how many list items (posts)
@@ -25,18 +25,18 @@ export function useContainerPostCount({
   debounce?: number;
 } = {}) {
   const containerRef = useRef<HTMLDivElement | null>(null); // Reference to the wrapping container
-  const [postsPerPage, setPostsPerPage] = useState(9);     // Default/fallback number of posts per page
+  const [postsPerPage, setPostsPerPage] = useState(9); // Default/fallback number of posts per page
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null); // Used to debounce resize events
 
   useEffect(() => {
     const container = containerRef.current;
-    if (!container || typeof ResizeObserver === "undefined") return;
+    if (!container || typeof ResizeObserver === 'undefined') return;
 
     // Core calculation logic to determine how many posts fit
     const calculate = () => {
       // Wait until layout has stabilized
       requestAnimationFrame(() => {
-        const firstPost = container.querySelector("li");
+        const firstPost = container.querySelector('li');
         if (!firstPost) return;
 
         // More accurate than clientHeight (includes subpixel values)

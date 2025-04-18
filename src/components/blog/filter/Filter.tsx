@@ -1,7 +1,7 @@
 // ./src/components/blog/Filter.tsx
 
-import React from "react";
-import FilterCollections from "./FilterCollections";
+import type React from 'react';
+import FilterCollections from './FilterCollections';
 
 /**
  * Filter component controls filtering blog posts by collection.

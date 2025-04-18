@@ -1,31 +1,26 @@
 ---
-import { type CollectionEntry, getCollection } from "astro:content";
-import BlogPost from "../../layouts/BlogPost.astro";
-import { render } from "astro:content";
-import { ftSlug } from "../../utils/strUtil";
+import { type CollectionEntry, getCollection } from 'astro:content';
+import { render } from 'astro:content';
+import BlogPost from '../../layouts/BlogPost.astro';
+import { ftSlug } from '../../utils/strUtil';
 
 export async function getStaticPaths() {
-  const heaven = await getCollection("heaven");
-  const announcements = await getCollection("announcements");
-  const community = await getCollection("community");
-  const author = await getCollection("author");
-  const events = await getCollection("events");
-  const releases = await getCollection("releases");
+  const heaven = await getCollection('heaven');
+  const announcements = await getCollection('announcements');
+  const community = await getCollection('community');
+  const author = await getCollection('author');
+  const events = await getCollection('events');
+  const releases = await getCollection('releases');
 
-  return [
-    ...heaven,
-    ...announcements,
-    ...community,
-    ...author,
-    ...events,
-    ...releases,
-  ].map((post) => {
-    const slug = ftSlug(post);
-    return {
-      params: { slug: `${slug}` },
-      props: post,
-    };
-  });
+  return [...heaven, ...announcements, ...community, ...author, ...events, ...releases].map(
+    (post) => {
+      const slug = ftSlug(post);
+      return {
+        params: { slug: `${slug}` },
+        props: post,
+      };
+    },
+  );
 }
 
 export const prerender = true;
