@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cloudflare Purge Log</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; background: #f6f8fa; }
+    h1 { font-size: 1.5rem; }
+    .log { padding: 1rem; background: white; border-radius: 6px; margin-bottom: 1rem; box-shadow: 0 0 4px rgba(0,0,0,0.1); }
+    .timestamp { color: #888; font-size: 0.9rem; }
+    .paths { font-family: monospace; background: #f0f0f0; padding: 0.5rem; border-radius: 4px; }
+    .filters input { margin-right: 0.5rem; }
+    #csv-export { margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>🚀 Cloudflare Purge History</h1>
+
+  <div class="filters">
+    <label>Path filter: <input id="path-filter" type="text" placeholder="/blog" /></label>
+    <label>Date after: <input id="after-date" type="date" /></label>
+    <button onclick="fetchLogs()">Filter</button>
+    <button id="csv-export">Export CSV</button>
+  </div>
+
+  <div id="logs">Loading logs...</div>
+
+  <script>
+    async function fetchLogs() {
+      const pathFilter = document.getElementById("path-filter").value.toLowerCase();
+      const afterDate = new Date(document.getElementById("after-date").value);
+
+      const res = await fetch('/functions/purge-log');
+      const logs = await res.json();
+      const container = document.getElementById('logs');
+      container.innerHTML = '';
+
+      let csvData = [['timestamp', 'paths']];
+
+      logs.forEach(entry => {
+        if (pathFilter && !entry.paths.some(p => p.toLowerCase().includes(pathFilter))) return;
+        if (!isNaN(afterDate) && new Date(entry.timestamp) < afterDate) return;
+
+        const div = document.createElement('div');
+        div.className = 'log';
+        div.innerHTML = `
+          <div class="timestamp">🕓 ${new Date(entry.timestamp).toLocaleString()}</div>
+          <div class="paths">${entry.paths.map(p => `<div>${p}</div>`).join('')}</div>
+        `;
+        container.appendChild(div);
+
+        csvData.push([entry.timestamp, entry.paths.join(' | ')]);
+      });
+
+      document.getElementById('csv-export').onclick = () => {
+        const csvString = csvData.map(row => row.join(',')).join('\n');
+        const blob = new Blob([csvString], { type: 'text/csv' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'purge-log.csv';
+        link.click();
+      };
+    }
+
+    fetchLogs();
+  </script>
+</body>
+</html>

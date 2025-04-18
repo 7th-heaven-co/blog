@@ -1,0 +1,26 @@
+name: Notify Slack + Discord
+
+on:
+  workflow_call:
+    inputs:
+      emoji: { type: string, required: false }
+      title: { type: string, required: false }
+      message: { type: string, required: true }
+      branch: { type: string, required: false }
+
+jobs:
+  notify-slack:
+    uses: ./.github/workflows/notify-slack.yml
+    with:
+      emoji: ${{ inputs.emoji }}
+      title: ${{ inputs.title }}
+      message: ${{ inputs.message }}
+      branch: ${{ inputs.branch }}
+
+  notify-discord:
+    uses: ./.github/workflows/notify-discord.yml
+    with:
+      emoji: ${{ inputs.emoji }}
+      title: ${{ inputs.title }}
+      message: ${{ inputs.message }}
+      branch: ${{ inputs.branch }}

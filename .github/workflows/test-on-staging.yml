@@ -1,0 +1,58 @@
+# 🧪 Test on Staging
+# Lints & runs unit tests on every push to `staging` and PRs targeting `staging`.
+# Purely a QA gate – it does **not** trigger semantic‑release.
+
+name: "🧪 Test on Staging"
+
+on:
+  push:
+    branches: [staging]
+  pull_request:
+    branches: [staging]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: "Lint & Unit Tests"
+    runs-on: ubuntu-latest
+    concurrency:
+      group: staging-test-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      # ───────────── Checkout & Cache ─────────────
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🛠️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      # ───────────── Lint (Biome) ─────────────
+      - name: 🧹 Biome check
+        run: npx biome check .
+
+      # ───────────── Unit tests (Vitest) ─────────────
+      - name: 🧪 Run tests with coverage
+        run: npm test -- --coverage
+
+      # ───────────── Upload coverage artefact ─────────────
+      - name: 💾 Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report-staging
+          path: coverage
+
+      # ───────────── Optional: send to Codecov ─────────────
+    #   - name: 📊 Upload to Codecov
+    #     if: success() && env.CODECOV_TOKEN != ''
+    #     uses: codecov/codecov-action@v4
+    #     with:
+    #       token: ${{ secrets.CODECOV_TOKEN }}

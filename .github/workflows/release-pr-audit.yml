@@ -1,0 +1,57 @@
+name: Validate Release Audit Checklist
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+    branches: [main]          # PR target is main
+
+jobs:
+  audit:
+    if: startsWith(github.event.pull_request.head.ref, 'release/')
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write     # to post / edit comments
+      contents: read
+    steps:
+      # ───── Fetch PR body ─────
+      - name: Fetch PR body
+        id: fetch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUM:  ${{ github.event.pull_request.number }}
+        run: |
+          body=$(gh pr view "$PR_NUM" --json body -q .body)
+          echo "body<<EOF" >> $GITHUB_OUTPUT
+          echo "$body"     >> $GITHUB_OUTPUT
+          echo "EOF"       >> $GITHUB_OUTPUT
+
+      # ───── Check checklist & auto‑comment ─────
+      - name: Check checklist completion & comment
+        env:
+          GH_TOKEN:   ${{ secrets.GITHUB_TOKEN }}
+          PR_NUM:     ${{ github.event.pull_request.number }}
+          OWNER_REPO: ${{ github.repository }}
+          BODY:       ${{ steps.fetch.outputs.body }}
+        run: |
+          unchecked=$(echo "$BODY" | grep -c '\- \[ \]')
+          todo=$(echo "$BODY" | sed -n 's/^[-*] \[ \] \(.*\)/- [ ] \1/p')
+          COMMENT_TAG="<!-- release-audit-comment -->"
+
+          existing=$(gh api repos/$OWNER_REPO/issues/$PR_NUM/comments \
+                       --jq '.[] | select(.body | contains("'$COMMENT_TAG'")) | .id' | head -n 1 || true)
+
+          if [ "$unchecked" -gt 0 ]; then
+            content="$COMMENT_TAG\n🚧 **Release Audit Log – tasks remaining**\n$todo"
+            if [ -z "$existing" ]; then
+              gh api repos/$OWNER_REPO/issues/$PR_NUM/comments -f body="$content"
+            else
+              gh api repos/$OWNER_REPO/issues/$PR_NUM/comments/$existing -X PATCH -f body="$content"
+            fi
+            echo "::error::There are $unchecked unchecked items in the Release Audit Log."
+            exit 1
+          else
+            # All tasks complete – update or remove comment
+            if [ -n "$existing" ]; then
+              gh api repos/$OWNER_REPO/issues/$PR_NUM/comments/$existing -X PATCH \
+                   -f body="$COMMENT_TAG ✅ All audit tasks completed."
+            fi
+          fi

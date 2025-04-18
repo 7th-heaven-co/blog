@@ -1,0 +1,20 @@
+# Optional config override for action-semantic-pull-request
+types:
+  - feat
+  - fix
+  - chore
+  - docs
+  - refactor
+  - style
+  - test
+  - ci
+  - post
+
+scopes: []
+
+# Optional: enforce scope when this is true
+requireScope: false
+
+# Optional: restrict certain title patterns
+subjectPattern: ^(?!WIP).+
+subjectPatternError: 'PR title must not start with WIP'

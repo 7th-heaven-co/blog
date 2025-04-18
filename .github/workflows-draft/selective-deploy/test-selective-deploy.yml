@@ -1,0 +1,46 @@
+name: Test Selective Deploy Logic
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: 🛠 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 📦 Install Dependencies
+        run: npm ci
+
+      - name: 🧪 Run Deploy Script in Test Mode
+        id: deploy-test
+        run: node ./scripts/deploy-from-changelog.js
+        env:
+          CF_API_TOKEN: dummy
+          ZONE_ID: dummy
+
+      - name: 🧾 Print Parsed Paths
+        if: always()
+        run: |
+          echo "📂 Contents of parsed-paths.json:"
+          cat scripts/parsed-paths.json || echo "❌ File not found."
+
+      - name: 🧾 Show Output
+        if: steps.deploy-test.outputs.SKIPPED_BUILD == 'true'
+        run: |
+          echo "🧪 Result: SKIPPED — no relevant changes detected"
+
+      # Optional: Notify Slack/Discord if skipping
+      # - name: 📭 Notify
+      #   if: steps.deploy-test.outputs.SKIPPED_BUILD == 'true'
+      #   run: |
+      #     curl -X POST ${{ secrets.SLACK_WEBHOOK_URL }} \
+      #       -H 'Content-type: application/json' \
+      #       --data '{"text":"⚠️ Build Skipped — no changes found."}'

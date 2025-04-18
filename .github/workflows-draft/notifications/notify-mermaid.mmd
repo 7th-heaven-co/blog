@@ -1,0 +1,23 @@
+## 📊 Workflow Diagram
+
+> View/edit: [`notify-diagram.mmd`](notify-diagram.mmd)
+
+```mermaid
+flowchart TD
+  subgraph 🔁 notify-all.yml
+    A1[Input: message, emoji, title, branch]
+    A1 --> B1[Call: notify-slack.yml]
+    A1 --> B2[Call: notify-discord.yml]
+  end
+
+  subgraph 📣 notify-slack.yml
+    B1 --> C1[Call: notify-base.yml]
+    C1 --> D1[Output: formatted_text]
+    D1 --> E1[Send to Slack]
+  end
+
+  subgraph 🛎 notify-discord.yml
+    B2 --> C2[Call: notify-base.yml]
+    C2 --> D2[Output: formatted_content]
+    D2 --> E2[Send to Discord]
+  end

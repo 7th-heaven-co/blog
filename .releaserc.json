@@ -1,0 +1,39 @@
+{
+  "branches": [
+    { "name": "staging",   "prerelease": "beta" },
+    { "name": "release/*", "prerelease": "rc"   },
+    "main"
+  ],
+  "plugins": [
+    ["@semantic-release/commit-analyzer", {
+      "releaseRules": [
+        { "type": "post",  "release": false },
+        { "type": "chore", "release": false }
+      ]
+    }],
+    ["@semantic-release/release-notes-generator", {
+      "preset": "conventionalcommits",
+      "writerOpts": {
+        "headerPartial": "## 📦 Release Notes\n\n",
+        "commitPartial": "- {{#if scope}}**{{scope}}:** {{/if}}{{message}} ({{hash}})",
+        "footerPartial": "\n---"
+      }
+    }],
+    ["@semantic-release/changelog",   { "changelogFile": "CHANGELOG.md" }],
+    ["@semantic-release/npm",         { "npmPublish": false }],
+    ["@semantic-release/github", {
+      "assets": ["CHANGELOG.md"],
+      "successComment": false,
+      "failComment":  false,
+      "releasedLabels": ["released"],
+      "releaseNotes":  true
+    }],
+    ["@semantic-release/git", {
+      "assets": ["CHANGELOG.md", "package.json", "package-lock.json"],
+      "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+    }],
+    ["@semantic-release/exec", {
+      "publishCmd": "node ./scripts/x-announce.js '${nextRelease.version}'"
+    }]
+  ]
+}
