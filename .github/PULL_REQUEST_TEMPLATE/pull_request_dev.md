@@ -10,6 +10,14 @@ labels: [dev]
 - [ ] Fix 🐛
 - [ ] Refactor ♻️
 - [ ] Chore 🧹
+- [ ] Docs 📚
+- [ ] Style 🎨
+- [ ] Performance 🚀
+- [ ] Test 🧪
+- [ ] CI 🤖
+- [ ] Post 📰
+- [ ] Build 🏗️
+
 
 ## 📁 Scope
 - [ ] UI component(s)

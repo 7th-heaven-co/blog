@@ -1,4 +1,5 @@
 name: Auto Label PR Based on Target / Source Branch
+
 on:
   pull_request:
     types: [opened, edited, reopened, synchronize]
@@ -13,14 +14,17 @@ jobs:
         uses: actions-ecosystem/action-add-labels@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          labels: target:staging, type:release
+          labels: |
+            target:staging
+            type:release
 
       - name: Label PRs targeting dev
         if: github.event.pull_request.base.ref == 'dev'
         uses: actions-ecosystem/action-add-labels@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          labels: target:dev
+          labels: |
+            target:dev
 
       # ───────── SOURCE‑BRANCH LABELS ─────────
       - name: Label *feat/* branches
@@ -28,25 +32,33 @@ jobs:
         uses: actions-ecosystem/action-add-labels@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          labels: type:feat, source:feat   # ← changed from “feature”
+          labels: |
+            type:feat
+            source:feat
 
       - name: Label *preview/* branches
         if: startsWith(github.event.pull_request.head.ref, 'preview/')
         uses: actions-ecosystem/action-add-labels@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          labels: type:preview, source:preview
+          labels: |
+            type:preview
+            source:preview
 
       - name: Label *fix/* branches
         if: startsWith(github.event.pull_request.head.ref, 'fix/')
         uses: actions-ecosystem/action-add-labels@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          labels: type:fix, source:fix
+          labels: |
+            type:fix
+            source:fix
 
       - name: Label *chore/* branches
         if: startsWith(github.event.pull_request.head.ref, 'chore/')
         uses: actions-ecosystem/action-add-labels@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          labels: type:chore, source:chore
+          labels: |
+            type:chore
+            source:chore
