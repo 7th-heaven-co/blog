@@ -19,7 +19,7 @@
  */
 
 import { z } from 'zod';
-import getTursoClient from './db/client';
+import getTursoClient from '../../db/client';
 
 const client = getTursoClient();
 const emailSchema = z.string().email();

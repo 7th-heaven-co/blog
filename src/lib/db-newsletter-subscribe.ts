@@ -1,5 +1,5 @@
 // src/lib/db-user-newsletter-exist.ts
-import getTursoClient from './db/client';
+import getTursoClient from '../../db/client';
 
 const client = getTursoClient();
 
