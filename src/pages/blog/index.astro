@@ -2,6 +2,7 @@
 // file: ./src/pages/blog/index.astro
 import '../../styles/global.scss';
 import { type CollectionEntry, getCollection } from 'astro:content';
+import { SITE_DESCRIPTION, SITE_TITLE } from 'astro:env/client';
 import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
 import Header from '../../components/Header.astro';
@@ -9,7 +10,6 @@ import PgBg from '../../components/PgBg.astro';
 import PgLoader from '../../components/PgLoader.astro';
 import PgLoaderRadical from '../../components/PgLoaderRadical.astro';
 import Catalog from '../../components/blog/Catalog.tsx';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
 import { formatDate } from '../../utils/formatDate';
 import { ftSlug } from '../../utils/strUtil';
 
