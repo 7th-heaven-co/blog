@@ -1,18 +1,18 @@
 ---
-import HeaderLink from "./HeaderLink.astro";
-import BMCButton from "./BMCButton.astro";
-import { SITE_TITLE, HOME, BLOG, ABOUT, NEWSLETTER } from "../consts";
+import { ABOUT, BLOG, HOME, NEWSLETTER } from '../consts';
+import BMCButton from './BMCButton.astro';
+import HeaderLink from './HeaderLink.astro';
 const today = new Date();
 import {
-  SITE_URL,
-  SITE_TITLE,
-  PROFILE,
-  GITHUB,
-  DISCORD,
-  REDDIT,
-  X,
   CONTACT_EMAIL,
-} from "astro:env/client";
+  DISCORD,
+  GITHUB,
+  PROFILE,
+  REDDIT,
+  SITE_TITLE,
+  SITE_URL,
+  X,
+} from 'astro:env/client';
 ---
 
 <footer class="bg-frosted-dark">

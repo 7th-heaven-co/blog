@@ -1,4 +1,4 @@
-import { test, expect } from 'vitest';
+import { expect, test } from 'vitest';
 import { isActiveLink } from './isActiveLink';
 
 test('returns true when href matches pathname exactly', () => {

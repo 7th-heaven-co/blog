@@ -1,0 +1,16 @@
+type:feat:
+  - "**/feat/**"
+type:fix:
+  - "**/fix/**"
+type:chore:
+  - "**/chore/**"
+type:post:
+  - "src/content/blog/**"
+target:dev:
+  - "**"
+  - "!**/main/**"
+  - "!**/staging/**"
+target:staging:
+  - "**/staging/**"
+target:main:
+  - "**/main/**"

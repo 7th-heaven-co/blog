@@ -1,0 +1,24 @@
+# .github/workflows/notify-slack-discord.yml
+name: Notify Deploy Status
+
+on:
+  deployment_status:
+    types: [success, failure]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📣 Notify Slack (or Discord)
+        if: github.event.deployment_status.state == 'success'
+        run: |
+          curl -X POST ${{ secrets.SLACK_WEBHOOK_URL }} \
+            -H 'Content-type: application/json' \
+            --data '{"text":"✅ *Preview Deploy Ready*: <${{ github.event.deployment.environment_url }}|View Preview>"}'
+
+      - name: ⚠️ Notify on failure
+        if: github.event.deployment_status.state == 'failure'
+        run: |
+          curl -X POST ${{ secrets.SLACK_WEBHOOK_URL }} \
+            -H 'Content-type: application/json' \
+            --data '{"text":"❌ *Preview Deploy Failed*: `${{ github.repository }}`"}'

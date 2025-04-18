@@ -1,0 +1,26 @@
+name: Purge Cloudflare Cache From Paths
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [staging]
+    paths:
+      - 'scripts/parsed-paths.json'
+
+jobs:
+  purge-cache:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Read parsed-paths.json
+        id: read_paths
+        run: |
+          echo "PATHS=$(jq -c .updatedPaths scripts/parsed-paths.json)" >> $GITHUB_OUTPUT
+
+      - name: Trigger Worker Cache Purge
+        run: |
+          curl -X POST "https://your-cloudflare-worker-url.workers.dev" \
+            -H "Content-Type: application/json" \
+            -d '{"paths": ${{ steps.read_paths.outputs.PATHS }}}'

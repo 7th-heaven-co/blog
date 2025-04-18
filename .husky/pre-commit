@@ -1,0 +1,13 @@
+#!/bin/sh
+
+echo "🐶 Husky pre-push hook triggered"
+
+# Optional: log timestamp to .husky/log.txt
+echo "[PRE-PUSH] $(date) by $(whoami)" >> .husky/log.txt
+
+# # lint + prettier
+npx biome format . --write
+npx biome check .
+
+# disallow manual package.json version change
+node ./scripts/check-version-lock.js

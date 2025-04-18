@@ -1,0 +1,39 @@
+name: Notify Base (Internal Only)
+
+on:
+  workflow_call:
+    inputs:
+      emoji:
+        type: string
+        required: false
+        default: "📢"
+      title:
+        type: string
+        required: false
+        default: "Workflow Notification"
+      message:
+        type: string
+        required: true
+      branch:
+        type: string
+        required: false
+        default: "${{ github.ref_name }}"
+    outputs:
+      formatted_text:
+        description: "Formatted message (Slack)"
+        value: "${{ jobs.format.outputs.slack }}"
+      formatted_content:
+        description: "Formatted message (Discord)"
+        value: "${{ jobs.format.outputs.discord }}"
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    outputs:
+      slack: ${{ steps.set.outputs.slack }}
+      discord: ${{ steps.set.outputs.discord }}
+    steps:
+      - id: set
+        run: |
+          echo "slack=${{ inputs.emoji }} *${{ inputs.title }}* on \`${{ inputs.branch }}\`\n${{ inputs.message }}" >> $GITHUB_OUTPUT
+          echo "discord=${{ inputs.emoji }} **${{ inputs.title }}** on \`${{ inputs.branch }}\`\n${{ inputs.message }}" >> $GITHUB_OUTPUT

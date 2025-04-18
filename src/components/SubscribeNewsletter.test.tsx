@@ -1,63 +1,69 @@
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { vi, describe, test, expect, beforeEach, afterEach } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import SubscribeNewsletter from './SubscribeNewsletter';
 
-// ---
-// First, mock the dependent modules BEFORE importing them.
-// Mock the SubscribeNewsletterForm component to simulate success.
+/* ── mocks ──────────────────────────────────────────────────────────── */
+// Mock the SubscribeNewsletterForm component.
 vi.mock('../components/SubscribeNewsletterForm.tsx', () => ({
   default: (props: { setStatus: (status: string) => void }) => {
     React.useEffect(() => {
-      // Immediately simulate successful subscription.
-      props.setStatus('success');
-    }, []);
+      props.setStatus('success'); // simulate success
+    }, [props.setStatus]); // ← added dep
     return <div data-testid="fake-form" />;
   },
 }));
 
-// Mock react-toastify module.
+// Mock react‑toastify.
 vi.mock('react-toastify', () => ({
   toast: vi.fn(),
   ToastContainer: () => <div data-testid="toast-container" />,
   Bounce: vi.fn(),
 }));
 
-// Now import toast from react-toastify AFTER the module is mocked.
+// Import toast after mocking.
 import { toast } from 'react-toastify';
 
+/* ── tests ───────────────────────────────────────────────────────────── */
 describe('SubscribeNewsletter Component', () => {
   let originalLocation: Location;
 
   beforeEach(() => {
     vi.useFakeTimers();
-    // Override window.location for testing redirection.
+
+    // Store the real window.location and replace it with a writable stub.
     originalLocation = window.location;
-    // Delete window.location so we can replace it.
-    delete (window as any).location;
-    window.location = { href: '' } as Location;
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      value: { href: '' } as Location,
+    });
   });
 
   afterEach(() => {
     vi.useRealTimers();
-    window.location = originalLocation;
+
+    // Restore the original window.location.
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      value: originalLocation,
+    });
+
     vi.resetAllMocks();
   });
 
-  test('shows toast notification and redirects on success', async () => {
+  test('shows toast notification and redirects on success', () => {
     render(<SubscribeNewsletter />);
 
-    // Instead of directly using toast, use vi.mocked to ensure it's recognized as a spy.
     expect(vi.mocked(toast)).toHaveBeenCalledWith(
       expect.stringContaining('Redirecting to 🏠 Page...'),
       expect.objectContaining({
         position: 'top-center',
         autoClose: 6000,
-        transition: expect.any(Function), // Bounce transition function
-      })
+        transition: expect.any(Function), // Bounce transition
+      }),
     );
 
-    // Advance timers to simulate the delay for redirection.
+    // Fast‑forward the redirect timer.
     vi.advanceTimersByTime(5000);
     expect(window.location.href).toBe('/');
   });

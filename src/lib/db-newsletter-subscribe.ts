@@ -1,16 +1,25 @@
 export const prerender = false;
 
-import { z } from "zod";
-import { createClient } from "@libsql/client/web";
-import getTursoClient from "../../db/client";
+import { createClient } from '@libsql/client/web';
+import { z } from 'zod';
+import getTursoClient from '../../db/client';
 
 const client = getTursoClient();
 
 // Define the schema for user input
 const userSchema = z.object({
-  first_name: z.string().optional().transform((val) => val?.trim().substring(0, 50) || ""),
-  last_name: z.string().optional().transform((val) => val?.trim().substring(0, 50) || ""),
-  email: z.string().email().transform((val) => val.trim()),
+  first_name: z
+    .string()
+    .optional()
+    .transform((val) => val?.trim().substring(0, 50) || ''),
+  last_name: z
+    .string()
+    .optional()
+    .transform((val) => val?.trim().substring(0, 50) || ''),
+  email: z
+    .string()
+    .email()
+    .transform((val) => val.trim()),
 });
 
 // Define the schema for newsletter preferences with default values
@@ -44,7 +53,7 @@ export interface SubscriptionResult {
  */
 export async function dbNewsletterSubscribe(
   user: userSchema,
-  newsletter: newsletterSchema
+  newsletter: newsletterSchema,
 ): Promise<SubscriptionResult> {
   // Validate and sanitize input using Zod schemas
   const parsedUser = userSchema.parse(user);
@@ -116,10 +125,9 @@ export async function dbNewsletterSubscribe(
     const result = await client.batch(queries);
 
     return { success: true };
-    
   } catch (error) {
-    console.error("File: db-newsletter-subscribe | Database error:", error);
+    console.error('File: db-newsletter-subscribe | Database error:', error);
 
-    throw new Error("Newsletter Subscribe Error: Please try again.");
+    throw new Error('Newsletter Subscribe Error: Please try again.');
   }
 }

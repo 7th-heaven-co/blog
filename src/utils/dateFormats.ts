@@ -24,33 +24,29 @@ export const dateFormats = {
   },
 
   date: {
-    long: (date: string | null, locale = "en-US") =>
-      format(date, { month: "long" }, locale),    
-    short: (date: string | null, locale = "en-US") =>
-      format(date, { month: "short" }, locale),
+    long: (date: string | null, locale = 'en-US') => format(date, { month: 'long' }, locale),
+    short: (date: string | null, locale = 'en-US') => format(date, { month: 'short' }, locale),
 
-    numeric: (date: string | null, locale = "en-US") =>
-      format(date, { year: "numeric", month: "numeric", day: "numeric" }, locale),
+    numeric: (date: string | null, locale = 'en-US') =>
+      format(date, { year: 'numeric', month: 'numeric', day: 'numeric' }, locale),
 
-    withWeekday: (date: string | null, locale = "en-US") =>
-      format(date, { weekday: "long" }, locale),
+    withWeekday: (date: string | null, locale = 'en-US') =>
+      format(date, { weekday: 'long' }, locale),
 
-    yearOnly: (date: string | null, locale = "en-US") =>
-      format(date, { year: "numeric" }, locale),
+    yearOnly: (date: string | null, locale = 'en-US') => format(date, { year: 'numeric' }, locale),
 
-    monthYear: (date: string | null, locale = "en-US") =>
-      format(date, { month: "long", year: "numeric" }, locale),
+    monthYear: (date: string | null, locale = 'en-US') =>
+      format(date, { month: 'long', year: 'numeric' }, locale),
 
-    weekdayOnly: (date: string | null, locale = "en-US") =>
-      format(date, { weekday: "long" }, locale),
+    weekdayOnly: (date: string | null, locale = 'en-US') =>
+      format(date, { weekday: 'long' }, locale),
   },
 
   time: {
-    timeOnly: (date: string | null, locale = "en-US") =>
-      formatTime(date, {}, locale),
+    timeOnly: (date: string | null, locale = 'en-US') => formatTime(date, {}, locale),
 
-    fullTime: (date: string | null, locale = "en-US") =>
-      format(date, {}, locale) + " " + formatTime(date, {}, locale),
+    fullTime: (date: string | null, locale = 'en-US') =>
+      `${format(date, {}, locale)} ${formatTime(date, {}, locale)}`,
   },
 
   relative: {
@@ -61,9 +57,9 @@ export const dateFormats = {
 
 export function getUserTimeZone(): string {
   try {
-    return Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
   } catch {
-    return "UTC";
+    return 'UTC';
   }
 }
 
@@ -83,15 +79,15 @@ function isValidLocale(locale: string): boolean {
 function format(
   dateString: string | null,
   options: Intl.DateTimeFormatOptions = {},
-  locale = "en-US",
-  timeZone = getUserTimeZone()
+  locale = 'en-US',
+  timeZone = getUserTimeZone(),
 ): string {
-  if (!dateString) return "";
-  const safeLocale = isValidLocale(locale) ? locale : "en-US";
+  if (!dateString) return '';
+  const safeLocale = isValidLocale(locale) ? locale : 'en-US';
   const defaultOptions: Intl.DateTimeFormatOptions = {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
     timeZone,
   };
   const date = new Date(dateString);
@@ -104,15 +100,15 @@ function format(
 function formatTime(
   dateString: string | null,
   options: Intl.DateTimeFormatOptions = {},
-  locale = "en-US"
+  locale = 'en-US',
 ): string {
-  if (!dateString) return "";
+  if (!dateString) return '';
 
   const defaultOptions: Intl.DateTimeFormatOptions = {
-    hour: "numeric",
-    minute: "2-digit",
+    hour: 'numeric',
+    minute: '2-digit',
     hour12: true,
-    timeZone: "UTC",
+    timeZone: 'UTC',
   };
 
   const date = new Date(dateString);
@@ -122,24 +118,24 @@ function formatTime(
 /**
  * Format relative time like "2 days ago" or "in 3 hours"
  */
-function formatRelative(dateString: string | null, locale = "en-US"): string {
-  if (!dateString) return "";
+function formatRelative(dateString: string | null, locale = 'en-US'): string {
+  if (!dateString) return '';
 
   const now = new Date();
   const then = new Date(dateString);
   const diff = then.getTime() - now.getTime(); // positive if in the future
   const seconds = Math.floor(diff / 1000);
 
-  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
+  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
 
   const thresholds: [number, Intl.RelativeTimeFormatUnit][] = [
-    [60, "second"],
-    [60, "minute"],
-    [24, "hour"],
-    [7, "day"],
-    [4.34524, "week"],
-    [12, "month"],
-    [Number.POSITIVE_INFINITY, "year"],
+    [60, 'second'],
+    [60, 'minute'],
+    [24, 'hour'],
+    [7, 'day'],
+    [4.34524, 'week'],
+    [12, 'month'],
+    [Number.POSITIVE_INFINITY, 'year'],
   ];
 
   let value = seconds;
@@ -150,19 +146,15 @@ function formatRelative(dateString: string | null, locale = "en-US"): string {
     value /= amount;
   }
 
-  return "";
+  return '';
 }
 
 /**
  * Smart formatter: uses relative if within X threshold, else absolute.
  * Default threshold: 3 days
  */
-function formatSmart(
-  dateString: string | null,
-  locale = "en-US",
-  thresholdInDays = 3
-): string {
-  if (!dateString) return "";
+function formatSmart(dateString: string | null, locale = 'en-US', thresholdInDays = 3): string {
+  if (!dateString) return '';
 
   const now = new Date();
   const then = new Date(dateString);

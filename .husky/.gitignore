@@ -1,0 +1,5 @@
+# Ignore internal husky support scripts
+_/
+
+# Ignore local log output
+log.txt

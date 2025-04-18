@@ -1,0 +1,24 @@
+# .devs.vars.sample
+# file needed if using wrangler.toml
+
+# Site Metadata
+SITE_URL=''
+
+# Cloudflare Pages & Cloudflare API
+CLOUDFLARE_ACCOUNT_ID=""
+# Cloudflare API
+CLOUDFLARE_API_TOKEN=""
+CLOUDFLARE_ZONE_ID=""
+# Cloudflare API Purge
+CLOUDFLARE_PURGE_URL="" #'https://your-cloudflare-worker-url.workers.dev'
+PURGE_HISTORY=<KV_NAMESPACE_BINDING>
+
+# X (formerly Twitter) Developer API (Optional)
+# X_API_KEY = ""
+# X_API_SECRET = ""
+# X_ACCESS_TOKEN = ""
+# X_ACCESS_SECRET = ""
+
+# Turso Database
+TURSO_DATABASE_URL=""
+TURSO_AUTH_TOKEN=""

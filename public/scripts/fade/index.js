@@ -1,7 +1,7 @@
 // public/scripts/fade/index.js
-import { defaultFadeConfig } from "./config.js";
-import { initFadeOnly } from "./fadeOnly.js";
-import { initPreloadRadical } from "./preloaderRadical.js";
+import { defaultFadeConfig } from './config.js';
+import { initFadeOnly } from './fadeOnly.js';
+import { initPreloadRadical } from './preloaderRadical.js';
 
 /**
  * Entry point — auto-detects whether to run radical loader or basic fade.
@@ -18,8 +18,8 @@ export function init(options = {}) {
     }
   };
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", run);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', run);
   } else {
     run();
   }
