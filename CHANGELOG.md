@@ -1,3 +1,20 @@
+## 📦 Release 1.0.0-beta.2
+
+
+- Merge pull request #20 from jazicorn/auto/deploy-changelog (dd55fe6)
+- Merge pull request #21 from jazicorn/auto/deploy-changelog (4862672)
+- Merge pull request #23 from jazicorn/dev (8d7b29a)
+- Merge pull request #25 from jazicorn/dev (6e54d67)
+- **ci:** unblock semantic‑release & CF Pages build (ba7f574)
+- **release:** make transform immutable‑safe to stop semantic‑release crash (6cf90c0)
+- **release:** migrate to ESM release.config.mjs with grouped emoji notes (f4c2f44)
+- **workflow:** stop self‑trigger loop (3b50cae)
+- **deploy:** auto-update deploy changelog (585251f)
+- **deploy:** auto-update deploy changelog (f8238d2)
+
+
+---
+
 ## 📦 Release Notes
 
 
