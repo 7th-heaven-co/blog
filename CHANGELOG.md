@@ -1,3 +1,17 @@
+## 📦 Release 1.0.0-beta.3
+
+
+- Merge pull request #27 from jazicorn/dev (732a28a)
+- Merge pull request #29 from jazicorn/dev (2b5e73e)
+- **ci:** update release to exit if fails commitlint (6819728)
+- **pr-template:** add universal project‑wide pull request template (0ffc262)
+- **release:** rename to .cjs; header comment updated (e4a7863)
+- **release:** switch config to CommonJS release.config.js (ec7bb15)
+- **github:** harden Auto Append Deploy Tags workflow (28679fb)
+
+
+---
+
 ## 📦 Release 1.0.0-beta.2
 
 
