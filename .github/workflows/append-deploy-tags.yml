@@ -12,6 +12,7 @@ permissions:
 
 jobs:
   append-deploy-tags:
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
 
     steps:

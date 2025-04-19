@@ -13,7 +13,7 @@
     "test:paths": "node tests/scripts/generate-test-parsed-paths.js",
     "test:fixtures": "node tests/scripts/generate-all-test-fixtures.js --local --test --strict",
     "test:deploy-local": "node scripts/deploy-from-changelog.js --local --test --strict ",
-    "prepare": "husky",
+    "prepare": "command -v husky >/dev/null 2>&1 && husky install || true",
     "hook:log": "tail -n 25 .husky/log.txt",
     "lint": "biome check",
     "lint:fix": "biome check --write",
