@@ -1,7 +1,6 @@
-// release.config.js – semantic‑release config (CommonJS) with grouped, emoji‑headed notes
+// release.config.cjs
 
 /**
- * Converted from ESM (.mjs) to CommonJS (.js).
  * - Newline‑safe templates (no double‑escaping)
  * - Commit groups mapped to emoji section headers
  * - Immutable‑safe transform (returns a fresh object)
@@ -53,7 +52,7 @@ module.exports = {
       {
         preset: 'conventionalcommits',
         writerOpts: {
-          groupBy: 'type', // group commits by the (mapped) type field
+          groupBy: 'type',
           commitGroupsSort: 'title',
           commitsSort: ['scope', 'subject'],
 
