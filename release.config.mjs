@@ -18,7 +18,7 @@ const SECTION_TITLES = {
   build: '📦 Build',
   ci: '🤖 CI / CD',
   chore: '🧹 Chores',
-  post: '✉️ Posts'
+  post: '✉️ Posts',
 };
 
 export default {
@@ -26,7 +26,7 @@ export default {
   branches: [
     { name: 'staging', prerelease: 'beta' },
     { name: 'release/*', prerelease: 'rc' },
-    'main'
+    'main',
   ],
 
   // ─────────────── Plugins ───────────────
@@ -42,9 +42,9 @@ export default {
           { type: 'style', release: false },
           { type: 'ci', release: false },
           { type: 'build', release: false },
-          { type: 'test', release: false }
-        ]
-      }
+          { type: 'test', release: false },
+        ],
+      },
     ],
 
     // 2) Generate human‑readable notes
@@ -53,7 +53,7 @@ export default {
       {
         preset: 'conventionalcommits',
         writerOpts: {
-          groupBy: 'type',                   // group commits by the (mapped) type field
+          groupBy: 'type', // group commits by the (mapped) type field
           commitGroupsSort: 'title',
           commitsSort: ['scope', 'subject'],
 
@@ -61,15 +61,14 @@ export default {
           transform: (commit) => ({
             ...commit,
             type: SECTION_TITLES[commit.type] || commit.type,
-            shortHash: commit.hash?.slice(0, 7)
+            shortHash: commit.hash?.slice(0, 7),
           }),
 
           headerPartial: '## 📦 Release {{version}}\n\n',
-          commitPartial:
-            '- {{#if scope}}**{{scope}}:** {{/if}}{{subject}} ({{shortHash}})\n',
-          footerPartial: '\n---'
-        }
-      }
+          commitPartial: '- {{#if scope}}**{{scope}}:** {{/if}}{{subject}} ({{shortHash}})\n',
+          footerPartial: '\n---',
+        },
+      },
     ],
 
     // 3) Update CHANGELOG.md
@@ -86,8 +85,8 @@ export default {
         successComment: false,
         failComment: false,
         releasedLabels: ['released'],
-        releaseNotes: true
-      }
+        releaseNotes: true,
+      },
     ],
 
     // 6) Commit version bumps & CHANGELOG back to repo
@@ -95,17 +94,16 @@ export default {
       '@semantic-release/git',
       {
         assets: ['CHANGELOG.md', 'package.json', 'package-lock.json'],
-        message:
-          'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}'
-      }
+        message: 'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}',
+      },
     ],
 
     // 7) Custom post‑publish script
     [
       '@semantic-release/exec',
       {
-        publishCmd: 'node ./scripts/x-announce.js "${nextRelease.version}"'
-      }
-    ]
-  ]
+        publishCmd: 'node ./scripts/x-announce.js "${nextRelease.version}"',
+      },
+    ],
+  ],
 };
