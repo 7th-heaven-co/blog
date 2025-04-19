@@ -1,10 +1,10 @@
-// release.config.mjs – semantic‑release with grouped, emoji‑headed notes
+// release.config.js – semantic‑release config (CommonJS) with grouped, emoji‑headed notes
 
 /**
- * ESM config replacing legacy .releaserc.json.
+ * Converted from ESM (.mjs) to CommonJS (.js).
  * - Newline‑safe templates (no double‑escaping)
  * - Commit groups mapped to emoji section headers
- * - Uses an immutable‑safe transform (returns a fresh object)
+ * - Immutable‑safe transform (returns a fresh object)
  */
 
 const SECTION_TITLES = {
@@ -21,7 +21,7 @@ const SECTION_TITLES = {
   post: '✉️ Posts',
 };
 
-export default {
+module.exports = {
   // ─────────────── Branches ───────────────
   branches: [
     { name: 'staging', prerelease: 'beta' },
@@ -57,7 +57,7 @@ export default {
           commitGroupsSort: 'title',
           commitsSort: ['scope', 'subject'],
 
-          // immutable‑safe transform: return a NEW object instead of mutating
+          // Immutable‑safe transform: return a NEW object instead of mutating
           transform: (commit) => ({
             ...commit,
             type: SECTION_TITLES[commit.type] || commit.type,
