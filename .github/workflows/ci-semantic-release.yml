@@ -1,0 +1,38 @@
+# .github/workflows/ci-release.yml
+name: CI + Semantic Release
+
+on:
+  push:
+    branches: [staging, 'release/*', main]
+
+jobs:
+  commitlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: wagoid/commitlint-github-action@v5
+
+  release:
+    needs: commitlint
+    if: github.ref == 'refs/heads/staging' ||
+        startsWith(github.ref, 'refs/heads/release/') ||
+        github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues:   write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+
+      - run: npm ci
+
+      - name: semantic‑release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
