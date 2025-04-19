@@ -1,10 +1,10 @@
-// release.config.mjs – semantic‑release with grouped, newline‑friendly notes
+// release.config.mjs – semantic‑release with grouped, emoji‑headed notes
 
 /**
- * This ESM version replaces .releaserc.json so we can:
- *  • add multi‑line templates without double‑escaping
- *  • group commits by type with emoji section headers
- *  • shorten hashes and ensure each bullet is on its own line
+ * ESM config replacing legacy .releaserc.json.
+ * - Newline‑safe templates (no double‑escaping)
+ * - Commit groups mapped to emoji section headers
+ * - Uses an immutable‑safe transform (returns a fresh object)
  */
 
 const SECTION_TITLES = {
@@ -18,20 +18,20 @@ const SECTION_TITLES = {
   build: '📦 Build',
   ci: '🤖 CI / CD',
   chore: '🧹 Chores',
-  post: '✉️ Posts',
+  post: '✉️ Posts'
 };
 
 export default {
-  // ───────────────── Branches ─────────────────
+  // ─────────────── Branches ───────────────
   branches: [
     { name: 'staging', prerelease: 'beta' },
     { name: 'release/*', prerelease: 'rc' },
-    'main',
+    'main'
   ],
 
-  // ───────────────── Plugins ─────────────────
+  // ─────────────── Plugins ───────────────
   plugins: [
-    // 1) Parse conventional commits ➜ determine next version
+    // 1) Parse commits ➜ decide next version
     [
       '@semantic-release/commit-analyzer',
       {
@@ -42,35 +42,34 @@ export default {
           { type: 'style', release: false },
           { type: 'ci', release: false },
           { type: 'build', release: false },
-          { type: 'test', release: false },
-        ],
-      },
+          { type: 'test', release: false }
+        ]
+      }
     ],
 
-    // 2) Craft human‑readable release notes
+    // 2) Generate human‑readable notes
     [
       '@semantic-release/release-notes-generator',
       {
         preset: 'conventionalcommits',
         writerOpts: {
-          // Group similar commit types together
-          groupBy: 'type',
+          groupBy: 'type',                   // group commits by the (mapped) type field
           commitGroupsSort: 'title',
           commitsSort: ['scope', 'subject'],
 
-          // Map each type to an emoji header
-          transform: (commit) => {
-            commit.groupBy = SECTION_TITLES[commit.type] || 'Other';
-            commit.shortHash = commit.hash.slice(0, 7);
-            return commit;
-          },
+          // immutable‑safe transform: return a NEW object instead of mutating
+          transform: (commit) => ({
+            ...commit,
+            type: SECTION_TITLES[commit.type] || commit.type,
+            shortHash: commit.hash?.slice(0, 7)
+          }),
 
-          // Templates
           headerPartial: '## 📦 Release {{version}}\n\n',
-          commitPartial: '- {{#if scope}}**{{scope}}:** {{/if}}{{subject}} ({{shortHash}})\n',
-          footerPartial: '\n---',
-        },
-      },
+          commitPartial:
+            '- {{#if scope}}**{{scope}}:** {{/if}}{{subject}} ({{shortHash}})\n',
+          footerPartial: '\n---'
+        }
+      }
     ],
 
     // 3) Update CHANGELOG.md
@@ -79,7 +78,7 @@ export default {
     // 4) Bump package.json but don’t publish to npm
     ['@semantic-release/npm', { npmPublish: false }],
 
-    // 5) Draft GitHub release and attach CHANGELOG
+    // 5) Draft GitHub release & attach CHANGELOG
     [
       '@semantic-release/github',
       {
@@ -87,8 +86,8 @@ export default {
         successComment: false,
         failComment: false,
         releasedLabels: ['released'],
-        releaseNotes: true,
-      },
+        releaseNotes: true
+      }
     ],
 
     // 6) Commit version bumps & CHANGELOG back to repo
@@ -96,16 +95,17 @@ export default {
       '@semantic-release/git',
       {
         assets: ['CHANGELOG.md', 'package.json', 'package-lock.json'],
-        message: 'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}',
-      },
+        message:
+          'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}'
+      }
     ],
 
-    // 7) Custom post‑publish script (e.g., announce on X / Slack)
+    // 7) Custom post‑publish script
     [
       '@semantic-release/exec',
       {
-        publishCmd: 'node ./scripts/x-announce.js "${nextRelease.version}"',
-      },
-    ],
-  ],
+        publishCmd: 'node ./scripts/x-announce.js "${nextRelease.version}"'
+      }
+    ]
+  ]
 };
