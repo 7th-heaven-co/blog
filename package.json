@@ -3,9 +3,9 @@
   "type": "module",
   "version": "1.0.0",
   "scripts": {
-    "dev": "astro dev --remote",
-    "dev-sass": "npx sass --watch src/styles/global.scss:public/styles/global.css",
     "sass": "sass src/styles/global.scss public/styles/global.css --no-source-map",
+    "dev-sass": "npx sass --watch src/styles/global.scss:public/styles/global.css",
+    "dev": "astro dev --remote",
     "build": "npm run sass && astro build --remote",
     "preview": "wrangler pages dev ./dist",
     "astro": "astro",

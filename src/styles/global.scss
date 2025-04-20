@@ -173,3 +173,15 @@ hr.faded-dark {
 button {
 	font-family: 'SpaceMono', sans-serif;
 }
+
+/* global.scss or a partial that’s imported there */
+@supports (view-transition-name: none) {
+  /* only browsers that support the API enter here */
+  @view-transition {
+    navigation: auto;
+  }
+
+  .card {
+    view-transition-name: card;
+  }
+}
