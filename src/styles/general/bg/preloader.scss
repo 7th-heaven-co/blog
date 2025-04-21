@@ -34,12 +34,6 @@
 		width: 100%;
 	}
 
-	/*Sass variables don’t animate, and they get compiled statically before the browser sees the CSS.*/
-	@property --grad-stop {
-		syntax: "<percentage>";
-		inherits: false;
-		initial-value: 100%;
-	}
 
 	.bg-pre-fade {
 		height: 100vh;
@@ -87,4 +81,11 @@
         font-size: 5rem;
       }
     }
+}
+
+/*Sass variables don’t animate, and they get compiled statically before the browser sees the CSS.*/
+@property --grad-stop {
+	syntax: "<percentage>";
+	inherits: false;
+	initial-value: 100%;
 }

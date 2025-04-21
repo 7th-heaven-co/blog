@@ -1,0 +1,48 @@
+@use './_variables' as *;
+// ───────────────────────────────────────────────────────────
+// Corner‑cut mixin – hides the first $cut along the top + left border
+// Usage:  @include cut-border();                     // defaults
+//         @include cut-border(3em, 1px, hotpink);    // custom values
+// ───────────────────────────────────────────────────────────
+$cut-default: 4em;
+$border-w-default: 1px;
+$border-color-default: $gray-light;
+
+@mixin cut-border-dashed-left(
+  $cut: $cut-default,
+  $border-w: $border-w-default,
+  $border-c: $border-color-default
+) {
+    position: relative;
+  isolation: isolate;
+  padding: $cut $cut $cut $cut;    // ← overwrite afterwards if you like
+  /* keep only the right & bottom edges on the element itself */
+  border-right: 0em;
+  border-bottom: 0em;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    pointer-events: none;     // the pseudos shouldn’t steal clicks
+    z-index: -1;  
+  }
+
+  /* top border: start after $cut */
+  &::before {
+    top: 0;
+    left: $cut;
+    right: 0;
+    height: 0;                // height‑0 + border draws a horizontal line
+    border-top: 0;
+  }
+
+  /* left border: start after $cut */
+  &::after {
+    top: $cut;
+    left: 0;
+    bottom: 0;
+    width: 0;                 // width‑0 + border draws a vertical line
+    border-left: $border-w dashed $border-c;
+  }
+}
