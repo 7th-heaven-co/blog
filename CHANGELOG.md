@@ -1,3 +1,14 @@
+## 📦 Release 1.1.0
+
+
+- Merge pull request #31 from 7th-heaven-co/dev (cb64e97)
+- **css:** add View Transitions and upgrade tooling (ffd4572)
+- **ui:** add about to home page #update-section:about (47296fe)
+- **newsletter:** import global stylesheet so page styles load (13bd3b9)
+
+
+---
+
 ## 📦 Release 1.0.0
 
 
