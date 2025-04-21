@@ -103,7 +103,7 @@ const releases = defineCollection({
     // Transform string to Date object
     pubDate: z.coerce.date(),
     updatedDate: z.coerce.date().optional(),
-    heroImage: z.array(z.string()).optional(),
+    heroImage: z.string().optional(),
     // ['7th_heaven_chapter-1','7th_heaven_chapter_2','New_Novel_chapter_2','...']
     releases: z.array(z.string()),
     // ['releases','7th_heaven','new_novel','...']

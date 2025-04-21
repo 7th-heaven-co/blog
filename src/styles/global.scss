@@ -1,6 +1,7 @@
 // ./src/styles/global.scss
 
 @use './_variables' as *;
+@use './_helpers' as *;
 @use './general/bg/bg.scss';
 @use './general/bg/preloader.scss';
 @use './general/bg/preloader-radical.scss';
@@ -22,7 +23,7 @@
   	background: transparent;
 }
 *::-webkit-scrollbar-thumb {
-  	background-color: $color-5;
+  	background-color: rgba($gray-light, 0.5);
 }
 * {
   	scrollbar-width: thin;
@@ -34,6 +35,7 @@ html, body {
     margin: 0;
 	padding: 0;
 	overflow: auto;
+	scroll-behavior: smooth;
 }
 
 body::before {
