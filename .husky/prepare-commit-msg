@@ -1,0 +1,8 @@
+# .husky/prepare-commit-msg  (v9+ style)
+if [ -n "$CI" ]; then
+  npx --no-install commitlint --edit "$1"
+  exit $?
+fi
+
+exec < /dev/tty
+npx --no-install czg --hook || true 

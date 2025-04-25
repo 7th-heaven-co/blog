@@ -1,5 +1,3 @@
-#!/bin/sh
-
 echo "🐶 Husky pre-push hook triggered"
 
 # Optional: log timestamp to .husky/log.txt

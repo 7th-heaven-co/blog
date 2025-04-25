@@ -1,0 +1,56 @@
+# .github/workflows/jira-transition.yml
+name: Transition Jira issue on PR merge
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  transition:
+    # ─────────────────────────────────────────────────────────────
+    # Run only when…
+    #   • the PR is merged, AND
+    #   • the base branch is NOT auto/**, docs/**, dependabot/**, or renovate/**
+    # ─────────────────────────────────────────────────────────────
+    if: >
+      github.event.pull_request.merged == true &&
+      !startsWith(github.event.pull_request.base.ref, 'auto/') &&
+      !startsWith(github.event.pull_request.base.ref, 'docs/') &&
+      !startsWith(github.event.pull_request.base.ref, 'dependabot/') &&
+      !startsWith(github.event.pull_request.base.ref, 'renovate/')
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Log in once for all downstream Jira actions
+      - uses: atlassian/gajira-login@v3
+        with:
+          jira-base-url:  ${{ secrets.JIRA_BASE_URL }}
+          jira-user:      ${{ secrets.JIRA_USER_EMAIL }}
+          jira-api-token: ${{ secrets.JIRA_API_TOKEN }}
+
+      # 2️⃣ Decide the transition based on the PR’s target branch
+      - id: vars
+        shell: bash
+        run: |
+          # Detect the Jira key from the PR title
+          KEY=$(echo "${{ github.event.pull_request.title }}" | grep -oE '[A-Z]+-[0-9]+')
+
+          # The branch the PR is merging *into*
+          TARGET="${{ github.event.pull_request.base.ref }}"
+
+          case "$TARGET" in
+            dev)        STATUS="IN REVIEW"   ;;  # feature → dev
+            staging)    STATUS="STAGING"     ;;  # dev → staging
+            release/*)  STATUS="RELEASE"     ;;  # main → release/*
+            main)       STATUS="DONE"        ;;  # production
+            *)          STATUS="IN PROGRESS" ;;  # everything else
+          esac
+
+          echo "issue=$KEY"         >> "$GITHUB_OUTPUT"
+          echo "transition=$STATUS" >> "$GITHUB_OUTPUT"
+
+      # 3️⃣ Apply that transition once per merged PR
+      - uses: atlassian/gajira-transition@v3
+        with:
+          issue:      ${{ steps.vars.outputs.issue }}
+          transition: ${{ steps.vars.outputs.transition }}
