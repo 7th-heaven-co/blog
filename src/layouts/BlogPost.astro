@@ -7,42 +7,27 @@ import Header from '../components/Header.astro';
 import PgBg from '../components/PgBg.astro';
 import PgLoader from '../components/PgLoader.astro';
 import PgLoaderRadical from '../components/PgLoaderRadical.astro';
+import PostContent from '../components/blog/PostContent.astro';
 
-const { title, description, pubDate, updatedDate } = Astro.props;
+const meta = Astro.props;
 ---
 
 <html lang="en">
   <head>
-    <BaseHead title={title} description={description} />
+    <BaseHead title={meta.title} description={meta.description} />
     <script is:inline type="module">
       import { init } from "/scripts/fade/index.js";
       init();
     </script>
   </head>
-  <body id="blogpost">
+  <body class="blogpost">
     <PgBg />
     <div class="content">
       <Header />
-      <main>
-        <article>
-          <div class="prose">
-            <div class="title">
-              <div class="date">
-                <FormattedDate date={pubDate} />
-                {
-                  updatedDate && (
-                    <div class="last-updated-on">
-                      Last updated on <FormattedDate date={updatedDate} />
-                    </div>
-                  )
-                }
-              </div>
-              <h1>{title}</h1>
-              <hr />
-            </div>
-            <slot />
-          </div>
-        </article>
+      <main class="post-content">
+        <PostContent {...meta}>
+          <slot/>
+        </PostContent>
       </main>
       <Footer />
     </div>

@@ -1,0 +1,26 @@
+---
+/**
+ * ExtLink.astro – drop‑in replacement for the <a> tag that
+ * automatically adds target="_blank" and rel="noopener noreferrer"
+ * to external URLs while leaving internal links untouched.
+ *
+ * Usage in MDX layout:
+ *   import A from "../components/ExternalLink.astro";
+ *   <slot mdx:components={{ a: A }} />
+ */
+const { href = '', ...rest } = Astro.props;
+
+// A very lenient external‑URL test: starts with http(s):// or //
+// and does NOT begin with the current site base.
+const isExternal = /^(https?:)?\/\//i.test(href) && !href.startsWith(import.meta.env.BASE_URL);
+
+// Build the final props object, auto‑injecting security attrs for externals.
+const props = {
+  href,
+  ...rest,
+  ...(isExternal && { target: '_blank', rel: 'noopener noreferrer' }),
+};
+---
+<a {...props}>
+  <slot />
+</a>

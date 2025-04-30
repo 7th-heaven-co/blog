@@ -1,0 +1,25 @@
+---
+// src/components/blog/PostContent.astro
+import { getEntry, render } from 'astro:content';
+import { ftSlug } from '../../utils/strUtil';
+import ExternalLink from '../ExtLink.astro';
+
+const welcome = await getEntry('author', 'author-0-welcome');
+
+const { Content } = await render(welcome);
+
+import Metadata from './Metadata.tsx';
+
+const meta = Astro.props;
+---
+<div id="post-content" class="post-content">
+    <aside aria-labelledby="meta-heading">
+        <Metadata data={meta} />
+    </aside>
+    <article>
+        <!-- <hr class="aurora-dark"/> -->
+        <span class="post">
+            <slot mdx:components={{ a: ExternalLink }}/>
+        </span>
+    </article>
+</div>

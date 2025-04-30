@@ -1,29 +1,190 @@
-#blogpost {
+@use '../_variables' as *;
+@use '../helpers' as *;
+
+.blogpost {
   margin: 0;
   padding: 0;
+  hr {
+    min-width: fit-content;
+    height: 0;
+    border-top: 1px solid $color-1 !important;
+  }
+}
 
-  main {
-    margin: 0;
-    padding: 0;
-    height: fit-content;
-
-    article {
-      margin: 2em auto;
+.post-content {
+  margin-top: 1em;
+  margin-bottom: 4em;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0;
+  width: 100%;
+  max-width: 1120px;
+  height: fit-content;
+  text-align: justify;
+  @media (max-width: $media-xs) {
+    margin-top: 0em;
+  }
+  
+  aside {
+    font-size: $font-sm;
+    text-align: left;
+    width: 100%;
+    font-family: 'SpaceMono', sans-serif;
+    ul {
+      display: flex;
+      flex-direction: column;
       padding: 0;
-      width: 100%;
-      max-width: 1120px;
-      height: fit-content;
 
-      .prose {
-        margin: 0;
-        padding: 0;
-        height: fit-content;
+      box-sizing: border-box;
+      border-top-width: 0px;
+      border-bottom-width: 0px;
+      border-left-width: 1px;
+      border-right-width: 0px;
+      border-style: dashed;
+      border-color: $border-light;
 
-        p {
-          margin: 1em;
-          padding: 0;
+      li {
+        margin-left: 2em;
+        height: auto;
+        text-wrap: wrap;
+        display: flex;
+        flex-direction: row;
+        gap: 0.5em;
+        div {
+          color: $color-1;
+        }
+        div:nth-child(1) {
+          color: $color-2;
+        }
+        div:nth-child(2) {
+          span:first-child {
+            display: none;
+          } 
+        }
+      }
+      @media (max-width: $media-xs) {
+        li {
+          gap: 0em;
+          flex-direction: column;
+          div:nth-child(2) {
+            display: flex;
+            flex-direction: row; 
+            padding: 0.1em 2em;
+              span:first-child {
+                display: inline-block;
+              } 
+          }
         }
       }
     }
+  }
+  article {
+    /* Border */
+    @include cut-border-dashed-left(4em, 1px, $border-light);
+    
+    margin-top: 2em;
+    margin-bottom: 4em;
+    margin-left: 3em;
+    margin-right: 2em;
+    padding-top: 0;
+    padding-bottom: 0em;
+    padding-left: 1em;
+    padding-right: 1em;
+
+    font-size: $font-ml;
+
+    hr {
+      margin-bottom: 2em;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    h7 {
+      font-family: 'SpaceMono', sans-serif;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: end;
+    }
+
+    h1 {
+      font-size: $heading-s;
+      @media (max-width: $media-xs) {
+        font-size: $heading-xs;
+      }
+      .pixelarticons--home,
+      .pixelarticons--user,
+      .pixelarticons--chevron-right {
+        color: $silver;
+        margin: 0px 2px;
+        height: 36px;
+        width: 36px;
+        @media (max-width: $media-xs) {
+          height: 28px;
+          width: 28px;
+        }
+      }
+    }
+
+    h2 {
+      font-size: $heading-xs;
+      @media (max-width: $media-xs) { 
+        font-size: $heading-mobile;
+      }
+
+      .pixelarticons--chevron-right {
+        color: $silver;
+        margin: 0px 2px;
+        height: 28px;
+        width: 28px;
+        @media (max-width: $media-xs) {
+          height: 22px;
+          width: 22px;
+        }
+      }
+    }
+
+    h2 {
+      .pixelarticons--home,
+      .pixelarticons--user {
+        color: $color-2;
+        margin: 0px 4px;
+        height: 24px;
+        width: 24px;
+        align-self: center;
+        @media (max-width: $media-xs) {
+          height: 20px;
+          width: 20px;
+        }
+      }
+    }
+
+    p {
+      color: $silver;
+      @media (max-width: $media-xs) {
+        font-size: $font-m;
+      }
+    }
+
+    span a {
+      color: $color-4;
+      word-break: break-all;
+      @media (max-width: $media-xs) {
+        font-size: $font-m;
+      }
+    }
+
+    #author {
+      color:$color-2;
+    }
+
+    .blog-about {
+      color: $color-1;
+    }
+
   }
 }

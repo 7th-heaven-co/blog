@@ -27,14 +27,14 @@ jobs:
             target:dev
 
       # ───────── SOURCE‑BRANCH LABELS ─────────
-      - name: Label *feat/* branches
-        if: startsWith(github.event.pull_request.head.ref, 'feat/')
+      - name: Label *feature/* branches
+        if: startsWith(github.event.pull_request.head.ref, 'feature/')
         uses: actions-ecosystem/action-add-labels@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           labels: |
-            type:feat
-            source:feat
+            type:feature
+            source:feature
 
       - name: Label *preview/* branches
         if: startsWith(github.event.pull_request.head.ref, 'preview/')
@@ -62,3 +62,48 @@ jobs:
           labels: |
             type:chore
             source:chore
+
+      - name: Label *perf/* branches
+        if: startsWith(github.event.pull_request.head.ref, 'perf/')
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: |
+            type:perf
+            source:perf
+
+      - name: Label *ci/* branches
+        if: startsWith(github.event.pull_request.head.ref, 'ci/')
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: |
+            type:ci
+            source:ci
+      
+      - name: Label *post/* branches
+        if: startsWith(github.event.pull_request.head.ref, 'post/')
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: |
+            type:post
+            source:post
+        
+      - name: Label *style/* branches
+        if: startsWith(github.event.pull_request.head.ref, 'style/')
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: |
+            type:style
+            source:style
+
+      - name: Label *refactor/* branches
+        if: startsWith(github.event.pull_request.head.ref, 'refactor/')
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: |
+            type:refactor
+            source:refactor

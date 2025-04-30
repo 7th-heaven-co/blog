@@ -1,11 +1,11 @@
 {
   "name": "seventh-heaven-blog",
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "scripts": {
-    "dev": "astro dev --remote",
-    "dev-sass": "npx sass --watch src/styles/global.scss:public/styles/global.css",
     "sass": "sass src/styles/global.scss public/styles/global.css --no-source-map",
+    "dev-sass": "npx sass --watch src/styles/global.scss:public/styles/global.css",
+    "dev": "astro dev --remote",
     "build": "npm run sass && astro build --remote",
     "preview": "wrangler pages dev ./dist",
     "astro": "astro",
@@ -18,7 +18,8 @@
     "lint": "biome check",
     "lint:fix": "biome check --write",
     "format": "biome format . --write",
-    "semantic-release": "semantic-release --extends ./release.config.mjs"
+    "semantic-release": "semantic-release --extends ./release.config.mjs",
+    "commit": "git commit --no-edit"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.2.4",
@@ -55,10 +56,19 @@
     "@testing-library/react": "^16.2.0",
     "@types/react": "18.3.12",
     "@types/react-dom": "18.3.1",
+    "commitizen": "^4.3.1",
+    "cz-git": "^1.11.1",
+    "czg": "^1.11.1",
     "husky": "^9.1.7",
     "semantic-release": "^24.2.3",
     "typescript": "^5.8.2",
     "vitest": "^3.0.8",
     "wrangler": "^4.1.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-git",
+      "czConfig": "./cz.config.cjs"
+    }
   }
 }

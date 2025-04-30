@@ -43,9 +43,9 @@ jobs:
       #          -H 'Content-type: application/json' \
       #          --data "{\"text\":\"⚠️ Weekly release skipped: unmerged release branch still pending.%0A${UNMERGED}\"}"
 
-      # - name: Exit if previous release still open
-      #   if: steps.gate.outputs.SKIP == 'true'
-      #   run: echo "Skipping this run—previous release branch still pending."
+      - name: Exit if previous release still open
+        if: steps.gate.outputs.SKIP == 'true'
+        run: echo "Skipping this run—previous release branch still pending."
 
       # ───── Compute branch name (date‑based) ─────
       - name: Compute next branch name

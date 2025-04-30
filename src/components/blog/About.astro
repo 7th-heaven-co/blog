@@ -1,0 +1,13 @@
+---
+import { getEntry, render } from 'astro:content';
+// src/components/blog/About.astro
+import PostContent from '../blog/PostContent.astro';
+
+const welcome = await getEntry('author', 'author-0-welcome');
+if (!welcome) throw new Error('Welcome post not found');
+
+const { Content } = await render(welcome);
+---
+<PostContent {...welcome.data}>
+  <Content/>
+</PostContent>
