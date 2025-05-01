@@ -2,7 +2,7 @@
 name: Create weekly release branch
 on:
   schedule:
-    - cron: '0 4 * * 0'   # Sunday 00:00 ET
+    - cron: '0 4 * * 0'   # Sunday 00:00 ET
   workflow_dispatch:
 
 concurrency:
@@ -16,66 +16,66 @@ jobs:
   new-release:
     runs-on: ubuntu-latest
     steps:
-      # Fetch everything once
+      # ───── Checkout repo & fetch full history ─────
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # ───── Gate 1: skip if an older release branch is still open ─────
+      # ───── Gate 1: abort if older release branch open ─────
       - name: Check for unmerged release branches
         id: gate
         run: |
           git fetch --quiet origin 'refs/heads/release/*:refs/remotes/origin/release/*' || true
           UNMERGED=$(git branch -r --no-merged origin/main | grep 'origin/release/' || true)
           if [[ -n "$UNMERGED" ]]; then
-            echo "SKIP=true"    >> $GITHUB_OUTPUT
+            echo "SKIP=true"     >> $GITHUB_OUTPUT
             echo "UNMERGED<<EOF" >> $GITHUB_OUTPUT
-            echo "$UNMERGED"    >> $GITHUB_OUTPUT
-            echo "EOF"          >> $GITHUB_OUTPUT
+            echo "$UNMERGED"     >> $GITHUB_OUTPUT
+            echo "EOF"           >> $GITHUB_OUTPUT
           fi
 
       # ───── Gate 2: skip if staging == main ─────
       - name: Check if staging is ahead of main
         id: diff
+        shell: bash
         run: |
           git fetch --quiet origin main staging
           AHEAD=$(git rev-list --left-right --count origin/main...origin/staging | awk '{print $2}')
+          echo "NO_CHANGES=false" >> $GITHUB_OUTPUT
           if [[ "$AHEAD" -eq 0 ]]; then
             echo "SKIP=true"        >> $GITHUB_OUTPUT
             echo "NO_CHANGES=true"  >> $GITHUB_OUTPUT
           fi
-        shell: bash
 
-      # ───── Slack notice when skipping ─────
+      # ───── Slack notice when skipping (no-op or pending release) ─────
       - name: Notify Slack - release skipped
         if: steps.gate.outputs.SKIP == 'true' || steps.diff.outputs.NO_CHANGES == 'true'
         env:
-          SLACK_WEBHOOK_URL:  ${{ secrets.SLACK_WEBHOOK_URL }}
-          UNMERGED:           ${{ steps.gate.outputs.UNMERGED }}
-          NO_CHANGES:         ${{ steps.diff.outputs.NO_CHANGES }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          UNMERGED:          ${{ steps.gate.outputs.UNMERGED }}
+          NO_CHANGES:        ${{ steps.diff.outputs.NO_CHANGES }}
         run: |
           if [[ "$NO_CHANGES" == "true" ]]; then
             TEXT="ℹ️ Weekly release skipped: *staging* has no commits ahead of *main*."
           else
             TEXT="⚠️ Weekly release skipped: an earlier release branch is still open.\n${UNMERGED}"
           fi
-
           curl -X POST "$SLACK_WEBHOOK_URL" \
-              -H 'Content-type: application/json' \
-              --data "{\"text\":\"${TEXT}\"}"
+               -H 'Content-type: application/json' \
+               --data "{\"text\":\"${TEXT}\"}"
 
-      # Combine the two gates
+      # ───── Early exit if nothing to do ─────
       - name: Exit early if we should skip
         if: steps.gate.outputs.SKIP == 'true' || steps.diff.outputs.NO_CHANGES == 'true'
         run: echo "Skipping weekly release - nothing new to ship."
 
-      # Everything below only runs when there *is* something to release
+      # ───── Build the release branch ─────
       - name: Compute next branch name
         if: steps.gate.outputs.SKIP != 'true' && steps.diff.outputs.NO_CHANGES != 'true'
         id: vars
         run: echo "BRANCH=release/$(date -u +'%Y-%m-%d')" >> $GITHUB_OUTPUT
 
-      - name: Create branch from staging
+      - name: Push branch from staging
         if: steps.gate.outputs.SKIP != 'true' && steps.diff.outputs.NO_CHANGES != 'true'
         run: |
           git push origin origin/staging:${{ steps.vars.outputs.BRANCH }}
@@ -89,4 +89,3 @@ jobs:
           destination_branch: ${{ steps.vars.outputs.BRANCH }}
           pr_title:           'chore(release): promote staging to ${{ steps.vars.outputs.BRANCH }}'
           pr_body:            'Automated weekly promotion'
-          
