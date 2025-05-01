@@ -17,7 +17,8 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  TAG_REGEX: '#add-post:|#delete-post:|#update-section:'
+  # Matches only the tag itself (no surrounding words)
+  TAG_REGEX: '(#add-post:|#delete-post:|#update-section:)[^[:space:]]+'
 
 jobs:
   append-deploy-tags:
@@ -25,29 +26,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: 🧾 Checkout Repo
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: staging
-        name: 🧾 Checkout Repo
 
       - name: 🔍 Collect deploy tags
         id: extract
         shell: bash
         run: |
-          tags=$(git log -n 20 --pretty=format:%s | grep -E "$TAG_REGEX" || true)
-          echo "tags<<EOF" >> "$GITHUB_OUTPUT"
-          echo "$tags"       >> "$GITHUB_OUTPUT"
-          echo "EOF"         >> "$GITHUB_OUTPUT"
+          tags=$(git log -n 20 --pretty=format:%s | grep -Eo "$TAG_REGEX" | sort -u)
+          {
+            echo 'tags<<EOF'
+            printf '%s\n' "$tags"
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
 
       - name: 📄 Append to deploy-changelog.md
         if: steps.extract.outputs.tags != ''
+        shell: bash
         run: |
-          clean=$(printf '%s\n' "${{ steps.extract.outputs.tags }}" | sort -u)
           {
-            printf "\n# Auto-appended on %s\n" "$(date +%Y-%m-%d)"
-            echo  "Deploy tags:"
-            printf '* %s\n' $clean
+            printf '\n# Auto-appended on %s\n' "$(date +%F)"
+            echo 'Deploy tags:'
+            printf '%s\n' "${{ steps.extract.outputs.tags }}" | sed 's/^/* /'
           } >> deploy-changelog.md
 
       - name: 🤖 Create pull request
@@ -55,7 +58,7 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
           branch: auto/deploy-changelog
-          base:   staging
+          base: staging
           commit-message: "chore(deploy): auto-update deploy changelog"
           title:  "chore(deploy): auto-update deploy changelog"
           body: |
