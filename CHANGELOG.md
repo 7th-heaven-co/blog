@@ -1,3 +1,13 @@
+## 📦 Release 1.1.1
+
+
+- **ci:** :bug: removed unsupported with block (786919d)
+- **append-deploy-tags:** :ferris_wheel: remove branches-ignore and scope concurrency correctly (420b43a)
+- **jira:** :ferris_wheel: configured jira (f1c93f5)
+
+
+---
+
 ## 📦 Release 1.1.0
 
 
