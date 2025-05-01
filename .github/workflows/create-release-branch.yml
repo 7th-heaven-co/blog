@@ -16,53 +16,72 @@ jobs:
   new-release:
     runs-on: ubuntu-latest
     steps:
-      # ───── Gate: abort if an earlier release branch isn't merged ─────
+      # Fetch everything once
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # ───── Gate 1: skip if an older release branch is still open ─────
       - name: Check for unmerged release branches
         id: gate
         run: |
-          git init -q
-          git remote add origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}
           git fetch --quiet origin 'refs/heads/release/*:refs/remotes/origin/release/*' || true
           UNMERGED=$(git branch -r --no-merged origin/main | grep 'origin/release/' || true)
           if [[ -n "$UNMERGED" ]]; then
-            echo "SKIP=true"           >> $GITHUB_OUTPUT
-            echo "UNMERGED<<EOF"      >> $GITHUB_OUTPUT
-            echo "$UNMERGED"          >> $GITHUB_OUTPUT
-            echo "EOF"                >> $GITHUB_OUTPUT
-            echo "Unmerged release branch(es) detected. Skipping…" >> $GITHUB_STEP_SUMMARY
+            echo "SKIP=true"    >> $GITHUB_OUTPUT
+            echo "UNMERGED<<EOF" >> $GITHUB_OUTPUT
+            echo "$UNMERGED"    >> $GITHUB_OUTPUT
+            echo "EOF"          >> $GITHUB_OUTPUT
           fi
 
+      # ───── Gate 2: skip if staging == main ─────
+      - name: Check if staging is ahead of main
+        id: diff
+        run: |
+          git fetch --quiet origin main staging
+          AHEAD=$(git rev-list --left-right --count origin/main...origin/staging | awk '{print $2}')
+          if [[ "$AHEAD" -eq 0 ]]; then
+            echo "SKIP=true"        >> $GITHUB_OUTPUT
+            echo "NO_CHANGES=true"  >> $GITHUB_OUTPUT
+          fi
+        shell: bash
+
       # ───── Slack notice when skipping ─────
-      # - name: Notify Slack – skipping new release
-      #   if: steps.gate.outputs.SKIP == 'true'
-      #   env:
-      #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-      #     UNMERGED:           ${{ steps.gate.outputs.UNMERGED }}
-      #   run: |
-      #     curl -X POST "$SLACK_WEBHOOK_URL" \
-      #          -H 'Content-type: application/json' \
-      #          --data "{\"text\":\"⚠️ Weekly release skipped: unmerged release branch still pending.%0A${UNMERGED}\"}"
+      - name: Notify Slack - release skipped
+        if: steps.gate.outputs.SKIP == 'true' || steps.diff.outputs.NO_CHANGES == 'true'
+        env:
+          SLACK_WEBHOOK_URL:  ${{ secrets.SLACK_WEBHOOK_URL }}
+          UNMERGED:           ${{ steps.gate.outputs.UNMERGED }}
+          NO_CHANGES:         ${{ steps.diff.outputs.NO_CHANGES }}
+        run: |
+          if [[ "$NO_CHANGES" == "true" ]]; then
+            TEXT="ℹ️ Weekly release skipped: *staging* has no commits ahead of *main*."
+          else
+            TEXT="⚠️ Weekly release skipped: an earlier release branch is still open.\n${UNMERGED}"
+          fi
 
-      - name: Exit if previous release still open
-        if: steps.gate.outputs.SKIP == 'true'
-        run: echo "Skipping this run—previous release branch still pending."
+          curl -X POST "$SLACK_WEBHOOK_URL" \
+              -H 'Content-type: application/json' \
+              --data "{\"text\":\"${TEXT}\"}"
 
-      # ───── Compute branch name (date‑based) ─────
+      # Combine the two gates
+      - name: Exit early if we should skip
+        if: steps.gate.outputs.SKIP == 'true' || steps.diff.outputs.NO_CHANGES == 'true'
+        run: echo "Skipping weekly release - nothing new to ship."
+
+      # Everything below only runs when there *is* something to release
       - name: Compute next branch name
-        if: steps.gate.outputs.SKIP != 'true'
+        if: steps.gate.outputs.SKIP != 'true' && steps.diff.outputs.NO_CHANGES != 'true'
         id: vars
         run: echo "BRANCH=release/$(date -u +'%Y-%m-%d')" >> $GITHUB_OUTPUT
 
-      # ───── Create branch from staging ─────
       - name: Create branch from staging
-        if: steps.gate.outputs.SKIP != 'true'
+        if: steps.gate.outputs.SKIP != 'true' && steps.diff.outputs.NO_CHANGES != 'true'
         run: |
-          git clone --depth=1 --branch=staging https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }} .
-          git push origin HEAD:${{ steps.vars.outputs.BRANCH }}
+          git push origin origin/staging:${{ steps.vars.outputs.BRANCH }}
 
-      # ───── Open PR staging → release/* ─────
       - name: Open PR staging → release/*
-        if: steps.gate.outputs.SKIP != 'true'
+        if: steps.gate.outputs.SKIP != 'true' && steps.diff.outputs.NO_CHANGES != 'true'
         uses: repo-sync/pull-request@v2
         with:
           github_token:       ${{ secrets.GITHUB_TOKEN }}
@@ -70,3 +89,4 @@ jobs:
           destination_branch: ${{ steps.vars.outputs.BRANCH }}
           pr_title:           'chore(release): promote staging to ${{ steps.vars.outputs.BRANCH }}'
           pr_body:            'Automated weekly promotion'
+          
