@@ -1,3 +1,4 @@
+# .github/workflows/report-client-failure.yml
 name: 🛑 Report client-tests failures to Jira
 
 on:
@@ -5,15 +6,19 @@ on:
     workflows: ["Client Tests"]
     types: [completed]
 
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
   report:
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-        with: { fetch-depth: 0 }
-
+      # -------------------------------------------------------------
+      # 1) Download failing job logs with the built-in GH CLI
+      # -------------------------------------------------------------
       - name: ⬇️  Download workflow logs
         id: logs
         run: |
@@ -21,14 +26,36 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      # -------------------------------------------------------------
+      # 2) Report / dedupe via helper (captures outputs)
+      # -------------------------------------------------------------
       - name: 📝  Report to Jira (deduped)
+        id: report
         run: |
           cat client-tests-logs/*.txt | \
             node scripts/report-jira.js \
               --source ci-failure \
-              --job "${{ github.event.workflow.name }}" \
+              --job  "${{ github.event.workflow.name }}" \
               --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         env:
-          JIRA_BASE_URL:  ${{ secrets.JIRA_BASE_URL }}
-          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          JIRA_BASE_URL:   ${{ secrets.JIRA_BASE_URL }}
+          JIRA_API_TOKEN:  ${{ secrets.JIRA_API_TOKEN }}
           JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
+
+      # -------------------------------------------------------------
+      # 3) Transition the ticket if a key was returned
+      # -------------------------------------------------------------
+      - name: 🔐  Jira login
+        if: ${{ steps.report.outputs.issue_key != '' }}
+        uses: atlassian/gajira-login@v3
+        env:
+          JIRA_BASE_URL:   ${{ secrets.JIRA_BASE_URL }}
+          JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
+          JIRA_API_TOKEN:  ${{ secrets.JIRA_API_TOKEN }}
+
+      - name: 🚚  Move ${{ steps.report.outputs.issue_key }} ➜ TO DO
+        if: ${{ steps.report.outputs.issue_key != '' }}
+        uses: atlassian/gajira-transition@v3
+        with:
+          issue:      ${{ steps.report.outputs.issue_key }}
+          transition: "TO DO"

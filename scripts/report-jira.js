@@ -1,16 +1,18 @@
 /**
  * scripts/report-jira.js
  * Centralised failure-to-Jira reporter with SHA-256 stack-fingerprint de-dupe.
+ * Emits GHA outputs: issue_key, fingerprint
  * Works in both Node 20 (CI) and Cloudflare Workers runtime.
  * -----------------------------------------------------------
  */
 
 import { Buffer } from 'node:buffer';
+import fs from 'node:fs/promises';
 import process from 'node:process';
 
 // ---------- Runtime-agnostic SHA-256 ----------------------------------------
 
-const subtle = globalThis.crypto?.subtle; // Web Crypto (Workers / modern Node)
+const subtle = globalThis.crypto?.subtle;
 const nodeCrypto = !subtle ? await import('node:crypto') : null;
 
 async function sha256(data) {
@@ -24,17 +26,15 @@ async function sha256(data) {
 
 export async function fingerprint(stack) {
   const hash = await sha256(stack);
-  return hash.slice(0, 8); // 8-char fingerprint
+  return hash.slice(0, 8);
 }
 
-// ---------- Jira REST helpers ----------------------------------------------
+// ---------- Jira REST wrappers ---------------------------------------------
 
 const { JIRA_BASE_URL, JIRA_API_TOKEN, JIRA_USER_EMAIL } = process.env;
 
 if (!JIRA_BASE_URL || !JIRA_API_TOKEN || !JIRA_USER_EMAIL) {
-  throw new Error(
-    'JIRA* env vars missing. Configure JIRA_BASE_URL, JIRA_API_TOKEN, JIRA_USER_EMAIL.',
-  );
+  throw new Error('Missing JIRA env vars (JIRA_BASE_URL, JIRA_API_TOKEN, JIRA_USER_EMAIL).');
 }
 
 const HEADERS = {
@@ -49,20 +49,24 @@ async function jiraFetch(method, path, body) {
     body: body ? JSON.stringify(body) : undefined,
   });
   if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`Jira API ${method} ${path} failed: ${res.status} – ${text}`);
+    const txt = await res.text();
+    throw new Error(`Jira ${method} ${path} → ${res.status}: ${txt}`);
   }
   return res.json();
 }
 
-async function findIssueByFingerprint(fp) {
+async function findIssueByFp(fp) {
   const jql = `project = HEAVB AND issuetype = Bug AND summary ~ "– ${fp}" ORDER BY created DESC`;
-  const data = await jiraFetch('POST', '/rest/api/3/search', { jql, maxResults: 1, fields: [] });
+  const data = await jiraFetch('POST', '/rest/api/3/search', {
+    jql,
+    maxResults: 1,
+    fields: [],
+  });
   return data.issues[0];
 }
 
 async function createBug(summary, description, labels) {
-  const payload = {
+  return jiraFetch('POST', '/rest/api/3/issue', {
     fields: {
       project: { key: 'HEAVB' },
       issuetype: { name: 'Bug' },
@@ -70,17 +74,11 @@ async function createBug(summary, description, labels) {
       description: {
         type: 'doc',
         version: 1,
-        content: [
-          {
-            type: 'paragraph',
-            content: [{ type: 'text', text: description }],
-          },
-        ],
+        content: [{ type: 'paragraph', content: [{ type: 'text', text: description }] }],
       },
       labels,
     },
-  };
-  return jiraFetch('POST', '/rest/api/3/issue', payload);
+  });
 }
 
 async function addComment(issueKey, body) {
@@ -90,10 +88,10 @@ async function addComment(issueKey, body) {
 // ---------- Public API ------------------------------------------------------
 
 /**
+ * Report an error to Jira and return the key.
  * @param {Error|string} err
- * @param {object} opts
- * @param {'ci-failure'|'runtime'} opts.source
- * @param {Record<string, any>} [opts.context]  Extra diagnostics (will be JSON.stringified)
+ * @param {{source:'ci-failure'|'runtime', context?:Record<string,any>}} opts
+ * @returns {Promise<string>} Jira issue key
  */
 export async function reportJira(err, { source, context } = {}) {
   const stack = typeof err === 'string' ? err : err.stack || String(err);
@@ -102,11 +100,10 @@ export async function reportJira(err, { source, context } = {}) {
   const summary = `[${source}] ${err.name ?? 'Error'} – ${fp}`;
   const labels = [source, `fingerprint-${fp}`];
 
-  // Try to find an existing ticket with this fingerprint
-  const existing = await findIssueByFingerprint(fp);
+  const existing = await findIssueByFp(fp);
 
   if (!existing) {
-    const description = `**Source:** ${source}
+    const desc = `**Source:** ${source}
 **Fingerprint:** ${fp}
 
 \`\`\`text
@@ -124,12 +121,11 @@ ${JSON.stringify(context, null, 2)}
     : ''
 }`;
 
-    const created = await createBug(summary, description, labels);
-    console.log(`🪄  Jira bug created: ${created.key}`);
-    return created.key;
+    const { key } = await createBug(summary, desc, labels);
+    console.log(`🪄  Created Jira bug: ${key}`);
+    return key;
   }
 
-  // Otherwise, append a comment
   await addComment(existing.key, {
     type: 'doc',
     version: 1,
@@ -137,7 +133,7 @@ ${JSON.stringify(context, null, 2)}
       {
         type: 'paragraph',
         content: [
-          { type: 'text', text: 'Failure re-occurred:\\n\\n' },
+          { type: 'text', text: 'Failure re-occurred:\n\n' },
           { type: 'text', text: stack, marks: [{ type: 'code' }] },
         ],
       },
@@ -147,24 +143,38 @@ ${JSON.stringify(context, null, 2)}
   return existing.key;
 }
 
-// ---------- CLI entry-point (used by GitHub Actions) ------------------------
+// ---------- CLI entry-point -------------------------------------------------
 
 if (import.meta.url === `file://${process.argv[1]}`) {
-  // Minimal arg parsing
-  const arg = (name) => {
-    const idx = process.argv.indexOf(`--${name}`);
-    return idx !== -1 ? process.argv[idx + 1] : undefined;
+  const arg = (n) => {
+    const i = process.argv.indexOf(`--${n}`);
+    return i !== -1 ? process.argv[i + 1] : undefined;
   };
 
   const source = arg('source') || 'ci-failure';
   const job = arg('job');
   const runUrl = arg('run-url');
 
+  // Capture stdin (e.g., pipeline logs)
   const log = await (async () => {
     let data = '';
     for await (const chunk of process.stdin) data += chunk;
     return data.trim() || 'No log captured.';
   })();
 
-  await reportJira(new Error('CI failed'), { source, context: { job, runUrl, log } });
+  const key = await reportJira(new Error('Failure reported'), {
+    source,
+    context: { job, runUrl, log },
+  });
+
+  // --- Emit GitHub-Actions outputs ----------------------------------------
+  if (process.env.GITHUB_OUTPUT) {
+    await fs.appendFile(
+      process.env.GITHUB_OUTPUT,
+      `issue_key=${key}\nfingerprint=${await fingerprint(log)}\n`,
+    );
+  }
+
+  // Also echo key for local usage
+  console.log(`::notice::jira-key=${key}`);
 }
