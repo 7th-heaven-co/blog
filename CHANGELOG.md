@@ -1,3 +1,12 @@
+## 📦 Release 1.2.0-beta.2
+
+
+- Merge pull request #51 from 7th-heaven-co/dev (17fcb98)
+- **ci-cd:** :bug: pass correct Jira issue_key to gajira-transition (6e01508)
+
+
+---
+
 ## 📦 Release 1.2.0-beta.1
 
 
