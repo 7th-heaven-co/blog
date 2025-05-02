@@ -1,3 +1,34 @@
+## 📦 Release 1.2.0-beta.1
+
+
+- Merge pull request #36 from 7th-heaven-co/HEAVB-14 (b2b1e9a)
+- Merge pull request #37 from 7th-heaven-co/HEAVB-14 (def9d0d)
+- Merge pull request #38 from 7th-heaven-co/dev (060459e)
+- Merge pull request #41 from 7th-heaven-co/HEAVB-39 (1b5e899)
+- Merge pull request #42 from 7th-heaven-co/dev (eaef585)
+- Merge pull request #43 from 7th-heaven-co/auto/deploy-changelog (d9ed403)
+- Merge pull request #44 from 7th-heaven-co/auto/deploy-changelog (9fcf278)
+- Merge pull request #46 from 7th-heaven-co/HEAVB-31 (15069a1)
+- Merge pull request #47 from 7th-heaven-co/dev (7173e97)
+- Merge pull request #48 from 7th-heaven-co/dev (9ff0533)
+- Merge pull request #49 from 7th-heaven-co/dev (0825109)
+- Merge pull request #50 from 7th-heaven-co/dev (403df29)
+- **ci-cd:** :sparkles: consolidate CI & runtime failure reporting with SHA-256 de-dupe (fb31605)
+- **ci-cd:** :ferris_wheel: align env var names in jira-components.yml (b9aa642)
+- **ci-cd:** :ferris_wheel: fan-out transition workflow to handle multiple Jira keys (f24f22a)
+- **ci-cd:** :ferris_wheel: fix “Auto Append Deploy Tags” workflow when no deploy tags are present (d82e2d7)
+- **ci-cd:** :ferris_wheel: import minimatch as named export (6063f42)
+- **ci-cd:** :ferris_wheel: point validate-commit-scopes.yml to verify-components-map.js (502e396)
+- **ci-cd:** :ferris_wheel: scaffold single-source component tooling (1d4e56b)
+- **github-actions:** :ferris_wheel: fix word-splitting in workflow (d55f0ce)
+- **release-workflow:** :ferris_wheel: ♻️  skip weekly release when no staging commits & enable Slack (57503eb)
+- **release-workflow:** :ferris_wheel: gate weekly release on changes & add Slack alert (b8d55d9)
+- **deploy:** auto-update deploy changelog (a7a5586)
+- **deploy:** auto-update deploy changelog (900868d)
+
+
+---
+
 ## 📦 Release 1.1.1
 
 
