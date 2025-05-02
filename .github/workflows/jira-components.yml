@@ -64,9 +64,9 @@ jobs:
       - name: 🎫 Push components to Jira
         if: steps.detect.outputs.NAMESPACED_COMPONENTS != ''
         env:
-          JIRA_BASE:  ${{ secrets.JIRA_BASE_URL }}   # e.g. https://7th-heaven.atlassian.net
-          JIRA_USER:  ${{ secrets.JIRA_USER_EMAIL }}   # email or API user
-          JIRA_TOKEN: ${{ secrets.JIRA_API_TOKEN }}  # API token
+          JIRA_BASE_URL:  ${{ secrets.JIRA_BASE_URL }}   # e.g. https://7th-heaven.atlassian.net
+          JIRA_USER_EMAIL:  ${{ secrets.JIRA_USER_EMAIL }}   # email or API user
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}  # API token
         run: |
           node scripts/set-jira-components.js \
             "${{ steps.detect.outputs.NAMESPACED_COMPONENTS }}" \
