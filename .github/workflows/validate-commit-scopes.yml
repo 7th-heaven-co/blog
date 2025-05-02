@@ -17,7 +17,7 @@ jobs:
       - run: npm ci --ignore-scripts
 
       - name: Verify components map
-        run: node scripts/verify-components-map.mjs
+        run: node scripts/verify-components-map.js
 
       - name: Commitlint PR range
         env: { CI: 'true' }
