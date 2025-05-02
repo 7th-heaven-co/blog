@@ -16,7 +16,7 @@
 import { execSync } from 'node:child_process';
 import { appendFileSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import minimatch from 'minimatch';
+import { minimatch } from 'minimatch'; // ← named export
 
 const MAP_PATH = resolve('.config/components-map.json');
 
