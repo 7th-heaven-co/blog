@@ -9,3 +9,6 @@ npx biome check .
 
 # disallow manual package.json version change
 node ./scripts/check-version-lock.js
+
+# Validate map + regenerate compass.yml
+node scripts/verify-components-map.js || exit 1

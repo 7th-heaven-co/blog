@@ -1,0 +1,111 @@
+components:
+  - name: blog-frontend
+    type: service
+    lifecycle: production
+    owner: 7th-heaven/platform
+    links:
+      - type: REPOSITORY
+        url: https://github.com/7th-heaven-co/REPO
+    tags:
+      - blog
+      - frontend
+  - name: blog-styling
+    type: service
+    lifecycle: production
+    owner: 7th-heaven/platform
+    links:
+      - type: REPOSITORY
+        url: https://github.com/7th-heaven-co/REPO
+    tags:
+      - blog
+      - styling
+  - name: blog-cloudflare-fn
+    type: service
+    lifecycle: production
+    owner: 7th-heaven/platform
+    links:
+      - type: REPOSITORY
+        url: https://github.com/7th-heaven-co/REPO
+    tags:
+      - blog
+      - cloudflare-fn
+  - name: blog-workers
+    type: service
+    lifecycle: production
+    owner: 7th-heaven/platform
+    links:
+      - type: REPOSITORY
+        url: https://github.com/7th-heaven-co/REPO
+    tags:
+      - blog
+      - workers
+  - name: blog-database
+    type: service
+    lifecycle: production
+    owner: 7th-heaven/platform
+    links:
+      - type: REPOSITORY
+        url: https://github.com/7th-heaven-co/REPO
+    tags:
+      - blog
+      - database
+  - name: blog-backend-api
+    type: service
+    lifecycle: production
+    owner: 7th-heaven/platform
+    links:
+      - type: REPOSITORY
+        url: https://github.com/7th-heaven-co/REPO
+    tags:
+      - blog
+      - backend-api
+  - name: blog-ci-cd
+    type: service
+    lifecycle: production
+    owner: 7th-heaven/platform
+    links:
+      - type: REPOSITORY
+        url: https://github.com/7th-heaven-co/REPO
+    tags:
+      - blog
+      - ci-cd
+  - name: blog-content-mdx
+    type: service
+    lifecycle: production
+    owner: 7th-heaven/platform
+    links:
+      - type: REPOSITORY
+        url: https://github.com/7th-heaven-co/REPO
+    tags:
+      - blog
+      - content-mdx
+  - name: blog-docs-site
+    type: service
+    lifecycle: production
+    owner: 7th-heaven/platform
+    links:
+      - type: REPOSITORY
+        url: https://github.com/7th-heaven-co/REPO
+    tags:
+      - blog
+      - docs-site
+  - name: blog-design-system
+    type: service
+    lifecycle: production
+    owner: 7th-heaven/platform
+    links:
+      - type: REPOSITORY
+        url: https://github.com/7th-heaven-co/REPO
+    tags:
+      - blog
+      - design-system
+  - name: blog-analytics
+    type: service
+    lifecycle: production
+    owner: 7th-heaven/platform
+    links:
+      - type: REPOSITORY
+        url: https://github.com/7th-heaven-co/REPO
+    tags:
+      - blog
+      - analytics

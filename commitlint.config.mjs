@@ -1,4 +1,16 @@
 // commitlint.config.mjs
+// commitlint.config.mjs
+import { readFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+/* Resolve repo-relative path regardless of where the config is executed */
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const mapPath = resolve(__dirname, '.config/components-map.json');
+const map = JSON.parse(readFileSync(mapPath, 'utf8'));
+
+const scopes = Object.keys(map).filter((k) => !k.startsWith('$'));
+
 /** @type {import('cz-git').UserConfig} */
 export default {
   extends: ['@commitlint/config-conventional'],
@@ -27,6 +39,7 @@ export default {
     ],
     'scope-case': [2, 'always', 'kebab-case'],
     'subject-case': [0],
+    'scope-enum': [2, 'always', scopes],
   },
   // keep the ignore for semantic-release commits
   ignores: [(msg) => msg.startsWith('chore(release)')],
