@@ -1,0 +1,27 @@
+name: Validate commit scopes
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+
+      - uses: actions/setup-node@v4
+        with: { node-version: '20', cache: npm }
+
+      - run: npm ci --ignore-scripts
+
+      - name: Verify components map
+        run: node scripts/verify-components-map.js
+
+      - name: Commitlint PR range
+        env: { CI: 'true' }
+        run: |
+          BASE="${{ github.event.pull_request.base.sha }}"
+          HEAD="${{ github.event.pull_request.head.sha }}"
+          npx commitlint --from="$BASE" --to="$HEAD"

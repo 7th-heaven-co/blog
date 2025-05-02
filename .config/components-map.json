@@ -1,0 +1,20 @@
+{
+  "$namespace": "blog",
+  "frontend": [
+    "src/pages/**",
+    "src/layouts/**",
+    "src/components/**",
+    "src/hooks/**",
+    "src/utils/**"
+  ],
+  "styling": ["src/styles/**", "src/animations/**", "public/**"],
+  "cloudflare-fn": ["functions/**"],
+  "workers": ["edge-workers/**"],
+  "database": ["migrations/**", "db/**", "src/lib/**"],
+  "backend-api": ["pages/api/**"],
+  "ci-cd": [".github/workflows/**", "scripts/"],
+  "content-mdx": ["src/content/**"],
+  "docs-site": ["site/docs/**"],
+  "design-system": ["packages/style-lib/**"],
+  "analytics": ["monitoring/**"]
+}
