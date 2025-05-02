@@ -75,4 +75,17 @@ Use PR templates:
 
 ---
 
+## Component scopes & commits
+
+* Single source of truth: `/.config/components-map.json`
+  * `$namespace` = project slug (`blog`)
+  * Keys (frontend, workers, etc.) = commit scopes & Jira Components
+* **Adding a component?**
+  1. Edit the JSON (keep globs tidy)
+  2. Run `npm run verify-map` (or just commit—hooks will run)
+  3. Use the new key in your commit scope: `feat(<key>): ...`
+* Pre-commit + CI will block unknown scopes or malformed JSON.
+
+---
+
 For questions or suggestions, open an issue or ping a maintainer. Thanks again!

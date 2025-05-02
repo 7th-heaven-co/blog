@@ -4,6 +4,8 @@
 
 const { defineConfig } = require('cz-git');
 
+const map = require('./.config/components-map.json');
+
 module.exports = defineConfig({
   /**
    * Commit types (same list you had in commitlint.config.mjs)
@@ -39,8 +41,8 @@ module.exports = defineConfig({
     { value: 'revert', name: 'revert:   ⏪️  Revert a previous commit', emoji: ':rewind:' },
   ],
 
-  /** Commit scopes (optional) */
-  scopes: ['ui', 'auth', 'email', 'infra'],
+  scopes: Object.keys(map).filter((k) => !k.startsWith('$')),
+  allowCustomScopes: false,
 
   /** Jira / issue prefixes */
   issuePrefixes: [{ value: 'HEAVB-', name: 'HEAVB-: 7th-Heaven Blog' }],
