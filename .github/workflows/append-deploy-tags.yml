@@ -1,3 +1,4 @@
+# .github/workflows/auto-append-deploy-tags.yml
 name: Auto Append Deploy Tags
 
 on:
@@ -17,7 +18,6 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  # Matches only the tag itself (no surrounding words)
   TAG_REGEX: '(#add-post:|#delete-post:|#update-section:)[^[:space:]]+'
 
 jobs:
@@ -36,7 +36,17 @@ jobs:
         id: extract
         shell: bash
         run: |
-          tags=$(git log -n 20 --pretty=format:%s | grep -Eo "$TAG_REGEX" | sort -u)
+          set -euo pipefail
+
+          # Pull unique deploy‐tags from the last 20 commit messages.
+          # '|| true' keeps the step green when no matches are found.
+          tags=$(git log -n 20 --pretty=format:%s \
+                 | grep -Eo "$TAG_REGEX" | sort -u || true)
+
+          if [[ -z "$tags" ]]; then
+            echo "No deploy tags found in the last 20 commits."
+          fi
+
           {
             echo 'tags<<EOF'
             printf '%s\n' "$tags"
