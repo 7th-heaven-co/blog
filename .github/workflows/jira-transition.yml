@@ -1,17 +1,12 @@
 # .github/workflows/jira-transition.yml
-name: Transition Jira issue on PR merge
+name: Transition Jira issues on PR merge
 
 on:
   pull_request:
     types: [closed]
 
 jobs:
-  transition:
-    # ─────────────────────────────────────────────────────────────
-    # Run only when…
-    #   • the PR is merged, AND
-    #   • the base branch is NOT auto/**, docs/**, dependabot/**, or renovate/**
-    # ─────────────────────────────────────────────────────────────
+  prepare:
     if: >
       github.event.pull_request.merged == true &&
       !startsWith(github.event.pull_request.base.ref, 'auto/') &&
@@ -19,36 +14,52 @@ jobs:
       !startsWith(github.event.pull_request.base.ref, 'dependabot/') &&
       !startsWith(github.event.pull_request.base.ref, 'renovate/')
     runs-on: ubuntu-latest
+    outputs:
+      keys: ${{ steps.vars.outputs.keys }}
+      transition: ${{ steps.vars.outputs.transition }}
     steps:
-      # 1️⃣ Log in once for all downstream Jira actions
-      - name: 🔐 Jira login
-        uses: atlassian/gajira-login@v3 #   ▲ v3 has **no inputs** – it reads env vars
-        env:
-          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }} # https://<tenant>.atlassian.net
-          JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }} # Atlassian-account email
-          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }} # 24-char API token
-
-      # 2️⃣ Decide the transition based on the PR’s target branch
       - id: vars
         shell: bash
         run: |
-          # Detect the Jira key from the PR title, e.g. HEAVB-123
-          KEY=$(echo "${{ github.event.pull_request.title }}" | grep -oE '[A-Z]+-[0-9]+')
-          # The branch the PR is merging *into*
-          TARGET="${{ github.event.pull_request.base.ref }}"
-          case "$TARGET" in
-            dev)        STATUS="IN REVIEW"   ;;  # feature → dev
-            staging)    STATUS="STAGING"     ;;  # dev → staging
-            release/*)  STATUS="RELEASE"     ;;  # main → release/*
-            main)       STATUS="DONE"        ;;  # production
-            *)          STATUS="IN PROGRESS" ;;  # everything else
+          set -euo pipefail
+
+          TITLE="${{ github.event.pull_request.title }}"
+          BASE="${{ github.event.pull_request.base.ref }}"
+
+          # Extract all ABC-123 keys, dedupe, emit as JSON array
+          KEYS=$(grep -oE '[A-Z]+-[0-9]+' <<<"$TITLE" |
+                 sort -u |
+                 jq -R -s -c 'split("\n") - [""]')
+
+          # Map base branch → desired Jira status
+          case "$BASE" in
+            dev)                 STATUS="IN REVIEW"   ;;  # feature → dev
+            staging)             STATUS="STAGING"     ;;  # dev → staging
+            release/*|release*)  STATUS="RELEASE"     ;;  # staging → release/*
+            main)                STATUS="DONE"        ;;  # release/* → main
+            *)                   STATUS="IN PROGRESS" ;;
           esac
-          echo "issue=$KEY"         >> "$GITHUB_OUTPUT"
+
+          echo "keys=$KEYS" >> "$GITHUB_OUTPUT"
           echo "transition=$STATUS" >> "$GITHUB_OUTPUT"
 
-      # 3️⃣ Apply that transition once per merged PR
-      - name: 🚚 Transition Jira issue
+  transition:
+    if: ${{ needs.prepare.outputs.keys != '[]' }}
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        issue: ${{ fromJson(needs.prepare.outputs.keys) }}
+    steps:
+      - name: 🔐 Jira login
+        uses: atlassian/gajira-login@v3
+        env:
+          JIRA_BASE_URL:   ${{ secrets.JIRA_BASE_URL }}
+          JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
+          JIRA_API_TOKEN:  ${{ secrets.JIRA_API_TOKEN }}
+
+      - name: 🚚 Transition ${{ matrix.issue }} ➜ ${{ needs.prepare.outputs.transition }}
         uses: atlassian/gajira-transition@v3
         with:
-          issue: ${{ steps.vars.outputs.issue }}
-          transition: ${{ steps.vars.outputs.transition }}
+          issue: ${{ matrix.issue }}
+          transition: ${{ needs.prepare.outputs.transition }}
