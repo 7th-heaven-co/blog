@@ -1,0 +1,73 @@
+# .github/workflows/jira-components.yml
+# Sync changed components from a PR → GitHub labels → Jira Components
+# Requires:
+#   • scripts/detect-components.js         (outputs LOCAL_COMPONENTS + NAMESPACED_COMPONENTS)
+#   • scripts/set-jira-components.js       (takes namespaced CSV list, updates Jira via REST)
+#   • Secrets: JIRA_BASE_URL, JIRA_USER_EMAIL, JIRA_API_TOKEN
+
+name: Sync components to Jira
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}-jira-components
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pull-requests: write      # needed for labeling the PR
+
+    steps:
+      # 1 ── Checkout code
+      - name: 🛎️ Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0        # full history for diff
+
+      # 2 ── Install deps with npm
+      - name: 🏗️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm            # built-in npm cache
+
+      - name: 📥 Install dependencies
+        run: npm ci --ignore-scripts
+
+      # 3 ── Detect components that changed in this PR
+      - name: 🔍 Detect components from diff
+        id: detect
+        run: |
+          node scripts/detect-components.js \
+            --base "${{ github.event.pull_request.base.sha }}" \
+            --head "${{ github.event.pull_request.head.sha }}"
+
+      # detect-components.js must echo:
+      #   LOCAL_COMPONENTS=frontend,ci-cd
+      #   NAMESPACED_COMPONENTS=blog-frontend,blog-ci-cd
+
+      # 4 ── Label the PR with local component names
+      - name: 🏷️ Label PR
+        if: steps.detect.outputs.LOCAL_COMPONENTS != ''
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: ${{ steps.detect.outputs.LOCAL_COMPONENTS }}
+
+      # 5 ── Update Jira issues with namespaced components
+      - name: 🎫 Push components to Jira
+        if: steps.detect.outputs.NAMESPACED_COMPONENTS != ''
+        env:
+          JIRA_BASE_URL:  ${{ secrets.JIRA_BASE_URL }}   # e.g. https://7th-heaven.atlassian.net
+          JIRA_USER_EMAIL:  ${{ secrets.JIRA_USER_EMAIL }}   # email or API user
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}  # API token
+        run: |
+          node scripts/set-jira-components.js \
+            "${{ steps.detect.outputs.NAMESPACED_COMPONENTS }}" \
+            "${{ github.event.pull_request.head.ref }}"
