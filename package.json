@@ -1,7 +1,7 @@
 {
   "name": "seventh-heaven-blog",
   "type": "module",
-  "version": "1.2.0",
+  "version": "1.3.0-beta.1",
   "scripts": {
     "sass": "sass src/styles/global.scss public/styles/global.css --no-source-map",
     "dev-sass": "npx sass --watch src/styles/global.scss:public/styles/global.css",

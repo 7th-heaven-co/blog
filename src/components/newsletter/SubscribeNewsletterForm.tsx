@@ -9,7 +9,7 @@
 import DOMPurify from 'dompurify';
 import React, { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
 import { z } from 'zod';
-import { limitInputLength } from '../utils/isValidInput';
+import { limitInputLength } from '../../utils/isValidInput';
 
 /* ── Zod schema ───────────────────────────────────────────────────────── */
 const formSchema = z.object({
@@ -149,7 +149,8 @@ export default function SubscribeNewsletterForm({
     setResponseMessage('Subscribing...');
 
     try {
-      const res = await fetch('/api/subscribe-to-newsletter', { method: 'POST', body: payload });
+      const subscribe = '../../api/subscribe-to-newsletter';
+      const res = await fetch(subscribe, { method: 'POST', body: payload });
       const data = await res.json();
       if (data.error) {
         setResponseMessage(data.error);
