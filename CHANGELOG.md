@@ -1,3 +1,29 @@
+## 📦 Release 1.3.0
+
+
+- Merge pull request #56 from 7th-heaven-co/HEAVB-52 (68f4c1a)
+- Merge pull request #58 from 7th-heaven-co/dev (a2e3628)
+- Merge pull request #59 from 7th-heaven-co/staging (9d4c5ef)
+- **frontend:** :sparkles: surface newsletter signup form above the fold (2a5a03d)
+- **ci-cd:** :ferris_wheel: fix label sync failure by adding issues:write permission (0a281af)
+- **ci-cd:** :ferris_wheel: newline-separate LOCAL_COMPONENTS in detect-components.js (83cd32a)
+- **release:** 1.3.0-beta.1 [skip ci] (33fd6b5)
+
+
+---
+
+## 📦 Release 1.3.0-beta.1
+
+
+- Merge pull request #56 from 7th-heaven-co/HEAVB-52 (68f4c1a)
+- Merge pull request #58 from 7th-heaven-co/dev (a2e3628)
+- **frontend:** :sparkles: surface newsletter signup form above the fold (2a5a03d)
+- **ci-cd:** :ferris_wheel: fix label sync failure by adding issues:write permission (0a281af)
+- **ci-cd:** :ferris_wheel: newline-separate LOCAL_COMPONENTS in detect-components.js (83cd32a)
+
+
+---
+
 ## 📦 Release 1.2.0
 
 
