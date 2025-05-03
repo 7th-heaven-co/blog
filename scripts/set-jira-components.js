@@ -1,18 +1,22 @@
 #!/usr/bin/env node
 /**
- * Push component names to Jira issues referenced by a branch.
+ * Push component names to Jira issues referenced by a PR.
  *
- * Usage:
- *   node scripts/set-jira-components.js '["blog-frontend","blog-ci-cd"]' \
- *        "$BRANCH" "$PR_TITLE" "$PR_BODY"
+ * Usage (CI):
+ *   node scripts/set-jira-components.js '["blog-frontend","blog-ci-cd"]' "$BRANCH"
  *
+ * First arg MAY be:
+ *   • JSON array string (preferred) → ["comp-a","comp-b"]
+ *   • Legacy comma-separated string → comp-a,comp-b
  *
  * Required env vars: JIRA_BASE_URL, JIRA_USER_EMAIL, JIRA_API_TOKEN
  */
 
+import { readFileSync } from 'node:fs';
 import process from 'node:process';
 import fetch from 'node-fetch';
 
+// ─── helpers ──────────────────────────────────────────────────────────────
 function die(msg, code = 1) {
   console.error(`ERROR: ${msg}`);
   process.exit(code);
@@ -28,7 +32,7 @@ function parseComponents(arg) {
       .filter(Boolean);
   }
 }
-// ⬇️ NEW — search all provided texts
+// Extract JIRA keys from any strings
 function extractIssueKeys(...texts) {
   const regex = /([A-Z][A-Z0-9]+-\d+)/gi;
   const keys = new Set();
@@ -36,30 +40,41 @@ function extractIssueKeys(...texts) {
     for (const m of txt?.matchAll(regex) || []) keys.add(m[1].toUpperCase());
   return [...keys];
 }
-
 async function addComponents(issueKey, comps, baseUrl, auth) {
   const url = `${baseUrl}/rest/api/3/issue/${issueKey}`;
-  const body = { update: { components: [{ set: comps.map((name) => ({ name })) }] } };
+  const body = { update: { components: [{ set: comps.map((n) => ({ name: n })) }] } };
   const res = await fetch(url, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json', Authorization: `Basic ${auth}` },
     body: JSON.stringify(body),
   });
-  if (!res.ok)
-    throw new Error(
-      `Jira responded ${res.status}: ${await res.text().catch(() => res.statusText)}`,
-    );
+  if (!res.ok) {
+    const err = await res.text().catch(() => res.statusText);
+    throw new Error(`Jira responded ${res.status}: ${err}`);
+  }
   console.log(`✔️  Updated ${issueKey} with [${comps.join(', ')}]`);
 }
 
+// ─── main ─────────────────────────────────────────────────────────────────
 (async () => {
-  const [compsArg, ...sources] = process.argv.slice(2);
+  const [compsArg, branchRef] = process.argv.slice(2);
   const comps = parseComponents(compsArg);
   if (!comps.length) die('No components supplied');
 
-  const issueKeys = extractIssueKeys(...sources);
+  // Read PR title/body from event payload
+  let prTitle = '';
+  let prBody = '';
+  try {
+    const event = JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8'));
+    if (event.pull_request) {
+      prTitle = event.pull_request.title || '';
+      prBody = event.pull_request.body || '';
+    }
+  } catch {}
+
+  const issueKeys = extractIssueKeys(branchRef, prTitle, prBody);
   if (!issueKeys.length) {
-    console.log('ℹ️  No Jira issue key in branch title or body — skipping component sync.');
+    console.log('ℹ️  No Jira issue key in branch/title/body — skipping component sync.');
     process.exit(0);
   }
 
@@ -68,11 +83,12 @@ async function addComponents(issueKey, comps, baseUrl, auth) {
     die('Missing env vars: JIRA_BASE_URL, JIRA_USER_EMAIL, JIRA_API_TOKEN');
 
   const auth = Buffer.from(`${JIRA_USER_EMAIL}:${JIRA_API_TOKEN}`).toString('base64');
-  for (const key of issueKeys)
+  for (const key of issueKeys) {
     try {
       await addComponents(key, comps, JIRA_BASE_URL.replace(/\/$/, ''), auth);
     } catch (err) {
       console.error(`✖️  Failed to update ${key}: `, err.message);
       process.exitCode = 1;
     }
+  }
 })();
