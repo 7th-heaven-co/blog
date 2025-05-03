@@ -69,6 +69,18 @@ components:
     tags:
       - blog
       - ci-cd
+  - name: blog-jira
+    type: service
+    lifecycle: production
+    owner: 7th-heaven/platform
+    links:
+      - type: REPOSITORY
+        url: https://github.com/7th-heaven-co/REPO
+    tags:
+      - blog
+      - ci-cd
+      - automation
+      - jira
   - name: blog-content-mdx
     type: service
     lifecycle: production
