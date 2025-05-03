@@ -1,6 +1,10 @@
 # .github/workflows/guard-main.yml
 name: 🛡️ allow-only-staging-or-release
 
+permissions:
+  contents: read          # read repo metadata
+  pull-requests: read     # read PR details (head_ref, actor, etc.)
+  
 on:
   pull_request:
     # PR base (target) must be main
