@@ -1,0 +1,37 @@
+# .github/workflows/guard-main.yml
+name: 🛡️ allow-only-staging-or-release
+
+permissions:
+  contents: read          # read repo metadata
+  pull-requests: read     # read PR details (head_ref, actor, etc.)
+  
+on:
+  pull_request:
+    # PR base (target) must be main
+    branches: [main]
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+
+jobs:
+  verify-head:
+    # ❌ Run (and fail) only when all of these are true:
+    #   • actor is NOT dependabot[bot] or renovate[bot]
+    #   • head branch is NOT 'staging'
+    #   • head branch does NOT start with 'release/'
+    #
+    # When the condition is false the job is skipped, counting as success.
+    if: >
+      github.actor != 'dependabot[bot]' &&
+      github.actor != 'renovate[bot]' &&
+      github.head_ref != 'staging' &&
+      !startsWith(github.head_ref, 'release/')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Block disallowed head branch
+        run: |
+          echo "::error::Branch '${{ github.head_ref }}' cannot merge into main."
+          exit 1
