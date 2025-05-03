@@ -9,6 +9,7 @@ import PgBgHome from '../components/PgBgHome.astro';
 import PgLoader from '../components/PgLoader.astro';
 import PgLoaderRadical from '../components/PgLoaderRadical.astro';
 import About from '../components/blog/About.astro';
+import SubscribeNewsletter from '../components/newsletter/SubscribeNewsletter.tsx';
 import Layout from '../layouts/BlogPost.astro';
 ---
 
@@ -41,6 +42,7 @@ import Layout from '../layouts/BlogPost.astro';
       <Header />
       <Landing />
       <About/>
+      <SubscribeNewsletter client:load />
       <Footer />
     </div>
   </body>

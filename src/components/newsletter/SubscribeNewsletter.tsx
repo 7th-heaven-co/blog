@@ -7,9 +7,9 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { Bounce, ToastContainer, toast } from 'react-toastify';
-import SubscribeNewsletterForm from '../components/SubscribeNewsletterForm.tsx';
+import SubscribeNewsletterForm from './SubscribeNewsletterForm.tsx';
 
-const MESSAGE = 'Redirecting to 🏠 Page...';
+const MESSAGE = 'Sign-up confirmation sent ...';
 
 export default function SubscribeNewsletter() {
   // Subscription status: "", "loading", "success", "error", etc.
@@ -21,9 +21,9 @@ export default function SubscribeNewsletter() {
    */
   const notify = useCallback(
     () =>
-      toast(`🦄 ${MESSAGE}`, {
+      toast(`✉️ ${MESSAGE}`, {
         position: 'top-center',
-        autoClose: 6000,
+        autoClose: 4000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -43,16 +43,16 @@ export default function SubscribeNewsletter() {
       notify();
       const timer = setTimeout(() => {
         window.location.href = '/';
-      }, 5000);
+      }, 3000);
       return () => clearTimeout(timer); // cleanup if component unmounts
     }
   }, [status, notify]); // ← notify now in deps, fixes lint warning
 
   return (
-    <main>
+    <main id="newsletter">
       <h1>Newsletter</h1>
-      <h3>Sign‑Up</h3>
-      {status === 'success' && <p>Welcome to the 7th Heaven Newsletter! 🎉</p>}
+      <h3>Sign-Up</h3>
+      {status === 'success' && <p>Welcome to the 7th Heaven Newsletter! 🎉</p>}
 
       {/* Newsletter Subscription Form (client‑side only) */}
       <SubscribeNewsletterForm client:load status={status} setStatus={setStatus} />
