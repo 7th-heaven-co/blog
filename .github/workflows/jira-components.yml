@@ -46,21 +46,23 @@ jobs:
             --base "${{ github.event.pull_request.base.sha }}" \
             --head "${{ github.event.pull_request.head.sha }}"
 
-      # 4 — Label PR
+       # 4 — Label PR
       - name: 🏷️ Label PR
         if: steps.detect.outputs.LOCAL_COMPONENTS != '[]'
         uses: actions-ecosystem/action-add-labels@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          labels: ${{ fromJSON(steps.detect.outputs.LOCAL_COMPONENTS) }}
+          # ── 🔑 convert ["frontend","ci-cd"] →  "frontend\nci-cd"
+          labels: ${{ join(fromJSON(steps.detect.outputs.LOCAL_COMPONENTS), '\n') }}
 
       # 5 — Push components to Jira
       - name: 🎫 Push components to Jira
         if: steps.detect.outputs.NAMESPACED_COMPONENTS != '[]'
         env:
-          JIRA_BASE_URL:  ${{ secrets.JIRA_BASE_URL }}
+          JIRA_BASE_URL:    ${{ secrets.JIRA_BASE_URL }}
           JIRA_USER_EMAIL:  ${{ secrets.JIRA_USER_EMAIL }}
-          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          JIRA_API_TOKEN:   ${{ secrets.JIRA_API_TOKEN }}
         run: |
-          components=$(node -e "const a = JSON.parse(process.argv[1]); console.log(a.join(','));" '${{ steps.detect.outputs.NAMESPACED_COMPONENTS }}')
-          node scripts/set-jira-components.js "$components" "${{ github.event.pull_request.head.ref }}"
+          node scripts/set-jira-components.js \
+            '${{ steps.detect.outputs.NAMESPACED_COMPONENTS }}' \
+            '${{ github.event.pull_request.head.ref }}'
