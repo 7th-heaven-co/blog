@@ -1,0 +1,41 @@
+---
+import '../styles/global.scss';
+import { PROFILE, SITE_DESCRIPTION, SITE_TITLE } from 'astro:env/client';
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import PgBgHome from '../components/PgBgHome.astro';
+import PgLoader from '../components/PgLoader.astro';
+import PgLoaderRadical from '../components/PgLoaderRadical.astro';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    <script is:inline type="module">
+      import { init } from "/scripts/fade/index.js";
+      init();
+    </script>
+  </head>
+  <body id="error-404">
+    <!-- Loader overlay -->
+    <PgLoader />
+
+    <!-- Bg -->
+    <PgBgHome />
+    <PgLoaderRadical />
+
+    <!-- Home Page -->
+    <div class="content">
+      <Header />
+      <div class="error-404-info">
+        <div class="container aurora-text">
+          <h2 class="">404</h2>
+          <h3>Page: <span class="">Not Found</span></h3>
+        </div>
+      </div>
+      <Footer />
+    </div>
+  </body>
+</html>
