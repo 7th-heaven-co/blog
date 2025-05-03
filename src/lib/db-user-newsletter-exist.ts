@@ -34,7 +34,7 @@ export async function dbUserNewsletterExist(email: string): Promise<UserNewslett
       sql: `
         SELECT u.*, n.*
         FROM Users AS u
-        JOIN Newsletter AS n ON n.user_id = u.user_id
+        JOIN Newsletter AS n ON n.user_id = u.id
         WHERE u.user_email = ?
           AND n.news_active = 1
         LIMIT 1;
