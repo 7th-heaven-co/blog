@@ -21,7 +21,8 @@
     "semantic-release": "semantic-release --extends ./release.config.cjs",
     "commit": "git commit --no-edit",
     "verify-map": "node scripts/verify-components-map.js",
-    "fetch:all": "git fetch --all --prune"
+    "fetch:all": "git fetch --all --prune",
+    "merge:dev": "git merge dev"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.2.4",
