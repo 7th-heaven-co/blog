@@ -7,6 +7,7 @@ on:
 
 jobs:
   prepare:
+    # ───── Skip bot/auto branches, run only when PR actually merged ─────
     if: >
       github.event.pull_request.merged == true &&
       !startsWith(github.event.pull_request.base.ref, 'auto/') &&
@@ -23,25 +24,41 @@ jobs:
         run: |
           set -euo pipefail
 
+          # ─── 1 Collect text to scan for Jira keys ───────────────────────
           TITLE="${{ github.event.pull_request.title }}"
-          BASE="${{ github.event.pull_request.base.ref }}"
+          BODY="${{ github.event.pull_request.body }}"
+          BRANCH="${{ github.event.pull_request.head.ref }}"
+          BASE_REF="${{ github.event.pull_request.base.ref }}"
 
-          # Extract all ABC-123 keys, dedupe, emit as JSON array
-          KEYS=$(grep -oE '[A-Z]+-[0-9]+' <<<"$TITLE" |
+          # Include every commit subject in the PR
+          git init -q
+          git remote add origin "https://github.com/${{ github.repository }}"
+          git fetch --quiet --depth=100 origin "${{ github.event.pull_request.head.sha }}"
+          COMMITS=$(git log --pretty=%s \
+                    "${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}" || true)
+
+          TEXT="$TITLE
+          $BODY
+          $BRANCH
+          $COMMITS"
+
+          # ─── 2 Extract all ABC-123 patterns, dedupe, to JSON array ──────
+          KEYS=$(grep -oE '[A-Z]+-[0-9]+' <<<"$TEXT" |
                  sort -u |
                  jq -R -s -c 'split("\n") - [""]')
 
-          # Map base branch → desired Jira status
-          case "$BASE" in
+          echo "keys=$KEYS" >>"$GITHUB_OUTPUT"
+
+          # ─── 3 Map destination branch → Jira status ────────────────────
+          case "$BASE_REF" in
             dev)                 STATUS="IN REVIEW"   ;;  # feature → dev
             staging)             STATUS="STAGING"     ;;  # dev → staging
-            release/*|release*)  STATUS="RELEASE"     ;;  # staging → release/*
+            release/*|release)   STATUS="RELEASE"     ;;  # staging → release/*
             main)                STATUS="DONE"        ;;  # release/* → main
             *)                   STATUS="IN PROGRESS" ;;
           esac
 
-          echo "keys=$KEYS" >> "$GITHUB_OUTPUT"
-          echo "transition=$STATUS" >> "$GITHUB_OUTPUT"
+          echo "transition=$STATUS" >>"$GITHUB_OUTPUT"
 
   transition:
     if: ${{ needs.prepare.outputs.keys != '[]' }}
@@ -61,5 +78,5 @@ jobs:
       - name: 🚚 Transition ${{ matrix.issue }} ➜ ${{ needs.prepare.outputs.transition }}
         uses: atlassian/gajira-transition@v3
         with:
-          issue: ${{ matrix.issue }}
+          issue:      ${{ matrix.issue }}
           transition: ${{ needs.prepare.outputs.transition }}

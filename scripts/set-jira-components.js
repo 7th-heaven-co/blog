@@ -1,72 +1,78 @@
 #!/usr/bin/env node
 /**
- * Usage:
- *   node scripts/set-jira-components.js \
- *        "blog-frontend,blog-ci-cd" \
- *        "feat/HEAVB-451-dark-mode"
+ * Push component names to Jira issues referenced by a branch.
  *
- * Env vars required:
- *   JIRA_BASE_URL   – https://<org>.atlassian.net
- *   JIRA_USER_EMAIL   – email or API user
- *   JIRA_API_TOKEN  – API token (from https://id.atlassian.com/manage-profile/security/api-tokens)
+ * Usage:
+ *   node scripts/set-jira-components.js '["blog-frontend","blog-ci-cd"]' \
+ *        "$BRANCH" "$PR_TITLE" "$PR_BODY"
+ *
+ *
+ * Required env vars: JIRA_BASE_URL, JIRA_USER_EMAIL, JIRA_API_TOKEN
  */
 
 import process from 'node:process';
 import fetch from 'node-fetch';
 
-const [componentsCsv = '', branchRef = ''] = process.argv.slice(2);
-if (!componentsCsv) {
-  console.log('ℹ️  No components to send');
-  process.exit(0);
+function die(msg, code = 1) {
+  console.error(`ERROR: ${msg}`);
+  process.exit(code);
+}
+function parseComponents(arg) {
+  if (!arg) return [];
+  try {
+    return JSON.parse(arg);
+  } catch {
+    return arg
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+  }
+}
+// ⬇️ NEW — search all provided texts
+function extractIssueKeys(...texts) {
+  const regex = /([A-Z][A-Z0-9]+-\d+)/gi;
+  const keys = new Set();
+  for (const txt of texts || [])
+    for (const m of txt?.matchAll(regex) || []) keys.add(m[1].toUpperCase());
+  return [...keys];
 }
 
-const { JIRA_BASE_URL, JIRA_USER_EMAIL, JIRA_API_TOKEN } = process.env; // keep your var names
-if (!JIRA_BASE_URL || !JIRA_USER_EMAIL || !JIRA_API_TOKEN) {
-  console.error('❌  Missing JIRA_BASE_URL / JIRA_USER_EMAIL / JIRA_API_TOKEN env vars');
-  process.exit(1);
-}
-
-/* ▶︎ Lint fix: use template literal instead of string concatenation */
-const authHeader = `Basic ${Buffer.from(`${JIRA_USER_EMAIL}:${JIRA_API_TOKEN}`).toString('base64')}`;
-
-const headers = {
-  Accept: 'application/json',
-  'Content-Type': 'application/json',
-  Authorization: authHeader,
-};
-
-const issueKeys = Array.from(new Set(branchRef.match(/[A-Z]+-\d+/g) || []));
-if (issueKeys.length === 0) {
-  console.log('ℹ️  No Jira keys in branch');
-  process.exit(0);
-}
-
-const newComps = componentsCsv
-  .split(',')
-  .map((s) => s.trim())
-  .filter(Boolean);
-
-async function update(key) {
-  const res = await fetch(`${JIRA_BASE_URL}/rest/api/3/issue/${key}?fields=components`, {
-    headers,
+async function addComponents(issueKey, comps, baseUrl, auth) {
+  const url = `${baseUrl}/rest/api/3/issue/${issueKey}`;
+  const body = { update: { components: [{ set: comps.map((name) => ({ name })) }] } };
+  const res = await fetch(url, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', Authorization: `Basic ${auth}` },
+    body: JSON.stringify(body),
   });
-  if (!res.ok) {
-    console.error(`❌  Fetch ${key} failed: ${res.status}`);
-    return;
+  if (!res.ok)
+    throw new Error(
+      `Jira responded ${res.status}: ${await res.text().catch(() => res.statusText)}`,
+    );
+  console.log(`✔️  Updated ${issueKey} with [${comps.join(', ')}]`);
+}
+
+(async () => {
+  const [compsArg, ...sources] = process.argv.slice(2);
+  const comps = parseComponents(compsArg);
+  if (!comps.length) die('No components supplied');
+
+  const issueKeys = extractIssueKeys(...sources);
+  if (!issueKeys.length) {
+    console.log('ℹ️  No Jira issue key in branch title or body — skipping component sync.');
+    process.exit(0);
   }
 
-  const current = (await res.json()).fields.components.map((c) => c.name);
-  const merged = Array.from(new Set([...current, ...newComps]));
+  const { JIRA_BASE_URL, JIRA_USER_EMAIL, JIRA_API_TOKEN } = process.env;
+  if (!JIRA_BASE_URL || !JIRA_USER_EMAIL || !JIRA_API_TOKEN)
+    die('Missing env vars: JIRA_BASE_URL, JIRA_USER_EMAIL, JIRA_API_TOKEN');
 
-  const body = JSON.stringify({ fields: { components: merged.map((name) => ({ name })) } });
-  const put = await fetch(`${JIRA_BASE_URL}/rest/api/3/issue/${key}`, {
-    method: 'PUT',
-    headers,
-    body,
-  });
-
-  if (!put.ok) console.error(`❌  Update ${key} failed: ${put.status}`);
-  else console.log(`✅  ${key} → ${merged.join(', ')}`);
-}
-
-for (const k of issueKeys) await update(k);
+  const auth = Buffer.from(`${JIRA_USER_EMAIL}:${JIRA_API_TOKEN}`).toString('base64');
+  for (const key of issueKeys)
+    try {
+      await addComponents(key, comps, JIRA_BASE_URL.replace(/\/$/, ''), auth);
+    } catch (err) {
+      console.error(`✖️  Failed to update ${key}: `, err.message);
+      process.exitCode = 1;
+    }
+})();
