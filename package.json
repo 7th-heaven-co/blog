@@ -20,7 +20,8 @@
     "format": "biome format . --write",
     "semantic-release": "semantic-release --extends ./release.config.cjs",
     "commit": "git commit --no-edit",
-    "verify-map": "node scripts/verify-components-map.js"
+    "verify-map": "node scripts/verify-components-map.js",
+    "fetch:all": "git fetch --all --prune"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.2.4",
