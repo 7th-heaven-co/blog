@@ -1,0 +1,60 @@
+@use '../_variables' as *;
+
+#error-404 {
+    margin: 0px;
+    padding: 0px;
+}
+
+#error-404 > .content >  .error-404-info {
+
+    height: 80vh;
+    width: 100%;        
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+    .container {
+        height: fit-content;
+        width: fit-content;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 50px;
+        
+        h2 {
+            font-size: $title-l;
+        }
+    
+        h3 {
+            font-style: italic;
+            text-decoration-line: underline !important;
+            text-decoration-color: $color-4 !important;
+            text-decoration-thickness: 1px;
+            text-decoration-style: double;
+        }
+
+        @media (max-width: $media-sm) {
+            
+            h2 {
+                font-size: $title-m;
+            }
+            p {
+                height: 150px;
+                width: 150px; 
+            }
+        }
+
+        @media (max-width: $media-xs) {
+            
+            h2 {
+                font-size: $title-s;
+            }
+            p {
+                height: 100px;
+                width: 100px; 
+            }
+        }
+    }
+}
