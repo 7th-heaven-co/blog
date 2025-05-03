@@ -1,9 +1,6 @@
 # .github/workflows/jira-components.yml
 # Sync changed components from a PR → GitHub labels → Jira Components
-# Requires:
-#   • scripts/detect-components.js         (outputs LOCAL_COMPONENTS + NAMESPACED_COMPONENTS)
-#   • scripts/set-jira-components.js       (takes namespaced CSV list, updates Jira via REST)
-#   • Secrets: JIRA_BASE_URL, JIRA_USER_EMAIL, JIRA_API_TOKEN
+# Detect-script now emits JSON arrays, so we consume them with fromJSON().
 
 name: Sync components to Jira
 
@@ -20,28 +17,28 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: write           # Ensures the workflow can manage labels
-      pull-requests: write      # needed for labeling the PR
-      issues: write             # Add this to ensure label management works
+      contents: write
+      pull-requests: write
+      issues: write   # label management
 
     steps:
-      # 1 ── Checkout code
+      # 1 — Checkout
       - name: 🛎️ Checkout repo
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0        # full history for diff
+          fetch-depth: 0
 
-      # 2 ── Install deps with npm
+      # 2 — Node & deps
       - name: 🏗️ Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: npm            # built-in npm cache
+          cache: npm
 
       - name: 📥 Install dependencies
         run: npm ci --ignore-scripts
 
-      # 3 ── Detect components that changed in this PR
+      # 3 — Detect components
       - name: 🔍 Detect components from diff
         id: detect
         run: |
@@ -49,26 +46,21 @@ jobs:
             --base "${{ github.event.pull_request.base.sha }}" \
             --head "${{ github.event.pull_request.head.sha }}"
 
-      # detect-components.js must echo:
-      #   LOCAL_COMPONENTS=frontend,ci-cd
-      #   NAMESPACED_COMPONENTS=blog-frontend,blog-ci-cd
-
-      # 4 ── Label the PR with local component names
+      # 4 — Label PR
       - name: 🏷️ Label PR
-        if: steps.detect.outputs.LOCAL_COMPONENTS != ''
+        if: steps.detect.outputs.LOCAL_COMPONENTS != '[]'
         uses: actions-ecosystem/action-add-labels@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          labels: ${{ steps.detect.outputs.LOCAL_COMPONENTS }}
+          labels: ${{ fromJSON(steps.detect.outputs.LOCAL_COMPONENTS) }}
 
-      # 5 ── Update Jira issues with namespaced components
+      # 5 — Push components to Jira
       - name: 🎫 Push components to Jira
-        if: steps.detect.outputs.NAMESPACED_COMPONENTS != ''
+        if: steps.detect.outputs.NAMESPACED_COMPONENTS != '[]'
         env:
-          JIRA_BASE_URL:  ${{ secrets.JIRA_BASE_URL }}   # e.g. https://7th-heaven.atlassian.net
-          JIRA_USER_EMAIL:  ${{ secrets.JIRA_USER_EMAIL }}   # email or API user
-          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}  # API token
+          JIRA_BASE_URL:  ${{ secrets.JIRA_BASE_URL }}
+          JIRA_USER_EMAIL:  ${{ secrets.JIRA_USER_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
         run: |
-          node scripts/set-jira-components.js \
-            "${{ steps.detect.outputs.NAMESPACED_COMPONENTS }}" \
-            "${{ github.event.pull_request.head.ref }}"
+          components=$(node -e "const a = JSON.parse(process.argv[1]); console.log(a.join(','));" '${{ steps.detect.outputs.NAMESPACED_COMPONENTS }}')
+          node scripts/set-jira-components.js "$components" "${{ github.event.pull_request.head.ref }}"
