@@ -20,7 +20,7 @@
   width: 100%;
   max-width: 1120px;
   height: fit-content;
-  text-align: justify;
+  text-align: left;
   @media (max-width: $media-xs) {
     margin-top: 0em;
   }
@@ -92,6 +92,7 @@
     padding-right: 1em;
 
     font-size: $font-ml;
+    text-align: left;
 
     hr {
       margin-bottom: 2em;
