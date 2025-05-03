@@ -22,6 +22,7 @@ jobs:
     permissions:
       contents: write           # Ensures the workflow can manage labels
       pull-requests: write      # needed for labeling the PR
+      issues: write             # Add this to ensure label management works
 
     steps:
       # 1 ── Checkout code

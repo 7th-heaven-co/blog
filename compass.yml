@@ -78,8 +78,6 @@ components:
         url: https://github.com/7th-heaven-co/REPO
     tags:
       - blog
-      - ci-cd
-      - automation
       - jira
   - name: blog-content-mdx
     type: service
