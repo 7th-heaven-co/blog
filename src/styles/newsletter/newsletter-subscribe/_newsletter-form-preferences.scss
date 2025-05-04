@@ -1,9 +1,13 @@
-// ./src/styles/newsletter/newsletter-subscribe/_newsletter-preferences.scss
+// ./src/styles/newsletter/newsletter-subscribe/_newsletter-form-preferences.scss
 
 @use '../../_variables' as *;
 
 #newsletter {
   #preferences {
+    border-style: dashed;
+    border-width: 1px 0px 0px 0px;
+    border-color: $border-light;
+    
     ul > li {
       min-height: 80px;
       display: flex;
@@ -11,7 +15,7 @@
       justify-content: space-evenly;
       padding-left: 4px;
       border-style: dashed;
-      border-width: 1px 0px;
+      border-width: 0px 0px 1px 0px;
       border-color: $border-light;
 
       .container {
@@ -53,12 +57,6 @@
         line-height: 1;
         margin: 0;
         padding: 0;
-      }
-    }
-
-    ul li:last-child {
-      p {
-        font-family: 'SpaceMono', sans-serif;
       }
     }
   }

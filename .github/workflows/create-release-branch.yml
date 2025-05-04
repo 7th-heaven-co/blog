@@ -10,11 +10,15 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+  GH_TOKEN:     ${{ secrets.GH_SEMANTIC_RELEASE_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.GH_SEMANTIC_RELEASE_TOKEN }}
+  
 jobs:
   new-release:
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN:     ${{ secrets.GH_SEMANTIC_RELEASE_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GH_SEMANTIC_RELEASE_TOKEN }}
     steps:
       # ───── Checkout repo & fetch full history ─────
       - uses: actions/checkout@v4

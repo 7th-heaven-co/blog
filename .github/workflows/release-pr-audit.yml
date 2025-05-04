@@ -8,6 +8,9 @@ jobs:
   audit:
     if: startsWith(github.event.pull_request.head.ref, 'release/')
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN:     ${{ secrets.GH_SEMANTIC_RELEASE_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GH_SEMANTIC_RELEASE_TOKEN }}
     permissions:
       pull-requests: write     # to post / edit comments
       contents: read
@@ -40,7 +43,7 @@ jobs:
                        --jq '.[] | select(.body | contains("'$COMMENT_TAG'")) | .id' | head -n 1 || true)
 
           if [ "$unchecked" -gt 0 ]; then
-            content="$COMMENT_TAG\n🚧 **Release Audit Log – tasks remaining**\n$todo"
+            content="$COMMENT_TAG\n🚧 **Release Audit Log - tasks remaining**\n$todo"
             if [ -z "$existing" ]; then
               gh api repos/$OWNER_REPO/issues/$PR_NUM/comments -f body="$content"
             else
@@ -49,7 +52,7 @@ jobs:
             echo "::error::There are $unchecked unchecked items in the Release Audit Log."
             exit 1
           else
-            # All tasks complete – update or remove comment
+            # All tasks complete - update or remove comment
             if [ -n "$existing" ]; then
               gh api repos/$OWNER_REPO/issues/$PR_NUM/comments/$existing -X PATCH \
                    -f body="$COMMENT_TAG ✅ All audit tasks completed."
