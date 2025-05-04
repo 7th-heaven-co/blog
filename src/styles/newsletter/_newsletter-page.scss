@@ -3,26 +3,40 @@
 @use '../_variables' as *;
 
 #newsletter {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  min-height: 100vh;
+  height: fit-content;
+  min-width: 0;
+  width: 100%;     
+
+  box-sizing: border-box;
+
+  padding-inline: 5vw;         
+  padding-block:  6rem 4rem;   
+
+  overflow-wrap: break-word;
+
+  h1 {
+    font-family: 'SpaceMono', sans-serif;
+    text-decoration-line: underline;
+    text-decoration-color: $color-4;
+    text-decoration-thickness: 1px;
+    text-decoration-style: double;
+    font-size: $heading-xl;
+    
+    @media (max-width: 600px) {
+      font-size: $heading-s;
+    }
+  }
+
+  h3 {
+    font-family: 'Barlow', sans-serif;
+    font-size: $heading-xs;
+    margin-bottom: 20px;
+  }
 
   p {
     font-family: 'SpaceMono', sans-serif;
   }
 
-  main {
-    margin-top: 4em;
-    margin-bottom: 6em;
-    padding: 0;
-    width: 100%;
-    height: fit-content;
 
-    h3 {
-      font-family: 'Barlow', sans-serif;
-      color: $silver;
-      margin-bottom: 20px;
-    }
-  }
 }
