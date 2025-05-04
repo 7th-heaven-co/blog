@@ -1,3 +1,38 @@
+## 📦 Release 1.4.0
+
+
+- Merge pull request #60 from 7th-heaven-co/HEAVB-53 (2c17bef)
+- Merge pull request #61 from 7th-heaven-co/dev HEAVB-53 (a366df0)
+- Merge pull request #62 from 7th-heaven-co/staging HEAVB-53 (0e270ee)
+- Merge pull request #64 from 7th-heaven-co/HEAVB-17 (4c05116)
+- Merge pull request #65 from 7th-heaven-co/HEAVB-19 (4ee9c1e)
+- Merge pull request #66 from 7th-heaven-co/HEAVB-18 (1b56ede)
+- Merge pull request #67 from 7th-heaven-co/HEAVB-23 (dd9180b)
+- Merge pull request #68 from 7th-heaven-co/dev (c6668a7)
+- Merge pull request #69 from 7th-heaven-co/HEAVB-17, HEAVB-18, HEAVB-19, HEAVB-23 (0480ae9)
+- Merge pull request #70 from 7th-heaven-co/HEAVB-30 (008b5c9)
+- Merge pull request #71 from 7th-heaven-co/HEAVB-54 (7fde04a)
+- Merge pull request #72 from 7th-heaven-co/dev (c402cc7)
+- Merge pull request #73 from 7th-heaven-co/HEAVB-54 (462f55f)
+- Merge pull request #74 from 7th-heaven-co/dev (7f71f52)
+- Merge pull request #75 from 7th-heaven-co/staging HEAVB-30, HEAVB-54 (c43fad6)
+- Merge pull request #76 from 7th-heaven-co/HEAVB-54 (fab4025)
+- Merge pull request #77 from 7th-heaven-co/dev (10fb3ad)
+- Merge pull request #78 from 7th-heaven-co/staging (e3a4e9c)
+- **frontend:** :sparkles: add custom 404 page with site-branded design (09e9994)
+- **ci-cd:** :bug: enable semantic-release bypass via GitHub App + PAT (7390f74)
+- **ci-cd:** :bug: updated all env's for semantic release workflows (8706baa)
+- **styling:** :bug: fix footer policy-nav width & text-wrap on mobile (e0b8c4d)
+- **styling:** :bug: prevent horizontal overflow on mobile & refine input focus/autofill styles (fa9f8c5)
+- **styling:** :bug: updated footer columns from em to px for consistant styling (22fe1de)
+- **styling:** :bug: updated to text-align left for blog-post (7059275)
+- :ferris_wheel: add branch-gate workflows for main and staging & set them as required checks (92d1484)
+- **ci-cd:** :ferris_wheel: 🔒 restrict GITHUB_TOKEN to read-only in guard workflows (e258bf3)
+- **ci-cd:** :hammer: updated workflows by moving env to jobs (f8d03ba)
+
+
+---
+
 ## 📦 Release 1.3.0
 
 
