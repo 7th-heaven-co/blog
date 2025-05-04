@@ -4,14 +4,13 @@ on:
     types: [opened, edited, reopened, synchronize]
     branches: [main]          # PR target is main
 
-env:
-  GH_TOKEN:     ${{ secrets.GH_SEMANTIC_RELEASE_TOKEN }}
-  GITHUB_TOKEN: ${{ secrets.GH_SEMANTIC_RELEASE_TOKEN }}
-
 jobs:
   audit:
     if: startsWith(github.event.pull_request.head.ref, 'release/')
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN:     ${{ secrets.GH_SEMANTIC_RELEASE_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GH_SEMANTIC_RELEASE_TOKEN }}
     permissions:
       pull-requests: write     # to post / edit comments
       contents: read
