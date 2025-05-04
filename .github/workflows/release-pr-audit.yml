@@ -19,7 +19,7 @@ jobs:
       - name: Fetch PR body
         id: fetch
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_SEMANTIC_RELEASE_TOKEN }}
           PR_NUM:  ${{ github.event.pull_request.number }}
         run: |
           body=$(gh pr view "$PR_NUM" --json body -q .body)
@@ -30,7 +30,7 @@ jobs:
       # ───── Check checklist & auto‑comment ─────
       - name: Check checklist completion & comment
         env:
-          GH_TOKEN:   ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN:   ${{ secrets.GH_SEMANTIC_RELEASE_TOKEN }}
           PR_NUM:     ${{ github.event.pull_request.number }}
           OWNER_REPO: ${{ github.repository }}
           BODY:       ${{ steps.fetch.outputs.body }}
