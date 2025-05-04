@@ -7,6 +7,10 @@ on:
       - 'release/*'      # publishes RC tags
       - main             # publishes stable tags
 
+env:
+  GH_TOKEN:     ${{ secrets.GH_SEMANTIC_RELEASE_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.GH_SEMANTIC_RELEASE_TOKEN }}
+
 jobs:
   release:
     runs-on: ubuntu-latest

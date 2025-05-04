@@ -10,8 +10,9 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+  GH_TOKEN:     ${{ secrets.GH_SEMANTIC_RELEASE_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.GH_SEMANTIC_RELEASE_TOKEN }}
+  
 jobs:
   new-release:
     runs-on: ubuntu-latest
