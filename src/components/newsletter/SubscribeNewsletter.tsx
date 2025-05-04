@@ -7,7 +7,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { Bounce, ToastContainer, toast } from 'react-toastify';
-import SubscribeNewsletterForm from './SubscribeNewsletterForm.tsx';
+import SubscribeNewsletterForm from './SubscribeNewsletterForm/index.tsx';
 
 const MESSAGE = 'Sign-up confirmation sent ...';
 
@@ -50,12 +50,12 @@ export default function SubscribeNewsletter() {
 
   return (
     <main id="newsletter">
-      <h1>Newsletter</h1>
+      <h1 className="aurora-text-light">Newsletter</h1>
       <h3>Sign-Up</h3>
       {status === 'success' && <p>Welcome to the 7th Heaven Newsletter! 🎉</p>}
 
       {/* Newsletter Subscription Form (client‑side only) */}
-      <SubscribeNewsletterForm client:load status={status} setStatus={setStatus} />
+      <SubscribeNewsletterForm client:load setStatus={setStatus} />
 
       {/* Toast notifications */}
       <ToastContainer />

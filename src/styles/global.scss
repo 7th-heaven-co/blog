@@ -188,3 +188,45 @@ button {
     view-transition-name: card;
   }
 }
+
+/* Autofill */
+
+/* baseline input --------------------------------------------------------- */
+input {
+  border: 1px dashed $border-light;
+  background: transparent;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+/* generic keyboard focus / click focus ---------------------------------- */
+input:focus-visible,
+input:focus {
+  border-color: $color-2;
+  outline: 0;                       // remove UA outline
+  /* outer glow only (no inset background here) */
+  box-shadow: 0 0 0 1px rgba($color-2, .45);
+}
+
+/* Works in Chrome, Edge, Opera, Safari */
+input:-webkit-autofill,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  /* ① Paint over the browser’s color */
+  box-shadow: 0 0 0 1000px #1e1e2f inset; /* your desired background  */
+  -webkit-box-shadow: 0 0 0 1000px #1e1e2f inset;
+
+  /* ② Optional: adjust text / caret colors */
+  -webkit-text-fill-color: #f1f1f1;        /* text */
+  caret-color: #f1f1f1;
+
+  /* ③ Prevent Chrome from flashing yellow before our shadow applies */
+  transition: background-color 9999s ease-in-out;
+}
+
+/* Works in Firefox (Gecko) */
+input:-moz-autofill {
+  box-shadow: 0 0 0 1000px #1e1e2f inset;
+  -moz-text-fill-color: #f1f1f1;
+}
+
+
