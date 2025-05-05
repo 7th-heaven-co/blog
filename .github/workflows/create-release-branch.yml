@@ -1,29 +1,32 @@
 # .github/workflows/create-release-branch.yml
 name: Create weekly release branch
+
 on:
   schedule:
-    - cron: '0 4 * * 0'   # Sunday 00:00 ET
+    # Sunday 00:00 ET
+    - cron: '0 4 * * 0'
   workflow_dispatch:
 
 concurrency:
   group: create-release
   cancel-in-progress: false
 
-env:
-  GH_TOKEN:     ${{ secrets.GH_SEMANTIC_RELEASE_TOKEN }}
-  GITHUB_TOKEN: ${{ secrets.GH_SEMANTIC_RELEASE_TOKEN }}
-  
 jobs:
   new-release:
     runs-on: ubuntu-latest
     env:
-      GH_TOKEN:     ${{ secrets.GH_SEMANTIC_RELEASE_TOKEN }}
-      GITHUB_TOKEN: ${{ secrets.GH_SEMANTIC_RELEASE_TOKEN }}
+      # expose the default workflow token to scripts / gh
+      GH_TOKEN:     ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: write      # push branch
+      pull-requests: write # open PR
     steps:
       # ───── Checkout repo & fetch full history ─────
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0            # needed for git rev-list below
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       # ───── Gate 1: abort if older release branch open ─────
       - name: Check for unmerged release branches
@@ -32,27 +35,26 @@ jobs:
           git fetch --quiet origin 'refs/heads/release/*:refs/remotes/origin/release/*' || true
           UNMERGED=$(git branch -r --no-merged origin/main | grep 'origin/release/' || true)
           if [[ -n "$UNMERGED" ]]; then
-            echo "SKIP=true"     >> $GITHUB_OUTPUT
-            echo "UNMERGED<<EOF" >> $GITHUB_OUTPUT
-            echo "$UNMERGED"     >> $GITHUB_OUTPUT
-            echo "EOF"           >> $GITHUB_OUTPUT
+            echo "SKIP=true"     >> "$GITHUB_OUTPUT"
+            echo "UNMERGED<<EOF" >> "$GITHUB_OUTPUT"
+            echo "$UNMERGED"     >> "$GITHUB_OUTPUT"
+            echo "EOF"           >> "$GITHUB_OUTPUT"
           fi
 
       # ───── Gate 2: skip if staging == main ─────
       - name: Check if staging is ahead of main
         id: diff
-        shell: bash
         run: |
           git fetch --quiet origin main staging
           AHEAD=$(git rev-list --left-right --count origin/main...origin/staging | awk '{print $2}')
-          echo "NO_CHANGES=false" >> $GITHUB_OUTPUT
+          echo "NO_CHANGES=false" >> "$GITHUB_OUTPUT"
           if [[ "$AHEAD" -eq 0 ]]; then
-            echo "SKIP=true"        >> $GITHUB_OUTPUT
-            echo "NO_CHANGES=true"  >> $GITHUB_OUTPUT
+            echo "SKIP=true"        >> "$GITHUB_OUTPUT"
+            echo "NO_CHANGES=true"  >> "$GITHUB_OUTPUT"
           fi
 
-      # ───── Slack notice when skipping (no-op or pending release) ─────
-      - name: Notify Slack - release skipped
+      # ───── Slack notice when skipping ─────
+      - name: Notify Slack – release skipped
         if: steps.gate.outputs.SKIP == 'true' || steps.diff.outputs.NO_CHANGES == 'true'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -71,13 +73,13 @@ jobs:
       # ───── Early exit if nothing to do ─────
       - name: Exit early if we should skip
         if: steps.gate.outputs.SKIP == 'true' || steps.diff.outputs.NO_CHANGES == 'true'
-        run: echo "Skipping weekly release - nothing new to ship."
+        run: echo "Skipping weekly release – nothing new to ship."
 
       # ───── Build the release branch ─────
       - name: Compute next branch name
         if: steps.gate.outputs.SKIP != 'true' && steps.diff.outputs.NO_CHANGES != 'true'
         id: vars
-        run: echo "BRANCH=release/$(date -u +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+        run: echo "BRANCH=release/$(date -u +'%Y-%m-%d')" >> "$GITHUB_OUTPUT"
 
       - name: Push branch from staging
         if: steps.gate.outputs.SKIP != 'true' && steps.diff.outputs.NO_CHANGES != 'true'
