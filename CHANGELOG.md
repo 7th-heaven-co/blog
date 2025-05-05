@@ -15,10 +15,13 @@
 - Merge pull request #72 from 7th-heaven-co/dev (c402cc7)
 - Merge pull request #73 from 7th-heaven-co/HEAVB-54 (462f55f)
 - Merge pull request #74 from 7th-heaven-co/dev (7f71f52)
+- Merge pull request #75 from 7th-heaven-co/staging HEAVB-30, HEAVB-54 (c43fad6)
 - Merge pull request #76 from 7th-heaven-co/HEAVB-54 (fab4025)
 - Merge pull request #77 from 7th-heaven-co/dev (10fb3ad)
+- Merge pull request #78 from 7th-heaven-co/staging (e3a4e9c)
 - Merge pull request #79 from 7th-heaven-co/HEAVB-54 (f0efde8)
 - Merge pull request #81 from 7th-heaven-co/dev (71db74c)
+
 - **frontend:** :sparkles: add custom 404 page with site-branded design (09e9994)
 - **ci-cd:** :bug: enable semantic-release bypass via GitHub App + PAT (7390f74)
 - **ci-cd:** :bug: updated all env's for semantic release workflows (8706baa)
@@ -28,9 +31,8 @@
 - **styling:** :bug: updated to text-align left for blog-post (7059275)
 - :ferris_wheel: add branch-gate workflows for main and staging & set them as required checks (92d1484)
 - **ci-cd:** :ferris_wheel: 🔒 restrict GITHUB_TOKEN to read-only in guard workflows (e258bf3)
-- **ci-cd:** :ferris_wheel: switch semantic-release to GitHub App token and drop extra PAT envs (11379dd)
 - **ci-cd:** :hammer: updated workflows by moving env to jobs (f8d03ba)
-
+- **ci-cd:** :ferris_wheel: switch semantic-release to GitHub App token and drop extra PAT envs (11379dd)
 
 ---
 
@@ -44,7 +46,6 @@
 - **ci-cd:** :ferris_wheel: fix label sync failure by adding issues:write permission (0a281af)
 - **ci-cd:** :ferris_wheel: newline-separate LOCAL_COMPONENTS in detect-components.js (83cd32a)
 - **release:** 1.3.0-beta.1 [skip ci] (33fd6b5)
-
 
 ---
 
