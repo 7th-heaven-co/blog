@@ -1,3 +1,17 @@
+## 📦 Release 1.4.1
+
+
+- **frontend:** :bug: updated navigation routes (be7fdf1)
+- **ci-cd:** :ferris_wheel: removed merges from changelog (0ef29f7)
+- **ci-cd:** :ferris_wheel: switch semantic-release to GitHub App token and drop extra PAT envs (d34c8c6)
+- **ci-cd:** :ferris_wheel: switch semantic-release to GitHub App token and drop extra PAT envs (11379dd)
+- **ci-cd:** :hammer: moved append-deploy-tags file (97e417f)
+- **release:** 1.4.0-beta.1 [skip ci] (fc65bc2)
+- **release:** 1.4.1-beta.1 [skip ci] (e275321)
+
+
+---
+
 ## 📦 Release 1.4.1-beta.1
 
 
