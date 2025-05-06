@@ -1,3 +1,26 @@
+## 📦 Release 1.4.1-beta.1
+
+
+- Merge branch 'staging' into dev (9efc26c)
+- Merge pull request #79 from 7th-heaven-co/HEAVB-54 (f0efde8)
+- Merge pull request #81 from 7th-heaven-co/dev (71db74c)
+- Merge pull request #82 from 7th-heaven-co/staging (06ff7fe)
+- Merge pull request #83 from 7th-heaven-co/HEAVB-54 (e43a9a8)
+- Merge pull request #84 from 7th-heaven-co/dev (074edf9)
+- Merge pull request #85 from 7th-heaven-co/HEAVB-54 (f3b40f8)
+- Merge pull request #86 from 7th-heaven-co/dev (b5b7481)
+- Merge pull request #87 from 7th-heaven-co/staging (431cac3)
+- Merge pull request #88 from 7th-heaven-co/HEAVB-55 (f0d6121)
+- Merge pull request #89 from 7th-heaven-co/dev (766bdda)
+- **frontend:** :bug: updated navigation routes (be7fdf1)
+- **ci-cd:** :ferris_wheel: switch semantic-release to GitHub App token and drop extra PAT envs (d34c8c6)
+- **ci-cd:** :ferris_wheel: switch semantic-release to GitHub App token and drop extra PAT envs (11379dd)
+- **ci-cd:** :hammer: moved append-deploy-tags file (97e417f)
+- **release:** 1.4.0-beta.1 [skip ci] (fc65bc2)
+
+
+---
+
 ## 📦 Release 1.4.0-beta.1
 
 
