@@ -1,9 +1,8 @@
-// release.config.cjs
-
 /**
  * - Newline‑safe templates (no double‑escaping)
  * - Commit groups mapped to emoji section headers
  * - Immutable‑safe transform (returns a fresh object)
+ * - Skips merge commits so they never appear in CHANGELOG
  */
 
 const SECTION_TITLES = {
@@ -35,6 +34,8 @@ module.exports = {
       '@semantic-release/commit-analyzer',
       {
         releaseRules: [
+          // User‑visible commits trigger a release (default behaviour)
+          // Non‑user‑visible types are mapped to "no release"
           { type: 'post', release: false },
           { type: 'chore', release: false },
           { type: 'docs', release: false },
@@ -42,6 +43,8 @@ module.exports = {
           { type: 'ci', release: false },
           { type: 'build', release: false },
           { type: 'test', release: false },
+          // Explicitly ignore any commit that is manually typed as "merge"
+          { type: 'merge', release: false },
         ],
       },
     ],
@@ -57,11 +60,19 @@ module.exports = {
           commitsSort: ['scope', 'subject'],
 
           // Immutable‑safe transform: return a NEW object instead of mutating
-          transform: (commit) => ({
-            ...commit,
-            type: SECTION_TITLES[commit.type] || commit.type,
-            shortHash: commit.hash?.slice(0, 7),
-          }),
+          //  ─── Skips merge commits entirely ───
+          transform: (commit) => {
+            // conventional‑commits‑parser sets commit.merge for merge commits
+            if (commit.merge || /^Merge\b/i.test(commit.subject || '')) {
+              return; // omit from changelog
+            }
+
+            return {
+              ...commit,
+              type: SECTION_TITLES[commit.type] || commit.type,
+              shortHash: commit.hash?.slice(0, 7),
+            };
+          },
 
           headerPartial: '## 📦 Release {{version}}\n\n',
           commitPartial: '- {{#if scope}}**{{scope}}:** {{/if}}{{subject}} ({{shortHash}})\n',
