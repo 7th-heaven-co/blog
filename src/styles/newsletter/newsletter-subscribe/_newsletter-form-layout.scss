@@ -1,5 +1,5 @@
 // ./src/styles/newsletter/newsletter-subscribe/_newsletter-form-layout.scss
-
+@use "sass:color";
 @use '../../_variables' as *;
 
 #newsletter {
@@ -39,7 +39,7 @@
 
       /* ②   optional hover style, separate from focus */
       &:hover:not(:focus-visible):not(:focus) {
-        border-color: lighten($border-light, 20%);
+        border-color: color.scale($border-light, $lightness: 20%);
       }
     }
 
